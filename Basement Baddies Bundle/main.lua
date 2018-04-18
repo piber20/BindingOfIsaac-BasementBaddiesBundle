@@ -4,6 +4,7 @@ local   BBB = RegisterMod( "basement baddies bundle", 1);
 --Projectiles
 local	typeCustomTears = Isaac.GetEntityTypeByName("Bubble Tear")
 local	variantTearBubble = Isaac.GetEntityVariantByName("Bubble Tear")
+local	variantTearTar = Isaac.GetEntityVariantByName("Tar Tear")
 
 --New Variants
 local	variantLatchFly = Isaac.GetEntityVariantByName("Latch Fly")
@@ -12,7 +13,7 @@ local	variantDrownedDip = Isaac.GetEntityVariantByName("Drowned Dip")
 local	variantDrownedSquirt = Isaac.GetEntityVariantByName("Drowned Squirt")
 
 --New Enemies
-local	typeFlamingHorf = Isaac.GetEntityTypeByName("Flaming Horf")
+local	typeMeteorMaw = Isaac.GetEntityTypeByName("Meteor Maw")
 local	typeModCreep = Isaac.GetEntityTypeByName("Drowned Creep")
 local	variantDrownedCreep = Isaac.GetEntityVariantByName("Drowned Creep")
 local	variantStickyCreep = Isaac.GetEntityVariantByName("Sticky Creep")
@@ -30,6 +31,10 @@ local	typeDukie = Isaac.GetEntityTypeByName("Dukie")
 
 
 local	debugString = "Sorry Nothing"
+
+
+local 	burnableEnemies = 	{ {10, 1} , {208, 0}, {29,0} }
+local 	burnedEnemies = 	{ {10, 2} , {208, 2}, {54,0} }
 
 
 local function bit(p)--function to get bits from integers
@@ -191,7 +196,7 @@ function BBB:SquirtVariantsTakeDamage(npc, dmg, dmgType, dmgSrc, dmgCountDown)
 end
 
 
-function BBB:FlamingHorf(npc)
+function BBB:MeteorMaw(npc)
 	if (npc.State == 0) then
 		npc.GridCollisionClass = 3
 		npc.State = 3
@@ -265,6 +270,30 @@ function BBB:FlamingHorf(npc)
 					if (npc.Velocity.Y >= 0) then collided = true end					
 				end
 			end
+			
+			
+			local impeedingNPCs = Isaac.FindInRadius(npc.Position + (npc.Velocity), 13, EntityPartition.ENEMY)
+			for i = 1, #impeedingNPCs do
+				if (impeedingNPCs[i].Type == 33) then
+					local offset = npc.Position - impeedingNPCs[i].Position
+					local boundVector = offset:Normalized()
+					npc.Velocity = boundVector * 6
+					
+					impeedingNPCs[i].HitPoints = 0
+					impeedingNPCs[i]:TakeDamage(1, 0, EntityRef(npc), 0)
+					
+					collided = true
+				else					
+					for i2 = 1, #burnableEnemies do
+						if (impeedingNPCs[i].Type == burnableEnemies[i2][1] and impeedingNPCs[i].Variant == burnableEnemies[i2][2]) then
+							debugString = "NPC:" .. impeedingNPCs[i].Type .. "." .. impeedingNPCs[i].Variant .. " -> " .. burnedEnemies[i2][1] .. "." .. burnedEnemies[i2][2]
+							local otherNPC = impeedingNPCs[i]:ToNPC()
+							otherNPC:Morph(burnedEnemies[i2][1], burnedEnemies[i2][2], otherNPC.SubType, otherNPC:GetChampionColorIdx())
+						end
+					end
+				end
+			end
+			
 		
 			if (collided) then
 				npc.StateFrame = 2
@@ -289,12 +318,65 @@ function BBB:FlamingHorf(npc)
 				npc.Velocity = Lerp(npc.Velocity,npc.TargetPosition * 12,0.5)
 			end	
 		else
-			npc:MultiplyFriction(0.85)--npc.Velocity = npc.Velocity * (npc.Friction / 1.15)
+			npc:MultiplyFriction(0.85)
 			if (npc:GetSprite():IsFinished("Bump")) then
 				npc:GetSprite():Play("Shake", true)
 				npc.State = 4
 			end
 		end
+	end
+end
+function BBB:MeteorMawTakeDamage(npc, dmg, dmgType, dmgSrc, dmgCountDown)
+	npc = npc:ToNPC()
+	if (dmgType == DamageFlag.DAMAGE_FIRE) then
+		-- if (npc.State == 8 and npc.StateFrame == 1) then
+			-- local offset = dmgSrc.Position - npc.Position
+			-- local boundVector = offset:Normalized()
+			-- --debugString = "Offset:[" .. math.floor(offset.X * 100) * 0.01 .. "," .. math.floor(offset.Y * 100) * 0.01 .. "]" .. "   boundVector:[" .. math.floor(boundVector.X * 100) * 0.01 .. "," .. math.floor(boundVector.Y * 100) * 0.01 .. "]"
+			-- --npc.Velocity = boundVector * 12
+			-- debugString = "Velocity:[" .. math.floor(npc.Velocity.X * 100) * 0.01 .. "," .. math.floor(npc.Velocity.Y * 100) * 0.01 .. "]"
+			
+			-- --dmgSrc.Entity:TakeDamage(1, 0, npc, 0)
+			
+			-- npc.StateFrame = 2
+			-- npc.Mass = 7
+			-- npc.GridCollisionClass = 3
+			-- npc:GetSprite():Play("Bump")
+			
+			
+			-- local schut = ProjectileParams()
+			-- schut.BulletFlags = (2 ^ 28) --+ (2 ^ 4)
+			-- schut.HeightModifier = 20
+			-- schut.FallingSpeedModifier = 0.5
+			-- schut.FallingAccelModifier = -0.15
+			-- schut.Variant = 2
+			-- schut.Color = Color(1,1,0.2,1,100,25,0)
+			
+			-- local projectileVelocity = Vector(10,0)
+			
+			-- for i=0,7,1 do
+				-- npc:FireProjectiles(npc.Position, projectileVelocity:Rotated(i*45), 0, schut)
+			-- end
+		-- end
+		return false
+		-- npc.StateFrame = 2
+		-- npc.Mass = 7
+		-- npc.GridCollisionClass = 3
+		-- npc:GetSprite():Play("Bump")
+		
+		-- local schut = ProjectileParams()
+		-- schut.BulletFlags = (2 ^ 28) --+ (2 ^ 4)
+		-- schut.HeightModifier = 20
+		-- schut.FallingSpeedModifier = 0.5
+		-- schut.FallingAccelModifier = -0.15
+		-- schut.Variant = 2
+		-- schut.Color = Color(1,1,0.2,1,100,25,0)
+		
+		-- local projectileVelocity = Vector(10,0)
+		
+		-- for i=0,7,1 do
+			-- npc:FireProjectiles(npc.Position, projectileVelocity:Rotated(i*45), 0, schut)
+		-- end
 	end
 end
 function BBB:Spiny(npc)
@@ -489,13 +571,22 @@ function BBB:CreepVariants(npc)
 						projectileVelocity = Vector(-projectileSpeed,0)
 					end	
 					
-					local schut = ProjectileParams()
-					schut.Scale = 2
-					schut.Variant = 3
-					schut.Color = Color(0.2,0.2,0.25,1,0,0,0)
-					schut.FallingAccelModifier = -0.15
+					-- local schut = ProjectileParams()
+					-- schut.Scale = 2
+					-- schut.Variant = 3
+					-- schut.Color = Color(0.2,0.2,0.25,1,0,0,0)
+					-- schut.FallingAccelModifier = -0.15
 					
-					npc:FireProjectiles(npc.Position + projectileVelocity, projectileVelocity, 0, schut)
+					-- npc:FireProjectiles(npc.Position + projectileVelocity, projectileVelocity, 0, schut)		
+					
+					projectileVelocity = projectileVelocity:Rotated(math.random(-10,10))
+					tarBall = Isaac.Spawn(typeCustomTears, variantTearTar, 0, npc.Position + projectileVelocity, projectileVelocity,npc)
+					tarBall:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
+					tarBall:ToNPC().I1 = 5
+					tarBall:ToNPC().V1 = Vector(projectileSpeed,1)
+					tarBall:ToNPC().StateFrame = 150
+					tarBall.Parent = npc
+					
 					npc:PlaySound(317, 1.0, 0, false, 1.0)
 				end	
 				if sprite:IsFinished("Attack") then				
@@ -682,6 +773,97 @@ function BBB:MinistroII(npc)
 end
 
 function BBB:CustomTears(npc)
+	if (npc.SpawnerType == typeModCreep and npc.SpawnerVariant == variantStickyCreep) then
+		if (npc.FrameCount % 3 == 0) then				
+			local creep = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.CREEP_BLACK, 0, npc.Position, Vector(0,0), npc):ToEffect()
+			creep:Update()
+			creep:SetTimeout(90)
+		end
+	end
+	
+	if (npc.Variant == variantTearTar) then	
+		--I1 = size
+		--StateFrame = range
+		--V1.X = targetSpeed
+		--V1.Y = bounceLimit
+		
+		local sprite = npc:GetSprite()
+		if npc.State == 0 or npc.State == 1 or npc.State == 2 then
+			npc.SpriteOffset = Vector(0,-16)
+			npc.EntityCollisionClass = 1
+			npc.State = 3
+			npc.SplatColor = Color(0,0,0,0,0,0,0)--Color(0.725,0.81,1,1,0,0,0)
+			
+			if npc.I1 == 0 then
+				sprite:Play("RegularTear4", true)
+			elseif npc.I1 == 1 then
+				sprite:Play("RegularTear5", true)
+			elseif npc.I1 == 2 then
+				sprite:Play("RegularTear6", true)
+			elseif npc.I1 == 3 then
+				sprite:Play("RegularTear7", true)
+			elseif npc.I1 == 4 then
+				sprite:Play("RegularTear8", true)
+			elseif npc.I1 == 5 then
+				sprite:Play("RegularTear9", true)
+			elseif npc.I1 == 6 then
+				sprite:Play("RegularTear10", true)
+			elseif npc.I1 == 7 then
+				sprite:Play("RegularTear11", true)
+			elseif npc.I1 == 8 then
+				sprite:Play("RegularTear12", true)
+			else
+				sprite:Play("RegularTear13", true)
+			end
+			
+			npc:SetSize(6 + npc.I1, Vector(1,1), 12)
+			npc.V2 = npc.Velocity
+		end
+		
+		local bounce = false
+		
+		if npc.V2.X < 0 and npc.Velocity.X > 0 then bounce = true			
+		elseif npc.V2.X > 0 and npc.Velocity.X < 0 then bounce = true end
+		if npc.V2.Y < 0 and npc.Velocity.Y > 0 then bounce = true
+		elseif npc.V2.Y > 0 and npc.Velocity.Y < 0 then bounce = true end
+		
+		if (bounce) then
+			if npc.V1.Y > 0 then
+				npc.V1 = Vector(npc.V1.X, npc.V1.Y - 1)
+				npc.Velocity = npc.Velocity:Rotated(math.random(-30,30))				
+				npc.StateFrame = 24
+				
+				-- npc.Velocity = npc.Velocity:Rotated(math.random(-30,30))
+				-- local spread = math.random(10,25)
+				-- for i=-1,1,2 do
+					-- tarBall = Isaac.Spawn(typeCustomTears, variantTearTar, 0, npc.Position, npc.Velocity:Rotated(i * spread),npc.Parent)
+					-- tarBall:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
+					-- tarBall:ToNPC().I1 = 3
+					-- tarBall:ToNPC().V1 = Vector(6,0)
+					-- tarBall:ToNPC().StateFrame = 20
+					-- tarBall.Parent = npc
+				-- end
+				-- npc:Remove()
+			else
+				npc:Kill()
+				npc:PlaySound(258, 1.0, 0, false, 1.0)
+				Isaac.Spawn(1000, 12, 0, npc.Position, Vector(0,0),npc)
+			end		
+		end
+		if npc.Velocity:Length() < npc.V1.X then 
+			npc.Velocity = npc.Velocity:Normalized() * npc.V1.X
+		end
+		npc.V2 = npc.Velocity
+		
+		
+		if (npc.SpriteOffset.Y >= 0) then
+			npc:Kill()
+			npc:PlaySound(258, 1.0, 0, false, 1.0)
+			Isaac.Spawn(1000, 12, 0, npc.Position, Vector(0,0),npc)
+		else
+			npc.SpriteOffset = Vector(0,npc.SpriteOffset.Y + (16 / npc.StateFrame))
+		end
+	end
 	if (npc.Variant == variantTearBubble) then
 		local sprite = npc:GetSprite()
 		npc:MultiplyFriction(0.9)
@@ -867,6 +1049,10 @@ function BBB:ProjectileUpdate(ent)
 			creep:SetTimeout(90)
 		end
 	end
+	-- if (npc:GetData().CustomFlags ~= nil ) then
+		-- if (npc:GetData().CustomFlags.FlagRubber) then
+		-- end
+	-- end
 end
 
 
@@ -875,7 +1061,7 @@ function BBB:HorfAlts(npc)
 		if (npc.FrameCount == 0) then
 			local backdrop = Game():GetRoom():GetBackdropType()
 			if (backdrop == 3 and math.random(0,1) == 0) then
-				npc:Morph(typeFlamingHorf, npc.Variant, npc.SubType, npc:GetChampionColorIdx())
+				npc:Morph(typeMeteorMaw, npc.Variant, npc.SubType, npc:GetChampionColorIdx())
 			end
 		end
 	end
@@ -1032,7 +1218,8 @@ BBB:AddCallback( ModCallbacks.MC_ENTITY_TAKE_DMG, BBB.SquirtVariantsTakeDamage, 
 BBB:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBB.Spiny, 276);
 BBB:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBB.MinistroII, 305);
 
-BBB:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBB.FlamingHorf, typeFlamingHorf);
+BBB:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBB.MeteorMaw, typeMeteorMaw);
+BBB:AddCallback( ModCallbacks.MC_ENTITY_TAKE_DMG, BBB.MeteorMawTakeDamage, typeMeteorMaw);
 BBB:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBB.CreepVariants, typeModCreep);
 BBB:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBB.DankDukie, typeDankDukie);
 BBB:AddCallback( ModCallbacks.MC_ENTITY_TAKE_DMG, BBB.DankDukieTakeDamage, typeDankDukie);

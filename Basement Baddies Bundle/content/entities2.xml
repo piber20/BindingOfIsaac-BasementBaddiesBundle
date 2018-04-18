@@ -3,7 +3,7 @@
         <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 		<preload-snd id="4" />
     </entity>
-	<entity anm2path="Drowned Dip.anm2" id="217" variant="1100" name="Drowned Dip" reroll="true" baseHP="8" stageHP="1" boss="0" champion="0" collisionDamage="1" collisionMass="6" collisionRadius="9" friction="1" numGridCollisionPoints="12" shadowSize="0" portrait="85" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="Idle">
+	<entity anm2path="Drowned Dip.anm2" id="217" variant="1100" name="Drowned Dip" reroll="true" baseHP="3" stageHP="1" boss="0" champion="0" collisionDamage="1" collisionMass="6" collisionRadius="9" friction="1" numGridCollisionPoints="12" shadowSize="0" portrait="85" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="Idle">
         <gibs amount="5" blood="0" bone="0" eye="0" gut="0" large="0" poop="1" />
         <preload-snd id="60" /> <!-- SOUND_BABY_HURT -->
     </entity>
@@ -20,7 +20,7 @@
 	<gibs amount="6" blood="1" bone="1" eye="1" gut="1" large="0" />
 	</entity>
 	
-	<entity anm2path="Flaming_Horf.anm2" id="601" variant="0" name="Flaming Horf" reroll="true" baseHP="20" boss="0" champion="1" collisionDamage="1" collisionMass="7" collisionRadius="13" friction="1" numGridCollisionPoints="12" shadowSize="13" stageHP="0" portrait="4" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="Shake" bestiaryOverlay="Head">
+	<entity anm2path="Meteor_Maw.anm2" id="601" variant="0" name="Meteor Maw" reroll="true" baseHP="20" boss="0" champion="1" collisionDamage="1" collisionMass="7" collisionRadius="13" friction="1" numGridCollisionPoints="12" shadowSize="13" stageHP="0" portrait="4" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="Shake" bestiaryOverlay="Head">
         <gibs amount="6" blood="1" bone="1" eye="0" gut="1" large="0" />
         <preload-snd id="146" /> <!-- SOUND_SHAKEY_KID_ROAR -->
     </entity>	
@@ -40,6 +40,9 @@
     </entity>
 	
 	<entity anm2path="tears_bubble.anm2" id="675" variant="0" name="Bubble Tear" reroll="true" baseHP="1" boss="0" champion="1" collisionDamage="1" collisionMass="35" collisionRadius="0" friction="1" numGridCollisionPoints="12" shadowSize="15" stageHP="0" portrait="19" gridCollision="walls" bestiary="false">
+        <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+    </entity>
+	<entity anm2path="tears_tar.anm2" id="675" variant="1" name="Tar Tear" reroll="true" baseHP="1" boss="0" champion="1" collisionDamage="1" collisionMass="35" collisionRadius="0" friction="1" numGridCollisionPoints="12" shadowSize="15" stageHP="0" portrait="19" bestiary="false">
         <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
     </entity>
 </entities>
