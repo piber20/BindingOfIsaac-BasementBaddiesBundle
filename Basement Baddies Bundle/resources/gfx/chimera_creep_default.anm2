@@ -1,14 +1,14 @@
 <AnimatedActor>
-	<Info CreatedBy="Unknown" CreatedOn="4/17/2018 6:37:01 AM" Version="1" Fps="30"/>
+	<Info CreatedBy="Unknown" CreatedOn="19/04/2018 00:57:59" Version="2" Fps="30"/>
 	<Content>
 		<Spritesheets>
-			<Spritesheet Path="chimera_creep_default_form.png" Id="0"/>
+			<Spritesheet Path="monsters\chimera_creep_default_form.png" Id="0"/>
 		</Spritesheets>
 		<Layers>
 			<Layer Name="body" Id="0" SpritesheetId="0"/>
 		</Layers>
 		<Nulls>
-			<Null Name="OverlayEffect" Id="0"/>
+			<Null Name="OverlayEffect" Id="0" ShowRect="false"/>
 		</Nulls>
 		<Events/>
 	</Content>
