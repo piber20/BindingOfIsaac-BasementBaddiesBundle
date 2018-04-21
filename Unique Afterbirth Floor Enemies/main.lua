@@ -70,7 +70,12 @@ function UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, varia
 					end
 					if spritesheet ~= nil then
 						local sprite = entity:GetSprite()
-						sprite:ReplaceSpritesheet(layer, spritesheet) 
+						if layer >= 0 then
+							sprite:ReplaceSpritesheet(layer, spritesheet) 
+						else
+							sprite:Load(spritesheet, true)
+							sprite:Play(sprite:GetDefaultAnimation(), false)
+						end
 						sprite:LoadGraphics()
 					end
 				end
@@ -123,3 +128,15 @@ function UniqueAfterbirthFloorEnemiesMod:onCrazyLongLegsUpdate(entity)
 end
 UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, UniqueAfterbirthFloorEnemiesMod.onCrazyLongLegsUpdate, EntityType.ENTITY_CRAZY_LONG_LEGS)
 UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, UniqueAfterbirthFloorEnemiesMod.onCrazyLongLegsUpdate, EntityType.ENTITY_CRAZY_LONG_LEGS)
+
+function UniqueAfterbirthFloorEnemiesMod:onRedGhostUpdate(entity)
+	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, -1, nil, nil, nil, "gfx/scarred_ghost.anm2")
+end
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, UniqueAfterbirthFloorEnemiesMod.onRedGhostUpdate, EntityType.ENTITY_RED_GHOST)
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, UniqueAfterbirthFloorEnemiesMod.onRedGhostUpdate, EntityType.ENTITY_RED_GHOST)
+
+function UniqueAfterbirthFloorEnemiesMod:onFleshDeathsHeadUpdate(entity)
+	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, 0, nil, nil, nil, "gfx/monsters/scarred/scarred_deaths_head.png")
+end
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, UniqueAfterbirthFloorEnemiesMod.onFleshDeathsHeadUpdate, EntityType.ENTITY_FLESH_DEATHS_HEAD)
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, UniqueAfterbirthFloorEnemiesMod.onFleshDeathsHeadUpdate, EntityType.ENTITY_FLESH_DEATHS_HEAD)
