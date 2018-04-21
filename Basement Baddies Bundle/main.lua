@@ -20,6 +20,10 @@ local	variantStickyCreep = Isaac.GetEntityVariantByName("Sticky Creep")
 local	variantChimeraCreep = Isaac.GetEntityVariantByName("Chimera Creep")
 local	typeDankDukie = Isaac.GetEntityTypeByName("Dank Dukie")
 
+--New Effects
+local	variantDiarheaExplosion = Isaac.GetEntityVariantByName("Diarhea Explosion")
+
+
 
 --Old Enemies
 local	variantRoundWorm = Isaac.GetEntityVariantByName("Round Worm")
@@ -126,9 +130,24 @@ function BBB:DipVariants(npc)
 			creep:SetTimeout(30)
 			
 			npc.Scale = npc.Scale - 0.04
-			if (npc.Scale < 0.5) then
-				npc:Kill()
+			
+			
+			local sprite = npc:GetSprite()
+			if (npc.Scale < 0.5 and npc.State ~= NpcState.STATE_UNIQUE_DEATH) then
+				if (math.random(0,1) == 0) then
+					npc.State = NpcState.STATE_UNIQUE_DEATH
+					sprite:Play("Disappear")
+				else			
+					npc:Remove()
+					
+					npc:PlaySound(237, 0.5, 0, false, 1.0)
+					local plop = Isaac.Spawn(EntityType.ENTITY_EFFECT, variantDiarheaExplosion, 0, npc.Position + (npc.Velocity * 0.5), Vector(0,0), npc):ToEffect()
+				end
 			end	
+			
+			if sprite:IsFinished("Disappear") then
+				npc:Remove()
+			end
 		end
 	elseif (npc.SpawnerType == 220 and npc.SpawnerVariant == variantDrownedSquirt) then
 		npc:Morph(217, variantDrownedDip, npc.SubType, npc:GetChampionColorIdx())
