@@ -134,15 +134,15 @@ function BBB:DipVariants(npc)
 			
 			local sprite = npc:GetSprite()
 			if (npc.Scale < 0.5 and npc.State ~= NpcState.STATE_UNIQUE_DEATH) then
-				if (math.random(0,1) == 0) then
+				-- if (math.random(0,1) == 0) then
 					npc.State = NpcState.STATE_UNIQUE_DEATH
 					sprite:Play("Disappear")
-				else			
-					npc:Remove()
+				-- else			
+					-- npc:Remove()
 					
-					npc:PlaySound(237, 0.5, 0, false, 1.0)
-					local plop = Isaac.Spawn(EntityType.ENTITY_EFFECT, variantDiarheaExplosion, 0, npc.Position + (npc.Velocity * 0.5), Vector(0,0), npc):ToEffect()
-				end
+					-- npc:PlaySound(237, 0.5, 0, false, 1.0)
+					-- local plop = Isaac.Spawn(EntityType.ENTITY_EFFECT, variantDiarheaExplosion, 0, npc.Position + (npc.Velocity * 0.5), Vector(0,0), npc):ToEffect()
+				-- end
 			end	
 			
 			if sprite:IsFinished("Disappear") then
