@@ -84,19 +84,42 @@ function UniqueAfterbirthFloorEnemiesMod:onGaperUpdate(entity)
 	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 1, -1, 1, "gfx/monsters/afterbirth/010.002_flaminggaper.png", nil, nil, nil) --regular
 end
 UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, UniqueAfterbirthFloorEnemiesMod.onGaperUpdate, EntityType.ENTITY_GAPER)
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, UniqueAfterbirthFloorEnemiesMod.onGaperUpdate, EntityType.ENTITY_GAPER)
 
 function UniqueAfterbirthFloorEnemiesMod:onHorfUpdate(entity)
 	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, 0, "gfx/monsters/flaming/singed_horf.png", nil, nil, nil)
 end
 UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, UniqueAfterbirthFloorEnemiesMod.onHorfUpdate, EntityType.ENTITY_HORF)
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, UniqueAfterbirthFloorEnemiesMod.onHorfUpdate, EntityType.ENTITY_HORF)
 
 function UniqueAfterbirthFloorEnemiesMod:onCyclopiaUpdate(entity)
 	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, 1, "gfx/monsters/flaming/singed_cyclopia.png", nil, nil, nil)
 end
 UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, UniqueAfterbirthFloorEnemiesMod.onCyclopiaUpdate, EntityType.ENTITY_CYCLOPIA)
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, UniqueAfterbirthFloorEnemiesMod.onCyclopiaUpdate, EntityType.ENTITY_CYCLOPIA)
 
 function UniqueAfterbirthFloorEnemiesMod:onFattyUpdate(entity)
 	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, 0, "gfx/monsters/afterbirth/207.002_flamingfatty.png", nil, nil, nil) --regular
 	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, 1, "gfx/monsters/afterbirth/207.002_flamingfatty.png", nil, nil, nil)
 end
 UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, UniqueAfterbirthFloorEnemiesMod.onFattyUpdate, EntityType.ENTITY_FATTY)
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, UniqueAfterbirthFloorEnemiesMod.onFattyUpdate, EntityType.ENTITY_FATTY)
+
+function UniqueAfterbirthFloorEnemiesMod:onBloodProjectileUpdate(entity)
+	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, ProjectileVariant.PROJECTILE_NORMAL, -1, 0, nil, "gfx/enemybullets_flooded.png", nil, nil)
+end
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_PROJECTILE_UPDATE, UniqueAfterbirthFloorEnemiesMod.onBloodProjectileUpdate, ProjectileVariant.PROJECTILE_NORMAL)
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_PROJECTILE_INIT, UniqueAfterbirthFloorEnemiesMod.onBloodProjectileUpdate, ProjectileVariant.PROJECTILE_NORMAL)
+
+function UniqueAfterbirthFloorEnemiesMod:onBloodProjectilePoofUpdate(entity)
+	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, EffectVariant.BULLET_POOF, -1, 0, nil, "gfx/effects/effect_003_bloodtear_flooded.png", nil, nil)
+end
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, UniqueAfterbirthFloorEnemiesMod.onBloodProjectilePoofUpdate, EffectVariant.BULLET_POOF)
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_EFFECT_INIT, UniqueAfterbirthFloorEnemiesMod.onBloodProjectilePoofUpdate, EffectVariant.BULLET_POOF)
+
+function UniqueAfterbirthFloorEnemiesMod:onCrazyLongLegsUpdate(entity)
+	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, 0, nil, "gfx/monsters/flooded/drowned_long_legs.png", nil, nil) --regular
+	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 1, -1, 0, nil, "gfx/monsters/flooded/drowned_long_legs_small.png", nil, nil) --small
+end
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, UniqueAfterbirthFloorEnemiesMod.onCrazyLongLegsUpdate, EntityType.ENTITY_CRAZY_LONG_LEGS)
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, UniqueAfterbirthFloorEnemiesMod.onCrazyLongLegsUpdate, EntityType.ENTITY_CRAZY_LONG_LEGS)
