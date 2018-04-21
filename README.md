@@ -1,3 +1,1 @@
 # BindingOfIsaac-MonsterMod
-
-test
