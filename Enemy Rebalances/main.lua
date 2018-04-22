@@ -4,8 +4,13 @@ function EnemyRebalanceMod:onChargerUpdate(entity)
 	local frameCount = entity.FrameCount
 	if frameCount <= 1 then
 		if entity.Variant == 1 then
-			entity.MaxHitPoints = 18
-			entity.HitPoints = 18
+			if entity.SpawnerType == EntityType.ENTITY_HIVE and entity.SpawnerVariant == 1 then
+				entity.MaxHitPoints = 10
+				entity.HitPoints = 10
+			else
+				entity.MaxHitPoints = 20
+				entity.HitPoints = 20
+			end
 		end
 	end
 end
