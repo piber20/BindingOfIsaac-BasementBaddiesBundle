@@ -1,4 +1,4 @@
-UniqueAfterbirthFloorEnemiesMod = RegisterMod("Unique Afterbirth Floor Enemies", 1)
+UniqueAfterbirthFloorEnemiesMod = RegisterMod("Unique AB Floor Sprites", 1)
 
 UniqueAfterbirthFloorSpritesets = {
 	NONE = 0,
