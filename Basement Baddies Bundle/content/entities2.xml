@@ -7,11 +7,20 @@
         <gibs amount="5" blood="0" bone="0" eye="0" gut="0" large="0" poop="1" />
         <preload-snd id="60" /> <!-- SOUND_BABY_HURT -->
     </entity>
-    <entity anm2path="Drowned Squirt.anm2" id="220" variant="1100" name="Drowned Squirt" reroll="true" baseHP="15" stageHP="6" boss="0" champion="0" collisionDamage="1" collisionMass="30" collisionRadius="13" friction="1" numGridCollisionPoints="12" shadowSize="0" portrait="87" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="Idle">
+    <entity anm2path="Dank Dip.anm2" id="217" variant="1101" name="Dank Dip" reroll="true" baseHP="4" stageHP="1" boss="0" champion="0" collisionDamage="1" collisionMass="6" collisionRadius="9" friction="1" numGridCollisionPoints="12" shadowSize="12" portrait="85" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="Idle">
+        <gibs amount="5" blood="0" bone="0" eye="0" gut="0" large="0" poop="1" />
+        <preload-snd id="60" /> <!-- SOUND_BABY_HURT -->
+    </entity>	
+	<entity anm2path="Drowned Squirt.anm2" id="220" variant="1100" name="Drowned Squirt" reroll="true" baseHP="15" stageHP="6" boss="0" champion="0" collisionDamage="1" collisionMass="30" collisionRadius="13" friction="1" numGridCollisionPoints="12" shadowSize="0" portrait="87" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="Idle">
         <gibs amount="5" blood="1" bone="0" eye="0" gut="0" large="0" poop="1" />
         <preload id="217" variant="0" />
         <preload-snd id="57" /> <!-- SOUND_CHILD_ANGRY_ROAR -->
-    </entity>	
+    </entity>
+    <entity anm2path="Dank Dinga.anm2" id="223" variant="1100" name="Dank Dinga" reroll="true" baseHP="65" stageHP="0" boss="0" champion="0" collisionDamage="2" collisionMass="3" collisionRadius="17" friction="1" numGridCollisionPoints="12" shadowSize="11" portrait="90" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="Wiggle">
+        <gibs amount="8" blood="0" bone="0" eye="0" gut="0" large="0" poop="1" />
+		<preload id="220" variant="0" />
+        <preload-snd id="48" /> <!-- SOUND_FORESTBOSS_STOMPS -->
+    </entity>
 	<entity anm2path="Spiny.anm2" id="276" variant="1" name="Spiny" reroll="true" baseHP="20" stageHP="0" boss="0" champion="0" collisionDamage="1" collisionMass="100" collisionRadius="13" friction="1" numGridCollisionPoints="12" shadowSize="0" portrait="122" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="Idle">
         <gibs amount="10" blood="0" bone="1" eye="0" gut="0" large="0" />
         <preload-snd id="249" /> <!-- SOUND_SCAMPER -->

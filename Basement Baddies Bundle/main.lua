@@ -16,7 +16,9 @@ BBBaddiesEntityVariant = {
 	FLY_LATCH = Isaac.GetEntityVariantByName("Latch Fly"),
 	MINSTRO_II = Isaac.GetEntityVariantByName("Ministro II"),
 	DIP_DROWNED = Isaac.GetEntityVariantByName("Drowned Dip"),
+	DIP_DANK = Isaac.GetEntityVariantByName("Dank Dip"),
 	SQUIRT_DROWNED = Isaac.GetEntityVariantByName("Drowned Squirt"),
+	DINGA_DANK = Isaac.GetEntityVariantByName("Dank Dinga"),
 	CREEP_DROWNED = Isaac.GetEntityVariantByName("Drowned Creep"),
 	CREEP_STICKY = Isaac.GetEntityVariantByName("Sticky Creep"),
 	CREEP_CHIMERA = Isaac.GetEntityVariantByName("Chimera Creep"),
@@ -28,6 +30,7 @@ BBBaddiesEffectVariant = {
 }
 
 require("bbbaddies.dank_dukie")
+require("bbbaddies.dank_dinga")
 require("bbbaddies.drowned_squirt")
 require("bbbaddies.spiny")
 require("bbbaddies.ministro_ii")
@@ -91,21 +94,26 @@ function BBBaddiesMod:DipVariants(npc)
 	elseif (npc.SpawnerType == 220 and npc.SpawnerVariant == BBBaddiesEntityVariant.SQUIRT_DROWNED) then
 		npc:Morph(217, BBBaddiesEntityVariant.DIP_DROWNED, npc.SubType, npc:GetChampionColorIdx())
 	elseif (npc.FrameCount <= 1 and npc.Variant == 0) then
-		if (npc.SpawnerType == 223 and npc.SpawnerVariant == variantDankDinga) then
-			npc:Morph(217, variantDankDip, npc.SubType, npc:GetChampionColorIdx())
+		if (npc.SpawnerType == 223 and npc.SpawnerVariant == BBBaddiesEntityVariant.DINGA_DANK) then
+			npc:Morph(217, BBBaddiesEntityVariant.DIP_DANK, npc.SubType, npc:GetChampionColorIdx())
 		elseif (npc.FrameCount == 0) then
 			local backdrop = Game():GetRoom():GetBackdropType()
 			if (backdrop == 9) then
-				npc:Morph(217, variantDankDip, npc.SubType, npc:GetChampionColorIdx())
+				npc:Morph(217, BBBaddiesEntityVariant.DIP_DANK, npc.SubType, npc:GetChampionColorIdx())
 			end
 		end
+	end
+end
+function BBBaddiesMod:DipVariantsTakeDamage(npc, dmg, dmgType, dmgSrc, dmgCountDown)
+	if (npc.Variant == BBBaddiesEntityVariant.DIP_DANK) then
+		BBBaddiesMod:DankDipTakeDamage(npc, dmg, dmgType, dmgSrc, dmgCountDown)
 	end
 end
 function BBBaddiesMod:SquirtVariants(npc)
 	if (npc.Variant == BBBaddiesEntityVariant.SQUIRT_DROWNED) then		
 		BBBaddiesMod:DrownedSquirt(npc)
 	elseif (npc.FrameCount <= 1 and npc.Variant == 0) then
-		if (npc.SpawnerType == 223 and npc.SpawnerVariant == variantDankDinga) then
+		if (npc.SpawnerType == 223 and npc.SpawnerVariant == BBBaddiesEntityVariant.DINGA_DANK) then
 			npc:Morph(220, 1, npc.SubType, npc:GetChampionColorIdx())
 		end
 	end
@@ -115,6 +123,16 @@ function BBBaddiesMod:SquirtVariantsTakeDamage(npc, dmg, dmgType, dmgSrc, dmgCou
 		toReturn = BBBaddiesMod:DrownedSquirtTakeDamage(npc, dmg, dmgType, dmgSrc, dmgCountDown)
 		if toReturn ~= nil then
 			return toReturn
+		end
+	end
+end
+function BBBaddiesMod:DingaVariants(npc)
+	if (npc.Variant == BBBaddiesEntityVariant.DINGA_DANK) then
+		BBBaddiesMod:DankDinga(npc)		
+	elseif (npc.FrameCount == 0) then
+		local backdrop = Game():GetRoom():GetBackdropType()
+		if (backdrop == 9) then
+			npc:Morph(223, BBBaddiesEntityVariant.DINGA_DANK, npc.SubType, npc:GetChampionColorIdx())
 		end
 	end
 end
@@ -288,10 +306,12 @@ end
 
 BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.FlyVariants, EntityType.ENTITY_FLY)
 BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.DipVariants, EntityType.ENTITY_DIP)
+BBBaddiesMod:AddCallback( ModCallbacks.MC_ENTITY_TAKE_DMG, BBBaddiesMod.DipVariantsTakeDamage, EntityType.ENTITY_DIP)
 BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.SquirtVariants, EntityType.ENTITY_SQUIRT)
 BBBaddiesMod:AddCallback( ModCallbacks.MC_ENTITY_TAKE_DMG, BBBaddiesMod.SquirtVariantsTakeDamage, EntityType.ENTITY_SQUIRT)
 BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.RoundyVariants, EntityType.ENTITY_ROUNDY)
 BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.MinistroVariants, EntityType.ENTITY_MINISTRO)
+BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.DingaVariants, EntityType.ENTITY_DINGA)
 
 
 BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.HorfAlts, EntityType.ENTITY_HORF)
