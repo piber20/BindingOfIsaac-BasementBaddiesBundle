@@ -269,12 +269,14 @@ function BBBaddiesMod:CustomTearsPlayerCollision(npc, player)
 	end
 end
 
+--TO BE REPLACED
 function BBBaddiesMod:PlayerCollision(player, npc, low)
 	if (npc.Type == BBBaddiesEntityType.ENTITY_CUSTOM_TEAR) then
 		BBBaddiesMod:CustomTearsPlayerCollision(npc:ToNPC(), player)
 	end
 end
 BBBaddiesMod:AddCallback( ModCallbacks.MC_PRE_PLAYER_COLLISION, BBBaddiesMod.PlayerCollision)
+--TO BE REPLACED
 
 function BBBaddiesMod:ProjectileUpdate(ent)
 	if (ent.SpawnerType == BBBaddiesEntityType.ENTITY_CUSTOM_CREEP and ent.SpawnerVariant == BBBaddiesEntityVariant.CREEP_STICKY) then
@@ -284,9 +286,13 @@ function BBBaddiesMod:ProjectileUpdate(ent)
 			creep:SetTimeout(90)
 		end
 	end
-	-- if (npc:GetData().CustomFlags ~= nil ) then
-		-- if (npc:GetData().CustomFlags.FlagRubber) then
-		-- end
-	-- end
+	if ((ent.SpawnerType == EntityType.ENTITY_LEAPER and ent.SpawnerVariant == BBBaddiesEntityVariant.LEAPER_BOUNCER) or
+		(ent.SpawnerType == EntityType.ENTITY_DIP and ent.SpawnerVariant == BBBaddiesEntityVariant.DIP_DANK)) then
+		if (ent.FrameCount <= 1) then				
+			local sprite = ent:GetSprite()
+			sprite:ReplaceSpritesheet(0, "gfx/ink_bullets.png")
+			sprite:LoadGraphics()
+		end
+	end
 end
 BBBaddiesMod:AddCallback( ModCallbacks.MC_POST_PROJECTILE_UPDATE, BBBaddiesMod.ProjectileUpdate)

@@ -1,5 +1,5 @@
 <AnimatedActor>
-	<Info CreatedBy="robot" CreatedOn="4/21/2018 9:33:43 PM" Version="104" Fps="30"/>
+	<Info CreatedBy="robot" CreatedOn="25/04/2018 01:42:19" Version="107" Fps="30"/>
 	<Content>
 		<Spritesheets>
 			<Spritesheet Path="monsters/Bouncer.png" Id="0"/>
@@ -8,9 +8,13 @@
 			<Layer Name="body" Id="0" SpritesheetId="0"/>
 		</Layers>
 		<Nulls>
-			<Null Name="OverlayEffect" Id="0"/>
+			<Null Name="OverlayEffect" Id="0" ShowRect="false"/>
 		</Nulls>
-		<Events/>
+		<Events>
+			<Event Name="Land" Id="0"/>
+			<Event Name="Bounce" Id="1"/>
+			<Event Name="LandHeavy" Id="2"/>
+		</Events>
 	</Content>
 	<Animations DefaultAnimation="Hop">
 		<Animation Name="Hop" FrameNum="26" Loop="false">
@@ -50,7 +54,9 @@
 					<Frame XPosition="0" YPosition="-16" XScale="100" YScale="100" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="false"/>
 				</NullAnimation>
 			</NullAnimations>
-			<Triggers/>
+			<Triggers>
+				<Trigger EventId="0" AtFrame="18"/>
+			</Triggers>
 		</Animation>
 		<Animation Name="Idle" FrameNum="2" Loop="false">
 			<RootAnimation>
@@ -165,7 +171,13 @@
 					<Frame XPosition="0" YPosition="-16" XScale="100" YScale="100" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="false"/>
 				</NullAnimation>
 			</NullAnimations>
-			<Triggers/>
+			<Triggers>
+				<Trigger EventId="2" AtFrame="22"/>
+				<Trigger EventId="1" AtFrame="24"/>
+				<Trigger EventId="0" AtFrame="39"/>
+				<Trigger EventId="1" AtFrame="42"/>
+				<Trigger EventId="0" AtFrame="56"/>
+			</Triggers>
 		</Animation>
 	</Animations>
 </AnimatedActor>

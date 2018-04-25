@@ -22,7 +22,8 @@ BBBaddiesEntityVariant = {
 	CREEP_DROWNED = Isaac.GetEntityVariantByName("Drowned Creep"),
 	CREEP_STICKY = Isaac.GetEntityVariantByName("Sticky Creep"),
 	CREEP_CHIMERA = Isaac.GetEntityVariantByName("Chimera Creep"),
-	ROUNDY_SPINY = Isaac.GetEntityVariantByName("Spiny")
+	ROUNDY_SPINY = Isaac.GetEntityVariantByName("Spiny"),
+	LEAPER_BOUNCER = Isaac.GetEntityVariantByName("Bouncer")
 }
 
 BBBaddiesEffectVariant = {
@@ -37,8 +38,9 @@ require("bbbaddies.ministro_ii")
 require("bbbaddies.meteor_maw")
 require("bbbaddies.projectiles")
 require("bbbaddies.creeps")
+require("bbbaddies.bouncer")
 
-BBBaddiesdebugString = "Sorry Nothing"
+BBBaddiesDebugString = "Sorry Nothing"
 
 
 local function bit(p)--function to get bits from integers
@@ -54,7 +56,7 @@ local function clearbit(x, p)
   return hasbit(x, p) and x - p or x
 end
 
-local function Lerp(a, b, weight)
+function BBBaddiesMod:Lerp(a, b, weight)
 	return a * (1 - weight) + b * weight
 end
 
@@ -136,6 +138,16 @@ function BBBaddiesMod:DingaVariants(npc)
 		end
 	end
 end
+function BBBaddiesMod:LeaperVariants(npc)
+	if (npc.Variant == BBBaddiesEntityVariant.LEAPER_BOUNCER) then
+		BBBaddiesMod:Bouncer(npc)
+	elseif (npc.FrameCount == 0) then
+		local backdrop = Game():GetRoom():GetBackdropType()
+		if (backdrop == 9) then
+			npc:Morph(EntityType.ENTITY_LEAPER, BBBaddiesEntityVariant.LEAPER_BOUNCER, npc.SubType, npc:GetChampionColorIdx())
+		end
+	end
+end
 
 function BBBaddiesMod:RoundyVariants(npc)
 	if npc.Variant == BBBaddiesEntityVariant.ROUNDY_SPINY then
@@ -202,7 +214,7 @@ function FindNearbyEnemy(pointGet)
 end
 
 function BBBaddiesMod:debug_text()
-	--Isaac.RenderScaledText(BBBaddiesdebugString, 100, 100, 0.5, 0.5, 255, 0, 0, 255)
+	--Isaac.RenderScaledText(BBBaddiesDebugString, 100, 100, 0.5, 0.5, 255, 0, 0, 255)
 	entinfo()
 end
 function entinfo()
@@ -312,6 +324,7 @@ BBBaddiesMod:AddCallback( ModCallbacks.MC_ENTITY_TAKE_DMG, BBBaddiesMod.SquirtVa
 BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.RoundyVariants, EntityType.ENTITY_ROUNDY)
 BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.MinistroVariants, EntityType.ENTITY_MINISTRO)
 BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.DingaVariants, EntityType.ENTITY_DINGA)
+BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.LeaperVariants, EntityType.ENTITY_LEAPER)
 
 
 BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.HorfAlts, EntityType.ENTITY_HORF)

@@ -24,7 +24,7 @@ function BBBaddiesMod:DankDipTakeDamage(npc, dmg, dmgType, dmgSrc, dmgCountDown)
 		schut.HeightModifier = 16
 		schut.Scale = 0.8
 		schut.Variant = 3
-		schut.Color = Color(0.2,0.2,0.25,1,0,0,0)
+		--schut.Color = Color(0.2,0.2,0.25,1,0,0,0)
 		
 		
 		local projectileVelocity = Vector(0,1)
