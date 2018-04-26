@@ -1,5 +1,5 @@
 --the version of this helper mod script
-local currentVersion = 1
+local currentVersion = 2
 
 --remove any previous versions that may exist
 if piber20HelperMod then
@@ -425,13 +425,13 @@ if not piber20HelperMod then
 		end
 		
 		if AcesToJacksMod then
-			if card == piber20HelperOtherModCardType.CARD_JACK_OF_CLUBS then
+			if card == AcesToJacksCardType.CARD_JACK_OF_CLUBS then
 				return true
-			elseif card == piber20HelperOtherModCardType.CARD_JACK_OF_DIAMONDS then
+			elseif card == AcesToJacksCardType.CARD_JACK_OF_DIAMONDS then
 				return true
-			elseif card == piber20HelperOtherModCardType.CARD_JACK_OF_SPADES then
+			elseif card == AcesToJacksCardType.CARD_JACK_OF_SPADES then
 				return true
-			elseif card == piber20HelperOtherModCardType.CARD_JACK_OF_HEARTS then
+			elseif card == AcesToJacksCardType.CARD_JACK_OF_HEARTS then
 				return true
 			end
 		end
