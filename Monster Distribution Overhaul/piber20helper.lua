@@ -1,5 +1,5 @@
 --the version of this helper mod script
-local currentVersion = -989 --indev
+local currentVersion = 1
 
 --remove any previous versions that may exist
 if piber20HelperMod then
@@ -46,10 +46,6 @@ if not piber20HelperMod then
 		CARD_ELECTRIC_BOLT = -1,
 		CARD_DIM_RITUAL = -1,
 		CARD_TURN_TO_TOAD = -1,
-		CARD_JACK_OF_CLUBS = -1,
-		CARD_JACK_OF_DIAMONDS = -1,
-		CARD_JACK_OF_SPADES = -1,
-		CARD_JACK_OF_HEARTS = -1,
 		RUNE_NAUDIZ = -1,
 		RUNE_GEBO = -1,
 		RUNE_FEHU = -1,
@@ -69,12 +65,6 @@ if not piber20HelperMod then
 				
 				--turn to toad
 				piber20HelperOtherModCardType.CARD_TURN_TO_TOAD = Isaac.GetCardIdByName("c01_TurnToToad")
-				
-				--aces to jacks
-				piber20HelperOtherModCardType.CARD_JACK_OF_CLUBS = Isaac.GetCardIdByName("Jack of Clubs")
-				piber20HelperOtherModCardType.CARD_JACK_OF_DIAMONDS = Isaac.GetCardIdByName("Jack of Diamonds")
-				piber20HelperOtherModCardType.CARD_JACK_OF_SPADES = Isaac.GetCardIdByName("Jack of Spades")
-				piber20HelperOtherModCardType.CARD_JACK_OF_HEARTS = Isaac.GetCardIdByName("Jack of Hearts")
 				
 				--alphabirth pack 2
 				piber20HelperOtherModCardType.RUNE_NAUDIZ = Isaac.GetCardIdByName("Naudiz")
@@ -434,14 +424,16 @@ if not piber20HelperMod then
 			end
 		end
 		
-		if piber20HelperOtherModCardType.CARD_JACK_OF_CLUBS ~= -1 and card == piber20HelperOtherModCardType.CARD_JACK_OF_CLUBS then
-			return true
-		elseif piber20HelperOtherModCardType.CARD_JACK_OF_DIAMONDS ~= -1 and card == piber20HelperOtherModCardType.CARD_JACK_OF_DIAMONDS then
-			return true
-		elseif piber20HelperOtherModCardType.CARD_JACK_OF_SPADES ~= -1 and card == piber20HelperOtherModCardType.CARD_JACK_OF_SPADES then
-			return true
-		elseif piber20HelperOtherModCardType.CARD_JACK_OF_HEARTS ~= -1 and card == piber20HelperOtherModCardType.CARD_JACK_OF_HEARTS then
-			return true
+		if AcesToJacksMod then
+			if card == piber20HelperOtherModCardType.CARD_JACK_OF_CLUBS then
+				return true
+			elseif card == piber20HelperOtherModCardType.CARD_JACK_OF_DIAMONDS then
+				return true
+			elseif card == piber20HelperOtherModCardType.CARD_JACK_OF_SPADES then
+				return true
+			elseif card == piber20HelperOtherModCardType.CARD_JACK_OF_HEARTS then
+				return true
+			end
 		end
 		
 		if EightOfCardsMod then
@@ -474,24 +466,15 @@ if not piber20HelperMod then
 				table.insert(playingCardsPool, #playingCardsPool + 1, Card.CARD_JOKER)
 			end
 		end
-		if piber20HelperOtherModCardType.CARD_JACK_OF_CLUBS ~= -1 then
-			table.insert(playingCardsPool, #playingCardsPool + 1, piber20HelperOtherModCardType.CARD_JACK_OF_CLUBS)
+		if AcesToJacksMod then
+			table.insert(playingCardsPool, #playingCardsPool + 1, AcesToJacksCardType.CARD_JACK_OF_CLUBS)
+			table.insert(playingCardsPool, #playingCardsPool + 1, AcesToJacksCardType.CARD_JACK_OF_DIAMONDS)
+			table.insert(playingCardsPool, #playingCardsPool + 1, AcesToJacksCardType.CARD_JACK_OF_SPADES)
+			table.insert(playingCardsPool, #playingCardsPool + 1, AcesToJacksCardType.CARD_JACK_OF_HEARTS)
 		else
 			table.insert(playingCardsPool, #playingCardsPool + 1, Card.CARD_ACE_OF_CLUBS)
-		end
-		if piber20HelperOtherModCardType.CARD_JACK_OF_DIAMONDS ~= -1 then
-			table.insert(playingCardsPool, #playingCardsPool + 1, piber20HelperOtherModCardType.CARD_JACK_OF_DIAMONDS)
-		else
 			table.insert(playingCardsPool, #playingCardsPool + 1, Card.CARD_ACE_OF_DIAMONDS)
-		end
-		if piber20HelperOtherModCardType.CARD_JACK_OF_SPADES ~= -1 then
-			table.insert(playingCardsPool, #playingCardsPool + 1, piber20HelperOtherModCardType.CARD_JACK_OF_SPADES)
-		else
 			table.insert(playingCardsPool, #playingCardsPool + 1, Card.CARD_ACE_OF_SPADES)
-		end
-		if piber20HelperOtherModCardType.CARD_JACK_OF_HEARTS ~= -1 then
-			table.insert(playingCardsPool, #playingCardsPool + 1, piber20HelperOtherModCardType.CARD_JACK_OF_HEARTS)
-		else
 			table.insert(playingCardsPool, #playingCardsPool + 1, Card.CARD_ACE_OF_HEARTS)
 		end
 		if EightOfCardsMod then
@@ -1356,11 +1339,14 @@ if not piber20HelperMod then
 		return Isaac.WorldToRenderPosition(pos, false)
 	end
 	
-	function piber20HelperMod:getScreenBottomRight(offset)
+	function piber20HelperMod:getScreenBottomRight(offset, doHealthOffset)
 		local pos = piber20HelperMod:getScreenCenterPosition() * 2
 		
 		if offset then
 			local hudOffset = Vector(-offset * 1.6, -offset * 0.6)
+			if doHealthOffset then
+				local hudOffset = Vector((-offset * 1.6) - ((offset - 10) * 0.2), -offset * 0.6)
+			end
 			pos = pos + hudOffset
 		end
 
@@ -1368,7 +1354,7 @@ if not piber20HelperMod then
 	end
 
 	function piber20HelperMod:getScreenBottomLeft(offset)
-		local pos = Vector(0, GetScreenBottomRight().Y)
+		local pos = Vector(0, piber20HelperMod:getScreenBottomRight().Y)
 		
 		if offset then
 			local hudOffset = Vector(offset * 2.2, -offset * 1.6)
@@ -1378,17 +1364,20 @@ if not piber20HelperMod then
 		return pos
 	end
 
-	function piber20HelperMod:getScreenTopRight(offset)
-		local pos = Vector(GetScreenBottomRight().X, 0)
+	function piber20HelperMod:getScreenTopRight(offset, doHealthOffset)
+		local pos = Vector(piber20HelperMod:getScreenBottomRight().X, 0)
 		
 		if offset then
 			local hudOffset = Vector(-offset * 2.2, offset * 1.2)
+			if doHealthOffset then
+				hudOffset = Vector((-offset * 2.2) - ((offset - 10) * 0.2), offset * 1.2)
+			end
 			pos = pos + hudOffset
 		end
 
 		return pos
 	end
-
+	
 	function piber20HelperMod:getScreenTopLeft(offset)
 		local pos = Vector(0, 0)
 		
