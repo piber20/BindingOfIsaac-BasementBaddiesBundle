@@ -1,13 +1,18 @@
 FixedDirtSpritesMod = RegisterMod("Fixed Dirt Sprites", 1)
-FixedDirtSpritesMod.enabled = true
 
---save data
-local json = require("json")
-FixedDirtSpritesMod.Data = {
-	enabled = true, --controls if the mod will replace sprites. overwrites the FixedDirtSpritesMod.enabled value above if set to false
-	basicMode = false, --if basic mode is active, only dirt, womb, scarred, and flooded sprites will be used, and flooded sprites will only be used in flooded caves. dirt sprites also will not be specific to room types.
-	errorRandom = true, --if this is set to false, dirt sprites will not be randomized in the error room.
-}
+--load piber20helper
+local _, err = pcall(require, "piber20helper")
+if not string.match(tostring(err), "attempt to call a nil value %(method 'ForceError'%)") then
+	Isaac.DebugString(err)
+end
+
+--load config
+local _, err = pcall(require, "config")
+if not string.match(tostring(err), "attempt to call a nil value %(method 'ForceError'%)") then
+	Isaac.DebugString(err)
+end
+
+FixedDirtSpritesMod.enabled = true
 
 --get local vars set up, these change when the room changes
 local level = Game():GetLevel()
@@ -25,33 +30,6 @@ FixedDirtSpritesMod.useGraySprites = false
 FixedDirtSpritesMod.useBlackSprites = false
 FixedDirtSpritesMod.useRandomSprites = false
 
-if not rnghelpermod then
-	rnghelpermod = RegisterMod("piber20's RNG helper stuff", 1)
-	rnghelpermod.newRNG = RNG()
-	function rnghelpermod:updateNewRNGSeed()
-		local seed = Game():GetSeeds():GetStartSeed()
-		if seed ~= 0 then
-			rnghelpermod.newRNG:SetSeed(seed, 1)
-		end
-	end
-	rnghelpermod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, rnghelpermod.updateNewRNGSeed)
-	function rnghelpermod:getRandomNumber(min, max)
-		local num = nil
-		if min ~= nil and max ~= nil then -- Min and max passed, integer [min,max]
-			num = math.floor(rnghelpermod.newRNG:RandomFloat() * (max - min + 1) + min)
-		elseif min ~= nil then -- Only min passed, integer [0,min]
-			num = math.floor(rnghelpermod.newRNG:RandomFloat() * (min + 1))
-		else -- float [0,1)
-			num = rnghelpermod.newRNG:RandomFloat()
-		end
-		return num
-	end
-end
-local function getRandomNumber(min, max)
-	local num = rnghelpermod:getRandomNumber(min, max)
-	return num
-end
-
 --function that sets a random use_____Sprites variable to true
 function FixedDirtSpritesMod:setRandomSpriteVariable()
 	--reset the vars
@@ -64,7 +42,7 @@ function FixedDirtSpritesMod:setRandomSpriteVariable()
 	FixedDirtSpritesMod.useGraySprites = false
 	FixedDirtSpritesMod.useBlackSprites = false
 	
-	local randomSprite = getRandomNumber(1, 8)
+	local randomSprite = rnghelpermod:getRandomNumber(1, 8)
 	if randomSprite == 1 then
 		FixedDirtSpritesMod.useDirtSprites = true
 	elseif randomSprite == 2 then
@@ -248,34 +226,34 @@ function FixedDirtSpritesMod:ReplaceDirtSprites(entity)
 			end
 		end
 		--alphabirth pack 2
-		if Isaac.GetEntityTypeByName("3 Eyed Night Crawler") ~= 0 and type == Isaac.GetEntityTypeByName("3 Eyed Night Crawler") then
+		if Isaac.GetEntityTypeByName("3 Eyed Night Crawler") ~= -1 and type == Isaac.GetEntityTypeByName("3 Eyed Night Crawler") then
 			if variant == Isaac.GetEntityVariantByName("3 Eyed Night Crawler") then
 				FixedDirtSpritesMod:setDirtSpriteLayers(entity, 0, "animations/enemies/sheet_enemy_3eyednightcrawler", "", "_womb", "_scarred", "_flooded", "_blue", "_dark", "_gray", "_black")
 			end
 		end
-		if Isaac.GetEntityTypeByName("Dip Ulcer") ~= 0 and type == Isaac.GetEntityTypeByName("Dip Ulcer") then
+		if Isaac.GetEntityTypeByName("Dip Ulcer") ~= -1 and type == Isaac.GetEntityTypeByName("Dip Ulcer") then
 			if variant == Isaac.GetEntityVariantByName("Dip Ulcer") then
 				FixedDirtSpritesMod:setDirtSpriteLayers(entity, 0, "animations/enemies/sheet_enemy_dipulcer", "", "_womb", "_scarred", "_flooded", "_blue", "_dark", "_gray", "_black")
 			end
 		end
-		if Isaac.GetEntityTypeByName("Injured Round Worm") ~= 0 and type == Isaac.GetEntityTypeByName("Injured Round Worm") then
+		if Isaac.GetEntityTypeByName("Injured Round Worm") ~= -1 and type == Isaac.GetEntityTypeByName("Injured Round Worm") then
 			if variant == Isaac.GetEntityVariantByName("Injured Round Worm") then
 				FixedDirtSpritesMod:setDirtSpriteLayers(entity, 0, "animations/enemies/sheet_enemy_injuredroundworm", "", "_womb", "_scarred", "_flooded", "_blue", "_dark", "_gray", "_black")
 			end
 		end
-		if Isaac.GetEntityTypeByName("Round Worm Trio") ~= 0 and type == Isaac.GetEntityTypeByName("Round Worm Trio") then
+		if Isaac.GetEntityTypeByName("Round Worm Trio") ~= -1 and type == Isaac.GetEntityTypeByName("Round Worm Trio") then
 			if variant == Isaac.GetEntityVariantByName("Round Worm Trio") then
 				FixedDirtSpritesMod:setDirtSpriteLayers(entity, 0, "animations/enemies/sheet_enemy_roundwormtrio", "", "_womb", "_scarred", "_flooded", "_blue", "_dark", "_gray", "_black")
 			end
 		end
 		--alphabirth pack 3
-		if Isaac.GetEntityTypeByName("Lil Miner") ~= 0 and type == Isaac.GetEntityTypeByName("Lil Miner") then
+		if Isaac.GetEntityTypeByName("Lil Miner") ~= -1 and type == Isaac.GetEntityTypeByName("Lil Miner") then
 			if variant == Isaac.GetEntityVariantByName("Lil Miner") then
 				FixedDirtSpritesMod:setDirtSpriteLayers(entity, 0, "animations/familiars/sheet_familiar_lilminer", "", "_womb", "_scarred", "_flooded", "_blue", "_dark", "_gray", "_black")
 			end
 		end
 		--revelations
-		if Isaac.GetEntityTypeByName("Smolycephalus") ~= 0 and type == Isaac.GetEntityTypeByName("Smolycephalus") then
+		if Isaac.GetEntityTypeByName("Smolycephalus") ~= -1 and type == Isaac.GetEntityTypeByName("Smolycephalus") then
 			if variant == Isaac.GetEntityVariantByName("Smolycephalus") then
 				FixedDirtSpritesMod:setDirtSpriteLayers(entity, 1, "monsters/enemySmolycephalus", "", "_womb", "_scarred", "_flooded", "_blue", "_dark", "_gray", "_black")
 			end
@@ -348,7 +326,7 @@ function FixedDirtSpritesMod:updateVars()
 		end
 	end
 	
-	FixedDirtSpritesMod.enabled = FixedDirtSpritesMod.Data.enabled
+	FixedDirtSpritesMod.enabled = true
 	FixedDirtSpritesMod.useDirtSprites = false
 	FixedDirtSpritesMod.useWombSprites = false
 	FixedDirtSpritesMod.useScarredSprites = false
@@ -369,19 +347,19 @@ function FixedDirtSpritesMod:updateVars()
 	--default rooms/floors
 	local keepFloodedSprites = false
 	local roomType = room:GetType() --if basic mode is enabled, these rooms will use the floor's own dirt sprites instead of being room-specific. this matches default game behavior i believe
-	if not FixedDirtSpritesMod.Data.basicMode and (roomType == RoomType.ROOM_SHOP or roomType == RoomType.ROOM_LIBRARY or roomType == RoomType.ROOM_DUNGEON or roomType == RoomType.ROOM_ISAACS or roomType == RoomType.ROOM_CHEST or roomType == RoomType.ROOM_SUPERSECRET) then
+	if not FixedDirtSpritesMod.BasicMode and (roomType == RoomType.ROOM_SHOP or roomType == RoomType.ROOM_LIBRARY or roomType == RoomType.ROOM_DUNGEON or roomType == RoomType.ROOM_ISAACS or roomType == RoomType.ROOM_CHEST or roomType == RoomType.ROOM_SUPERSECRET) then
 		FixedDirtSpritesMod.useDirtSprites = true
-	elseif not FixedDirtSpritesMod.Data.basicMode and (roomType == RoomType.ROOM_SECRET or roomType == RoomType.ROOM_BARREN) then
+	elseif not FixedDirtSpritesMod.BasicMode and (roomType == RoomType.ROOM_SECRET or roomType == RoomType.ROOM_BARREN) then
 		FixedDirtSpritesMod.useDarkSprites = true
-	elseif not FixedDirtSpritesMod.Data.basicMode and (roomType == RoomType.ROOM_SACRIFICE or roomType == RoomType.ROOM_ARCADE) then
+	elseif not FixedDirtSpritesMod.BasicMode and (roomType == RoomType.ROOM_SACRIFICE or roomType == RoomType.ROOM_ARCADE) then
 		FixedDirtSpritesMod.useGraySprites = true
-	elseif not FixedDirtSpritesMod.Data.basicMode and (roomType == RoomType.ROOM_CURSE or roomType == RoomType.ROOM_CHALLENGE or roomType == RoomType.ROOM_DEVIL or roomType == RoomType.ROOM_BOSSRUSH or roomType == RoomType.ROOM_BLACK_MARKET) then
+	elseif not FixedDirtSpritesMod.BasicMode and (roomType == RoomType.ROOM_CURSE or roomType == RoomType.ROOM_CHALLENGE or roomType == RoomType.ROOM_DEVIL or roomType == RoomType.ROOM_BOSSRUSH or roomType == RoomType.ROOM_BLACK_MARKET) then
 		FixedDirtSpritesMod.useBlackSprites = true
-	elseif not FixedDirtSpritesMod.Data.basicMode and roomType == RoomType.ROOM_DICE then
+	elseif not FixedDirtSpritesMod.BasicMode and roomType == RoomType.ROOM_DICE then
 		FixedDirtSpritesMod.useWombSprites = true
-	elseif not FixedDirtSpritesMod.Data.basicMode and roomType == RoomType.ROOM_ANGEL then
+	elseif not FixedDirtSpritesMod.BasicMode and roomType == RoomType.ROOM_ANGEL then
 		FixedDirtSpritesMod.useFloodedSprites = true
-	elseif not FixedDirtSpritesMod.Data.basicMode and roomType == RoomType.ROOM_ERROR then
+	elseif not FixedDirtSpritesMod.BasicMode and roomType == RoomType.ROOM_ERROR then
 		FixedDirtSpritesMod.useRandomSprites = true
 	elseif isGreedMode then
 		if currentChapter == 1 then --basement
@@ -484,7 +462,7 @@ function FixedDirtSpritesMod:updateVars()
 		end
 	end
 	
-	if FixedDirtSpritesMod.Data.basicMode then
+	if FixedDirtSpritesMod.BasicMode then
 		if FixedDirtSpritesMod.useFloodedSprites then
 			if not keepFloodedSprites then
 				FixedDirtSpritesMod.useFloodedSprites = false
@@ -502,167 +480,10 @@ function FixedDirtSpritesMod:updateVars()
 		elseif FixedDirtSpritesMod.useBlackSprites then
 			FixedDirtSpritesMod.useBlackSprites = false
 			FixedDirtSpritesMod.useDirtSprites = true
-		end
-	end
-	
-	if not FixedDirtSpritesMod.Data.errorRandom then
-		if FixedDirtSpritesMod.useRandomSprites then
+		elseif FixedDirtSpritesMod.useRandomSprites then
 			FixedDirtSpritesMod.useRandomSprites = false
 			FixedDirtSpritesMod.useDirtSprites = true
 		end
 	end
 end
 FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, FixedDirtSpritesMod.updateVars)
-
---CONFIGURATION, use the ingame console and type "dirtsprites"
-function FixedDirtSpritesMod:consoleConfig(command, arguments)
-	--nicalis pls add an options menu for mods
-	
-	command = command:lower()
-	if command == "dirtsprites" then
-		arguments = arguments:lower()
-		
-		--valid setting check
-		local enabled = arguments:find("enabled")
-		if enabled == nil then
-			enabled = 0
-		end
-		local basicMode = arguments:find("basicmode")
-		if basicMode == nil then
-			basicMode = 0
-		end
-		local errorRandom = arguments:find("errorrandom")
-		if errorRandom == nil then
-			errorRandom = 0
-		end
-		local resetToDefault = arguments:find("resettodefault")
-		if resetToDefault == nil then
-			resetToDefault = 0
-		end
-		local currentSettings = arguments:find("currentsettings")
-		if currentSettings == nil then
-			currentSettings = 0
-		end
-		local isValidArg = false
-		if enabled == 1 or basicMode == 1 or errorRandom == 1 or resetToDefault == 1 or currentSettings == 1 then
-			isValidArg = true
-		end
-		
-		if isValidArg then
-			if enabled == 1 then
-				arguments = arguments:sub(9, 9)
-				if arguments == "t" then
-					arguments = "1"
-				elseif arguments == "f" then
-					arguments = "0"
-				end
-				
-				arguments = tonumber(arguments)
-				if arguments ~= nil then
-					arguments = arguments - 0.5
-					arguments = math.ceil(arguments)
-					
-					if arguments >= 1 then
-						arguments = true
-					else
-						arguments = false
-					end
-					
-					FixedDirtSpritesMod.Data.enabled = arguments
-					FixedDirtSpritesMod:SaveData(json.encode(FixedDirtSpritesMod.Data))
-					Isaac.ConsoleOutput("Set enabled setting to " .. tostring(arguments))
-				else
-					Isaac.ConsoleOutput("Invalid input. Type true or false.")
-				end
-			elseif basicMode == 1 then
-				arguments = arguments:sub(11, 11)
-				if arguments == "t" then
-					arguments = "1"
-				elseif arguments == "f" then
-					arguments = "0"
-				end
-				
-				arguments = tonumber(arguments)
-				if arguments ~= nil then
-					arguments = arguments - 0.5
-					arguments = math.ceil(arguments)
-					
-					if arguments >= 1 then
-						arguments = true
-					else
-						arguments = false
-					end
-					
-					FixedDirtSpritesMod.Data.basicMode = arguments
-					FixedDirtSpritesMod:SaveData(json.encode(FixedDirtSpritesMod.Data))
-					Isaac.ConsoleOutput("Set basicMode setting to " .. tostring(arguments))
-				else
-					Isaac.ConsoleOutput("Invalid input. Type true or false.")
-				end
-			elseif errorRandom == 1 then
-				arguments = arguments:sub(13, 13)
-				if arguments == "t" then
-					arguments = "1"
-				elseif arguments == "f" then
-					arguments = "0"
-				end
-				
-				arguments = tonumber(arguments)
-				if arguments ~= nil then
-					arguments = arguments - 0.5
-					arguments = math.ceil(arguments)
-					
-					if arguments >= 1 then
-						arguments = true
-					else
-						arguments = false
-					end
-					
-					FixedDirtSpritesMod.Data.errorRandom = arguments
-					FixedDirtSpritesMod:SaveData(json.encode(FixedDirtSpritesMod.Data))
-					Isaac.ConsoleOutput("Set errorRandom setting to " .. tostring(arguments))
-				else
-					Isaac.ConsoleOutput("Invalid input. Type true or false.")
-				end
-			elseif resetToDefault == 1 then
-				FixedDirtSpritesMod.Data.enabled = true
-				FixedDirtSpritesMod.Data.basicMode = false
-				FixedDirtSpritesMod.Data.errorRandom = true
-				FixedDirtSpritesMod:SaveData(json.encode(FixedDirtSpritesMod.Data))
-				Isaac.ConsoleOutput("Reset all settings to default.")
-			elseif currentSettings == 1 then
-				Isaac.ConsoleOutput("Current settings:")
-				Isaac.ConsoleOutput("enabled = " .. tostring(FixedDirtSpritesMod.Data.enabled))
-				Isaac.ConsoleOutput("basicMode = " .. tostring(FixedDirtSpritesMod.Data.basicMode))
-				Isaac.ConsoleOutput("errorRandom = " .. tostring(FixedDirtSpritesMod.Data.errorRandom))
-			end
-		else
-			Isaac.ConsoleOutput("Fixed Dirt Sprites console commands:")
-			Isaac.ConsoleOutput("dirtsprites enabled [true or false]")
-			Isaac.ConsoleOutput("dirtsprites basicMode [true or false]")
-			Isaac.ConsoleOutput("dirtsprites errorRandom [true or false]")
-			Isaac.ConsoleOutput("dirtsprites resetToDefault")
-			Isaac.ConsoleOutput("dirtsprites currentSettings")
-		end
-	end
-end
-FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_EXECUTE_CMD, FixedDirtSpritesMod.consoleConfig)
-
-function FixedDirtSpritesMod:onGameStart(isSaveGame)
-	if FixedDirtSpritesMod:HasData() then
-		local loadData = json.decode(FixedDirtSpritesMod:LoadData())
-		
-		if loadData.enabled ~= nil then
-			FixedDirtSpritesMod.Data.enabled = loadData.enabled
-		end
-		if loadData.basicMode ~= nil then
-			FixedDirtSpritesMod.Data.basicMode = loadData.basicMode
-		end
-		if loadData.errorRandom ~= nil then
-			FixedDirtSpritesMod.Data.errorRandom = loadData.errorRandom
-		end
-		
-		FixedDirtSpritesMod:SaveData(json.encode(FixedDirtSpritesMod.Data))
-	end
-end
-FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, FixedDirtSpritesMod.onGameStart)
