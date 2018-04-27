@@ -5,7 +5,6 @@
 
 --BASIC MODE--
 -- If basic mode is active, only dirt, womb, scarred, and flooded sprites will be used, and flooded sprites will only be used in flooded caves.
--- Dirt sprites also will not be specific to room types.
 -- Dirt sprites in the error room will also not be randomised.
 FixedDirtSpritesMod.BasicMode = false
 

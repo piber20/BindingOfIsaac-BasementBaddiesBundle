@@ -42,7 +42,7 @@ function FixedDirtSpritesMod:setRandomSpriteVariable()
 	FixedDirtSpritesMod.useGraySprites = false
 	FixedDirtSpritesMod.useBlackSprites = false
 	
-	local randomSprite = rnghelpermod:getRandomNumber(1, 8)
+	local randomSprite = piber20HelperMod:getRandomNumber(1, 8)
 	if randomSprite == 1 then
 		FixedDirtSpritesMod.useDirtSprites = true
 	elseif randomSprite == 2 then
@@ -267,6 +267,10 @@ FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, FixedDirtSpritesM
 local everyOtherUpdateTicker = false
 function FixedDirtSpritesMod:onUpdate()
 	if FixedDirtSpritesMod.enabled then
+		if Isaac.CountEntities(nil, EntityType.ENTITY_DELIRIUM, -1, -1) > 0 then
+			FixedDirtSpritesMod.enabled = true --disable self if delirium is in this room
+		end
+		
 		--forcefully replace tube worm's sprite in the womb, since it doesn't always work from post npc init
 		if currentChapter == 4 then
 			for _, tubeWorm in pairs(Isaac.FindByType(EntityType.ENTITY_ROUND_WORM, 1, 0, false, false)) do
@@ -344,128 +348,45 @@ function FixedDirtSpritesMod:updateVars()
 		end
 	end
 	
-	--default rooms/floors
+	--use dirt sprites based on the backdrop
 	local keepFloodedSprites = false
-	local roomType = room:GetType() --if basic mode is enabled, these rooms will use the floor's own dirt sprites instead of being room-specific. this matches default game behavior i believe
-	if not FixedDirtSpritesMod.BasicMode and (roomType == RoomType.ROOM_SHOP or roomType == RoomType.ROOM_LIBRARY or roomType == RoomType.ROOM_DUNGEON or roomType == RoomType.ROOM_ISAACS or roomType == RoomType.ROOM_CHEST or roomType == RoomType.ROOM_SUPERSECRET) then
+	local keepWombSprites = false
+	local backdrop = piber20HelperMod:getCurrentBackdrop()
+	if backdrop == piber20HelperBackdrop.BASEMENT or backdrop == piber20HelperBackdrop.CELLAR or backdrop == piber20HelperBackdrop.BURNING_BASEMENT or backdrop == piber20HelperBackdrop.CAVES or backdrop == piber20HelperBackdrop.CATACOMBS or backdrop == piber20HelperBackdrop.CHEST or backdrop == piber20HelperBackdrop.MEGA_SATAN or backdrop == piber20HelperBackdrop.LIBRARY or backdrop == piber20HelperBackdrop.SHOP or backdrop == piber20HelperBackdrop.ISAACS_ROOM or backdrop == piber20HelperBackdrop.ARCADE or backdrop == piber20HelperBackdrop.ULTRA_GREED then
 		FixedDirtSpritesMod.useDirtSprites = true
-	elseif not FixedDirtSpritesMod.BasicMode and (roomType == RoomType.ROOM_SECRET or roomType == RoomType.ROOM_BARREN) then
-		FixedDirtSpritesMod.useDarkSprites = true
-	elseif not FixedDirtSpritesMod.BasicMode and (roomType == RoomType.ROOM_SACRIFICE or roomType == RoomType.ROOM_ARCADE) then
-		FixedDirtSpritesMod.useGraySprites = true
-	elseif not FixedDirtSpritesMod.BasicMode and (roomType == RoomType.ROOM_CURSE or roomType == RoomType.ROOM_CHALLENGE or roomType == RoomType.ROOM_DEVIL or roomType == RoomType.ROOM_BOSSRUSH or roomType == RoomType.ROOM_BLACK_MARKET) then
-		FixedDirtSpritesMod.useBlackSprites = true
-	elseif not FixedDirtSpritesMod.BasicMode and roomType == RoomType.ROOM_DICE then
-		FixedDirtSpritesMod.useWombSprites = true
-	elseif not FixedDirtSpritesMod.BasicMode and roomType == RoomType.ROOM_ANGEL then
+	elseif backdrop == piber20HelperBackdrop.FLOODED_CAVES then
 		FixedDirtSpritesMod.useFloodedSprites = true
-	elseif not FixedDirtSpritesMod.BasicMode and roomType == RoomType.ROOM_ERROR then
+		keepFloodedSprites = true
+	elseif backdrop == piber20HelperBackdrop.DEPTHS or backdrop == piber20HelperBackdrop.DANK_DEPTHS then
+		FixedDirtSpritesMod.useGraySprites = true
+	elseif backdrop == piber20HelperBackdrop.NECROPOLIS or backdrop == piber20HelperBackdrop.SECRET_ROOM or backdrop == piber20HelperBackdrop.BARREN_ROOM then
+		FixedDirtSpritesMod.useDarkSprites = true
+	elseif backdrop == piber20HelperBackdrop.WOMB or backdrop == piber20HelperBackdrop.UTERO then
+		FixedDirtSpritesMod.useWombSprites = true
+		keepWombSprites = true
+	elseif backdrop == piber20HelperBackdrop.SCARRED_WOMB then
+		FixedDirtSpritesMod.useScarredSprites = true
+	elseif backdrop == piber20HelperBackdrop.BLUE_WOMB then
+		FixedDirtSpritesMod.useBlueSprites = true
+	elseif backdrop == piber20HelperBackdrop.SHEOL or backdrop == piber20HelperBackdrop.DARK_ROOM then
+		FixedDirtSpritesMod.useBlackSprites = true
+	elseif backdrop == piber20HelperBackdrop.CATHEDRAL or backdrop == piber20HelperBackdrop.BLUE_SECRET then
+		FixedDirtSpritesMod.useFloodedSprites = true
+	elseif backdrop == piber20HelperBackdrop.DICE_ROOM then
+		FixedDirtSpritesMod.useWombSprites = true
+	elseif backdrop == piber20HelperBackdrop.ERROR_ROOM then
 		FixedDirtSpritesMod.useRandomSprites = true
-	elseif isGreedMode then
-		if currentChapter == 1 then --basement
-			FixedDirtSpritesMod.useDirtSprites = true
-		elseif currentChapter == 2 then --caves
-			FixedDirtSpritesMod.useDirtSprites = true
-		elseif currentChapter == 3 then --depths
-			FixedDirtSpritesMod.useGraySprites = true
-		elseif currentChapter == 4 then --womb
-			FixedDirtSpritesMod.useWombSprites = true
-		elseif currentChapter == 5 then --sheol
-			FixedDirtSpritesMod.useBlackSprites = true
-		elseif currentChapter == 6 then --shop
-			FixedDirtSpritesMod.useDirtSprites = true
-		elseif currentChapter == 7 then --ultra greed
-			FixedDirtSpritesMod.useDirtSprites = true
-		end
-	else
-		if currentChapter == 1 then --basement/cellar/burning basement
-			FixedDirtSpritesMod.useDirtSprites = true
-		elseif currentChapter == 2 then
-			if currentStageType == 2 then --flooded caves
-				FixedDirtSpritesMod.useFloodedSprites = true
-				keepFloodedSprites = true
-			else --caves/catacombs
-				FixedDirtSpritesMod.useDirtSprites = true
-			end
-		elseif currentChapter == 3 then
-			if currentStageType == 1 then --necropolis
-				FixedDirtSpritesMod.useDarkSprites = true
-			else --depths/dank depths
-				FixedDirtSpritesMod.useGraySprites = true
-			end
-		elseif currentChapter == 4 then
-			if currentStageType == 2 then --scarred womb
-				FixedDirtSpritesMod.useScarredSprites = true
-			else --womb/utero
-				FixedDirtSpritesMod.useWombSprites = true
-			end
-		elseif currentChapter == 5 then --blue womb
-			FixedDirtSpritesMod.useBlueSprites = true
-		elseif currentChapter == 6 then
-			if currentStageType == 1 then --cathedral
-				FixedDirtSpritesMod.useFloodedSprites = true
-			else --sheol
-				FixedDirtSpritesMod.useBlackSprites = true
-			end
-		elseif currentChapter == 7 then
-			if currentStageType == 1 then --chest
-				FixedDirtSpritesMod.useDirtSprites = true
-			else --dark room
-				FixedDirtSpritesMod.useBlackSprites = true
-			end
-		elseif currentChapter == 8 then --the void
-			if roomType == RoomType.ROOM_DEFAULT then
-				local roomStage = room:GetRoomConfigStage()
-				if roomStage == 1 then --basement?
-					FixedDirtSpritesMod.useDirtSprites = true
-				elseif roomStage == 2 then --cellar?
-					FixedDirtSpritesMod.useDirtSprites = true
-				elseif roomStage == 3 then --burning basement?
-					FixedDirtSpritesMod.useDirtSprites = true
-				elseif roomStage == 4 then --caves?
-					FixedDirtSpritesMod.useDirtSprites = true
-				elseif roomStage == 5 then --catacombs?
-					FixedDirtSpritesMod.useDirtSprites = true
-				elseif roomStage == 6 then --flooded caves?
-					FixedDirtSpritesMod.useFloodedSprites = true
-					keepFloodedSprites = true
-				elseif roomStage == 7 then --depths?
-					FixedDirtSpritesMod.useGraySprites = true
-				elseif roomStage == 8 then --necropolis?
-					FixedDirtSpritesMod.useDarkSprites = true
-				elseif roomStage == 9 then --dank depths?
-					FixedDirtSpritesMod.useGraySprites = true
-				elseif roomStage == 10 then --womb?
-					FixedDirtSpritesMod.useWombSprites = true
-				elseif roomStage == 11 then --utero?
-					FixedDirtSpritesMod.useWombSprites = true
-				elseif roomStage == 12 then --scarred womb?
-					FixedDirtSpritesMod.useScarredSprites = true
-				elseif roomStage == 13 then --blue womb?
-					FixedDirtSpritesMod.useBlueSprites = true
-				elseif roomStage == 14 then --sheol?
-					FixedDirtSpritesMod.useBlackSprites = true
-				elseif roomStage == 15 then --cathedral?
-					FixedDirtSpritesMod.useFloodedSprites = true
-				elseif roomStage == 16 then --dark room?
-					FixedDirtSpritesMod.useBlackSprites = true
-				elseif roomStage == 17 then --chest?
-					FixedDirtSpritesMod.useDirtSprites = true
-				else
-					FixedDirtSpritesMod.enabled = false
-				end
-			else
-				FixedDirtSpritesMod.enabled = false
-			end
-		else
-			FixedDirtSpritesMod.enabled = false
-		end
 	end
 	
 	if FixedDirtSpritesMod.BasicMode then
 		if FixedDirtSpritesMod.useFloodedSprites then
 			if not keepFloodedSprites then
 				FixedDirtSpritesMod.useFloodedSprites = false
+				FixedDirtSpritesMod.useDirtSprites = true
+			end
+		elseif FixedDirtSpritesMod.useWombSprites then
+			if not keepWombSprites then
+				FixedDirtSpritesMod.useWombSprites = false
 				FixedDirtSpritesMod.useDirtSprites = true
 			end
 		elseif FixedDirtSpritesMod.useBlueSprites then

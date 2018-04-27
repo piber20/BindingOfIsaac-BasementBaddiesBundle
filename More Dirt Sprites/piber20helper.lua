@@ -1,5 +1,5 @@
 --the version of this helper mod script
-local currentVersion = 2
+local currentVersion = 3
 
 --remove any previous versions that may exist
 if piber20HelperMod then
@@ -548,6 +548,152 @@ if not piber20HelperMod then
 			table.insert(runesPool, #runesPool + 1, piber20HelperOtherModCardType.RUNE_SOWILO)
 		end
 		return runesPool[piber20HelperMod:getRandomNumber(1, #runesPool, getRandomCardRNG)]
+	end
+	
+	-------------------
+	--Stage Functions--
+	-------------------
+	piber20HelperStage = {
+		BASEMENT = 1,
+		CELLAR = 2,
+		BURNING_BASEMENT = 3,
+		CAVES = 4,
+		CATACOMBS = 5,
+		FLOODED_CAVES = 6,
+		DEPTHS = 7,
+		NECROPOLIS = 8,
+		DANK_DEPTHS = 9,
+		WOMB = 10,
+		UTERO = 11,
+		SCARRED_WOMB = 12,
+		BLUE_WOMB = 13,
+		SHEOL = 14,
+		CATHEDRAL = 15,
+		DARK_ROOM = 16,
+		CHEST = 17,
+		VOID = 18
+	}
+
+	function piber20HelperMod:getCurrentStage(allowVoid)
+		local level = Game():GetLevel()
+		local stage = level:GetStage()
+		local currentStage = piber20HelperStage.BASEMENT
+		if Game():IsGreedMode() then
+			if stage == 1 then
+				currentStage = piber20HelperStage.BASEMENT
+			elseif stage == 2 then
+				currentStage = piber20HelperStage.CAVES
+			elseif stage == 3 then
+				currentStage = piber20HelperStage.DEPTHS
+			elseif stage == 4 then
+				currentStage = piber20HelperStage.WOMB
+			elseif stage == 5 then
+				currentStage = piber20HelperStage.SHEOL
+			elseif stage == 6 then
+				currentStage = piber20HelperStage.CHEST
+			elseif stage == 7 then
+				currentStage = piber20HelperStage.CHEST
+			end
+		elseif stage == 12 and not allowVoid then
+			local room = level:GetCurrentRoom()
+			local roomStage = room:GetRoomConfigStage()
+			
+			currentStage = piber20HelperStage.VOID
+			if roomStage >= 1 and roomStage <= 17 then
+				currentStage = roomStage
+			end
+		else
+			local currentStageType = level:GetStageType()
+			if stage == 1 or stage == 2 then
+				if currentStageType == 0 then
+					currentStage = piber20HelperStage.BASEMENT
+				elseif currentStageType == 1 then
+					currentStage = piber20HelperStage.CELLAR
+				elseif currentStageType == 2 then
+					currentStage = piber20HelperStage.BURNING_BASEMENT
+				end
+			elseif stage == 3 or stage == 4 then
+				if currentStageType == 0 then
+					currentStage = piber20HelperStage.CAVES
+				elseif currentStageType == 1 then
+					currentStage = piber20HelperStage.CATACOMBS
+				elseif currentStageType == 2 then
+					currentStage = piber20HelperStage.FLOODED_CAVES
+				end
+			elseif stage == 5 or stage == 6 then
+				if currentStageType == 0 then
+					currentStage = piber20HelperStage.DEPTHS
+				elseif currentStageType == 1 then
+					currentStage = piber20HelperStage.NECROPOLIS
+				elseif currentStageType == 2 then
+					currentStage = piber20HelperStage.DANK_DEPTHS
+				end
+			elseif stage == 7 or stage == 8 then
+				if currentStageType == 0 then
+					currentStage = piber20HelperStage.WOMB
+				elseif currentStageType == 1 then
+					currentStage = piber20HelperStage.UTERO
+				elseif currentStageType == 2 then
+					currentStage = piber20HelperStage.SCARRED_WOMB
+				end
+			elseif stage == 9 then
+				currentStage = piber20HelperStage.BLUE_WOMB
+			elseif stage == 10 then
+				if currentStageType == 0 then
+					currentStage = piber20HelperStage.SHEOL
+				elseif currentStageType == 1 then
+					currentStage = piber20HelperStage.CATHEDRAL
+				end
+			elseif stage == 11 then
+				if currentStageType == 0 then
+					currentStage = piber20HelperStage.DARK_ROOM
+				elseif currentStageType == 1 then
+					currentStage = piber20HelperStage.CHEST
+				end
+			elseif stage == 12 then
+				currentStage = piber20HelperStage.VOID
+			end
+		end
+		
+		return currentStage
+	end
+	
+	piber20HelperBackdrop = {
+		BASEMENT = 1,
+		CELLAR = 2,
+		BURNING_BASEMENT = 3,
+		CAVES = 4,
+		CATACOMBS = 5,
+		FLOODED_CAVES = 6,
+		DEPTHS = 7,
+		NECROPOLIS = 8,
+		DANK_DEPTHS = 9,
+		WOMB = 10,
+		UTERO = 11,
+		SCARRED_WOMB = 12,
+		BLUE_WOMB = 13,
+		SHEOL = 14,
+		CATHEDRAL = 15,
+		DARK_ROOM = 16,
+		CHEST = 17,
+		MEGA_SATAN = 18,
+		LIBRARY = 19,
+		SHOP = 20,
+		ISAACS_ROOM = 21,
+		BARREN_ROOM = 22,
+		SECRET_ROOM = 23,
+		DICE_ROOM = 24,
+		ARCADE = 25,
+		ERROR_ROOM = 26,
+		BLUE_SECRET = 27,
+		ULTRA_GREED = 28
+	}
+
+	function piber20HelperMod:getCurrentBackdrop()
+		local room = Game():GetRoom()
+		local backdrop = room:GetBackdropType()
+		
+		return backdrop
 	end
 	
 	--------------------
