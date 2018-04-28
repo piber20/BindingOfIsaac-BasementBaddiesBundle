@@ -1,5 +1,5 @@
 --the version of this helper mod script
-local currentVersion = 3
+local currentVersion = 4
 
 --remove any previous versions that may exist
 if piber20HelperMod then
@@ -2229,81 +2229,83 @@ if not piber20HelperMod then
 			end
 		end
 		
-		--overlays
-		local centerPos = piber20HelperMod:getScreenCenterPosition()
-		
-		if shouldRenderStreak then
-			streakPosition = centerPos
-			streakPosition.Y = 48
-			streakUI:RenderLayer(0, streakPosition)
+		if MusicManager():GetCurrentMusicID() ~= Music.MUSIC_JINGLE_BOSS then
+			--overlays
+			local centerPos = piber20HelperMod:getScreenCenterPosition()
 			
-			local streakFrame = streakUI:GetFrame()
-			if streakFrame <= 0 then
-				streakTextPosition = Vector(-800, 0)
-				streakTextScale = Vector(300, 20)
-			elseif streakFrame == 1 then
-				streakTextPosition = Vector(-639, 0)
-				streakTextScale = Vector(260, 36)
-			elseif streakFrame == 2 then
-				streakTextPosition = Vector(-450, 0)
-				streakTextScale = Vector(220, 52)
-			elseif streakFrame == 3 then
-				streakTextPosition = Vector(-250, 0)
-				streakTextScale = Vector(180, 68)
-			elseif streakFrame == 4 then
-				streakTextPosition = Vector(-70, 0)
-				streakTextScale = Vector(140, 84)
-			elseif streakFrame == 5 then
-				streakTextPosition = Vector(10, 0)
-				streakTextScale = Vector(95, 105)
-			elseif streakFrame == 6 then
-				streakTextPosition = Vector(6, 0)
-				streakTextScale = Vector(97, 103)
-			elseif streakFrame == 7 then
-				streakTextPosition = Vector(3, 0)
-				streakTextScale = Vector(98, 102)
-			elseif streakFrame == 61 then
-				streakTextPosition = Vector(-5, 0)
-				streakTextScale = Vector(99, 103)
-			elseif streakFrame == 62 then
-				streakTextPosition = Vector(-10, 0)
-				streakTextScale = Vector(98, 105)
-			elseif streakFrame == 63 then
-				streakTextPosition = Vector(-15, 0)
-				streakTextScale = Vector(96, 108)
-			elseif streakFrame == 64 then
-				streakTextPosition = Vector(-20, 0)
-				streakTextScale = Vector(95, 110)
-			elseif streakFrame == 65 then
-				streakTextPosition = Vector(144, 0)
-				streakTextScale = Vector(136, 92)
-			elseif streakFrame == 66 then
-				streakTextPosition = Vector(308, 0)
-				streakTextScale = Vector(177, 74)
-			elseif streakFrame == 67 then
-				streakTextPosition = Vector(472, 0)
-				streakTextScale = Vector(218, 56)
-			elseif streakFrame == 68 then
-				streakTextPosition = Vector(636, 0)
-				streakTextScale = Vector(259, 38)
-			elseif streakFrame >= 69 then
-				streakTextPosition = Vector(800, 0)
-				streakTextScale = Vector(300, 20)
-			else
-				streakTextPosition = Vector(0, 0)
-				streakTextScale = Vector(100, 100)
+			if shouldRenderStreak then
+				streakPosition = centerPos
+				streakPosition.Y = 48
+				streakUI:RenderLayer(0, streakPosition)
+				
+				local streakFrame = streakUI:GetFrame()
+				if streakFrame <= 0 then
+					streakTextPosition = Vector(-800, 0)
+					streakTextScale = Vector(300, 20)
+				elseif streakFrame == 1 then
+					streakTextPosition = Vector(-639, 0)
+					streakTextScale = Vector(260, 36)
+				elseif streakFrame == 2 then
+					streakTextPosition = Vector(-450, 0)
+					streakTextScale = Vector(220, 52)
+				elseif streakFrame == 3 then
+					streakTextPosition = Vector(-250, 0)
+					streakTextScale = Vector(180, 68)
+				elseif streakFrame == 4 then
+					streakTextPosition = Vector(-70, 0)
+					streakTextScale = Vector(140, 84)
+				elseif streakFrame == 5 then
+					streakTextPosition = Vector(10, 0)
+					streakTextScale = Vector(95, 105)
+				elseif streakFrame == 6 then
+					streakTextPosition = Vector(6, 0)
+					streakTextScale = Vector(97, 103)
+				elseif streakFrame == 7 then
+					streakTextPosition = Vector(3, 0)
+					streakTextScale = Vector(98, 102)
+				elseif streakFrame == 61 then
+					streakTextPosition = Vector(-5, 0)
+					streakTextScale = Vector(99, 103)
+				elseif streakFrame == 62 then
+					streakTextPosition = Vector(-10, 0)
+					streakTextScale = Vector(98, 105)
+				elseif streakFrame == 63 then
+					streakTextPosition = Vector(-15, 0)
+					streakTextScale = Vector(96, 108)
+				elseif streakFrame == 64 then
+					streakTextPosition = Vector(-20, 0)
+					streakTextScale = Vector(95, 110)
+				elseif streakFrame == 65 then
+					streakTextPosition = Vector(144, 0)
+					streakTextScale = Vector(136, 92)
+				elseif streakFrame == 66 then
+					streakTextPosition = Vector(308, 0)
+					streakTextScale = Vector(177, 74)
+				elseif streakFrame == 67 then
+					streakTextPosition = Vector(472, 0)
+					streakTextScale = Vector(218, 56)
+				elseif streakFrame == 68 then
+					streakTextPosition = Vector(636, 0)
+					streakTextScale = Vector(259, 38)
+				elseif streakFrame >= 69 then
+					streakTextPosition = Vector(800, 0)
+					streakTextScale = Vector(300, 20)
+				else
+					streakTextPosition = Vector(0, 0)
+					streakTextScale = Vector(100, 100)
+				end
+				streakFont1:DrawStringScaled(streakText1, streakPosition.X + streakTextPosition.X - (streakFont1:GetStringWidth(streakText1) * 0.5), streakPosition.Y + streakTextPosition.Y - 9, (streakTextScale.X * 0.01), (streakTextScale.Y * 0.01), KColor(1,1,1,1,0,0,0), 0, true)
+				streakFont2:DrawStringScaled(streakText2, streakPosition.X + streakTextPosition.X - (streakFont1:GetStringWidth(streakText2) * 0.235), streakPosition.Y + streakTextPosition.Y + 9, (streakTextScale.X * 0.01), (streakTextScale.Y * 0.01), KColor(1,1,1,1,0,0,0), 0, true)
+				streakFont2:DrawStringScaled(streakText3, streakPosition.X + streakTextPosition.X - (streakFont1:GetStringWidth(streakText3) * 0.235), streakPosition.Y + streakTextPosition.Y + 21, (streakTextScale.X * 0.01), (streakTextScale.Y * 0.01), KColor(1,1,1,1,0,0,0), 0, true)
 			end
-			streakFont1:DrawStringScaled(streakText1, streakPosition.X + streakTextPosition.X - (streakFont1:GetStringWidth(streakText1) * 0.5), streakPosition.Y + streakTextPosition.Y - 9, (streakTextScale.X * 0.01), (streakTextScale.Y * 0.01), KColor(1,1,1,1,0,0,0), 0, true)
-			streakFont2:DrawStringScaled(streakText2, streakPosition.X + streakTextPosition.X - (streakFont1:GetStringWidth(streakText2) * 0.235), streakPosition.Y + streakTextPosition.Y + 9, (streakTextScale.X * 0.01), (streakTextScale.Y * 0.01), KColor(1,1,1,1,0,0,0), 0, true)
-			streakFont2:DrawStringScaled(streakText3, streakPosition.X + streakTextPosition.X - (streakFont1:GetStringWidth(streakText3) * 0.235), streakPosition.Y + streakTextPosition.Y + 21, (streakTextScale.X * 0.01), (streakTextScale.Y * 0.01), KColor(1,1,1,1,0,0,0), 0, true)
-		end
-		
-		if shouldRenderGiantbook then
-			giantbookUI:Render(centerPos, Vector(0,0), Vector(0,0))
-		end
-		
-		if shouldRenderAchievement then
-			achievementUI:Render(centerPos, Vector(0,0), Vector(0,0))
+			
+			if shouldRenderGiantbook then
+				giantbookUI:Render(centerPos, Vector(0,0), Vector(0,0))
+			end
+			
+			if shouldRenderAchievement then
+				achievementUI:Render(centerPos, Vector(0,0), Vector(0,0))
+			end
 		end
 	end
 	piber20HelperMod:AddCallback(ModCallbacks.MC_POST_RENDER, piber20HelperMod.onRender)
