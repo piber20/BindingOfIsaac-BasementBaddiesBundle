@@ -1,5 +1,5 @@
 --the version of this helper mod script
-local currentVersion = 4
+local currentVersion = 5
 
 --remove any previous versions that may exist
 if piber20HelperMod then
@@ -1628,6 +1628,11 @@ if not piber20HelperMod then
 	achievementUI:Load("gfx/ui/achievement/achievements.anm2", true)
 	local achievementUIDelay = 0
 	function piber20HelperMod:doAchievement(spritesheet, sound)
+		if shouldRenderAchievement then
+			piber20HelperMod:schedule(120, true, piber20HelperMod.doAchievement, spritesheet, sound)
+			return
+		end
+		
 		if spritesheet == nil then
 			spritesheet = "gfx/ui/achievement/paper.png"
 		end
@@ -2110,23 +2115,38 @@ if not piber20HelperMod then
 		
 		--for use with schedule
 		if #functionsToCallInOnUpdate >= 1 then
-			local clearTable = true
 			for i = 1, #functionsToCallInOnUpdate do
 				if functionsToCallInOnUpdate[i].Frame then
 					local frame = functionsToCallInOnUpdate[i].Frame
 					if functionsToCallInOnUpdate[i].Delay then
-						clearTable = false
 						local delay = functionsToCallInOnUpdate[i].Delay
 						local frameToCall = frame + delay
 						if Isaac.GetFrameCount() >= frameToCall then
 							functionsToCallInOnUpdate[i].Frame = nil
 							functionsToCallInOnUpdate[i].Delay = nil
 							if functionsToCallInOnUpdate[i].Function then
-								local functionToCall = functionsToCallInOnUpdate[i].Function
-								functionsToCallInOnUpdate[i].Function = nil
+								local arg1 = functionsToCallInOnUpdate[i].Arg1
+								local arg2 = functionsToCallInOnUpdate[i].Arg2
+								local arg3 = functionsToCallInOnUpdate[i].Arg3
+								local arg4 = functionsToCallInOnUpdate[i].Arg4
+								local arg5 = functionsToCallInOnUpdate[i].Arg5
+								local arg6 = functionsToCallInOnUpdate[i].Arg6
+								local arg7 = functionsToCallInOnUpdate[i].Arg7
+								local arg8 = functionsToCallInOnUpdate[i].Arg8
+								local arg9 = functionsToCallInOnUpdate[i].Arg9
 								
-								functionToCall(functionsToCallInOnUpdate[i].Arg1, functionsToCallInOnUpdate[i].Arg2, functionsToCallInOnUpdate[i].Arg3, functionsToCallInOnUpdate[i].Arg4, functionsToCallInOnUpdate[i].Arg5, functionsToCallInOnUpdate[i].Arg6, functionsToCallInOnUpdate[i].Arg7, functionsToCallInOnUpdate[i].Arg8, functionsToCallInOnUpdate[i].Arg9)
+								functionsToCallInOnUpdate[i].Function(_, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
 							end
+						end
+					end
+				end
+			end
+			local clearTable = true
+			for i = 1, #functionsToCallInOnUpdate do
+				if functionsToCallInOnUpdate[i].Frame then
+					if functionsToCallInOnUpdate[i].Delay then
+						if functionsToCallInOnUpdate[i].Function then
+							clearTable = false
 						end
 					end
 				end
@@ -2201,25 +2221,40 @@ if not piber20HelperMod then
 	piber20HelperMod:AddCallback(ModCallbacks.MC_POST_UPDATE, piber20HelperMod.onUpdate)
 	
 	function piber20HelperMod:onRender()
-		--for use with scedule
+		--for use with schedule
 		if #functionsToCallInOnRender >= 1 then
-			local clearTable = true
 			for i = 1, #functionsToCallInOnRender do
 				if functionsToCallInOnRender[i].Frame then
 					local frame = functionsToCallInOnRender[i].Frame
 					if functionsToCallInOnRender[i].Delay then
-						clearTable = false
 						local delay = functionsToCallInOnRender[i].Delay
 						local frameToCall = frame + delay
 						if Isaac.GetFrameCount() >= frameToCall then
 							functionsToCallInOnRender[i].Frame = nil
 							functionsToCallInOnRender[i].Delay = nil
 							if functionsToCallInOnRender[i].Function then
-								local functionToCall = functionsToCallInOnRender[i].Function
-								functionsToCallInOnRender[i].Function = nil
+								local arg1 = functionsToCallInOnRender[i].Arg1
+								local arg2 = functionsToCallInOnRender[i].Arg2
+								local arg3 = functionsToCallInOnRender[i].Arg3
+								local arg4 = functionsToCallInOnRender[i].Arg4
+								local arg5 = functionsToCallInOnRender[i].Arg5
+								local arg6 = functionsToCallInOnRender[i].Arg6
+								local arg7 = functionsToCallInOnRender[i].Arg7
+								local arg8 = functionsToCallInOnRender[i].Arg8
+								local arg9 = functionsToCallInOnRender[i].Arg9
 								
-								functionToCall(functionsToCallInOnRender[i].Arg1, functionsToCallInOnRender[i].Arg2, functionsToCallInOnRender[i].Arg3, functionsToCallInOnRender[i].Arg4, functionsToCallInOnRender[i].Arg5, functionsToCallInOnRender[i].Arg6, functionsToCallInOnRender[i].Arg7, functionsToCallInOnRender[i].Arg8, functionsToCallInOnRender[i].Arg9)
+								functionsToCallInOnRender[i].Function(_, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
 							end
+						end
+					end
+				end
+			end
+			local clearTable = true
+			for i = 1, #functionsToCallInOnRender do
+				if functionsToCallInOnRender[i].Frame then
+					if functionsToCallInOnRender[i].Delay then
+						if functionsToCallInOnRender[i].Function then
+							clearTable = false
 						end
 					end
 				end
