@@ -1,5 +1,5 @@
 --the version of this helper mod script
-local currentVersion = 5
+local currentVersion = 6
 
 --remove any previous versions that may exist
 if piber20HelperMod then
@@ -1001,7 +1001,7 @@ if not piber20HelperMod then
 	end
 	
 	function piber20HelperMod:getPlayerVisibleHearts(player)
-		local visibleHearts = player:GetMaxHearts() + player:GetSoulHearts()
+		local visibleHearts = player:GetEffectiveMaxHearts() + player:GetSoulHearts()
 		local visibleHearts = visibleHearts / 2
 		local visibleHearts = math.ceil(visibleHearts)
 		if visibleHearts < 1 then
