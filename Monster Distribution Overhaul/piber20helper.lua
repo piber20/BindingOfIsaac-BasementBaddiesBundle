@@ -1,5 +1,5 @@
 --the version of this helper mod script
-local currentVersion = 6
+local currentVersion = 7
 
 --remove any previous versions that may exist
 if piber20HelperMod then
@@ -117,6 +117,11 @@ if not piber20HelperMod then
 	function piber20HelperMod:getRandomNumber(min, max, rng)
 		if rng == nil then
 			rng = newRNG
+		end
+		local seed = tonumber(rng)
+		if seed then
+			rng = RNG()
+			rng:SetSeed(seed, 1)
 		end
 		local num = nil
 		if min ~= nil and max ~= nil then

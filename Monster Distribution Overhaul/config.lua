@@ -31,9 +31,10 @@ MonsterDistributionOverhaulMod.BetterAfterbirthPlusReplacements = true
 -- Set this to true if you want to force regular versions of enemies to be replaced with their unique floor versions if they appear in their floor.
 -- What enabling this does:
 -- Boom flies turn into drowned boom flies in flooded caves
--- Chargers turn into drowned chargers in flooded caves
+-- Chargers and Dank Chargers turn into drowned chargers in flooded caves
 -- Hives turn into drowned hives in flooded caves
 -- Globins turn into dank globins in dank depths
+-- Chargers and Drowned Chargers turn into dank chargers in dank depths
 -- This is recommended if you have a mod that adds more unique afterbirth floor enemies and you have a mod that nerfs the drowned charger's health.
 MonsterDistributionOverhaulMod.ForceAfterbirthFloorAlts = false
 
