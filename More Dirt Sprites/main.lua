@@ -171,6 +171,16 @@ end
 FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, FixedDirtSpritesMod.onStainUpdate, EntityType.ENTITY_STAIN)
 FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, FixedDirtSpritesMod.onStainUpdate, EntityType.ENTITY_STAIN)
 
+-----------
+--EFFECTS--
+-----------
+
+function FixedDirtSpritesMod:onShockwaveUpdate(entity)
+	FixedDirtSpritesMod:setDirtSprite(entity, EffectVariant.ROCK_EXPLOSION, 0, "gfx/effects/effect_062_groundbreakcaves.png", "gfx/effects/effect_062_groundbreak_womb.png", "gfx/effects/effect_062_groundbreak_scarred.png", "gfx/effects/effect_062_groundbreak_flooded.png", "gfx/effects/effect_062_groundbreak_blue_womb.png", "gfx/effects/effect_062_groundbreak.png", "gfx/effects/effect_062_groundbreakdepths.png", "gfx/effects/effect_062_groundbreak_black.png")
+end
+FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, FixedDirtSpritesMod.onShockwaveUpdate, EffectVariant.ROCK_EXPLOSION)
+FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_POST_EFFECT_INIT, FixedDirtSpritesMod.onShockwaveUpdate, EffectVariant.ROCK_EXPLOSION)
+
 ----------------------------
 --ENTITIES FROM OTHER MODS--
 ----------------------------
