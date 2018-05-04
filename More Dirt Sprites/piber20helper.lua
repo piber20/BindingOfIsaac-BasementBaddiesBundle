@@ -1,5 +1,5 @@
 --the version of this helper mod script
-local currentVersion = 7
+local currentVersion = 8
 
 --remove any previous versions that may exist
 if piber20HelperMod then
@@ -820,15 +820,7 @@ if not piber20HelperMod then
 	end
 	
 	function piber20HelperMod:canPlayerPickEternalHearts(player)
-		if (player:GetMaxHearts() + player:GetEternalHearts()) < 25 then
-			return true
-		end
-		
-		return false
-	end
-	
-	function piber20HelperMod:canPlayerPickRedHearts(player)
-		if player:GetHearts() < player:GetMaxHearts() then
+		if (player:GetEffectiveMaxHearts() + player:GetEternalHearts()) < 25 then
 			return true
 		end
 		
@@ -836,15 +828,7 @@ if not piber20HelperMod then
 	end
 	
 	function piber20HelperMod:getPlayerEmptyHearts(player)
-		return player:GetMaxHearts() - player:GetHearts()
-	end
-	
-	function piber20HelperMod:canPlayerPickSoulHearts(player)
-		if player:GetMaxHearts() + player:GetSoulHearts() < 24 then
-			return true
-		end
-		
-		return false
+		return player:GetEffectiveMaxHearts() - player:GetHearts()
 	end
 	
 	function piber20HelperMod:didPlayerUseActiveItem(player, itemID)
