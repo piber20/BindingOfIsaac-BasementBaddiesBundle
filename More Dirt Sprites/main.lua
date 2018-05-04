@@ -45,6 +45,12 @@ function FixedDirtSpritesMod:getDirtToUse()
 		dirtToUse = FixedDirtSpritesDirt.NONE --disable self if delirium is in this room
 	end
 	
+	if StageSystem then
+		if StageSystem.GetCurrentStage() ~= 0 then
+			dirtToUse = FixedDirtSpritesDirt.NONE --so we don't overwrite any custom stage sprites
+		end
+	end
+	
 	--return our dirtToUse value
 	return dirtToUse
 end
