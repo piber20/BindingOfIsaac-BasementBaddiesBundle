@@ -51,6 +51,11 @@ MonsterDistributionOverhaulMod.ForceAfterbirthFloorAlts = false
 MonsterDistributionOverhaulMod.AllowStandaloneBossEnemies = false
 
 
+--LOGGING--
+MonsterDistributionOverhaulMod.ReportReplacementsToLog = true
+MonsterDistributionOverhaulMod.ReportReplacementsToConsole = false
+
+
 
 
 

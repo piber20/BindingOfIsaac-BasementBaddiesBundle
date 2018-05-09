@@ -17,12 +17,6 @@ local currentStage = 1
 local currentStageType = 0
 local isGreedMode = Game():IsGreedMode()
 local isBossRoom = false
-local isShopRoom = false
-local isTreasureRoom = false
-local isFlaming = false
-local isFlooded = false
-local isDank = false
-local isScarred = false
 local isVoid = false
 local foundHush = false
 local foundUltraGreed = false
@@ -30,11 +24,16 @@ local foundRagBoss = false
 local foundBrownieBoss = false
 
 function MonsterDistributionOverhaulMod:preEntitySpawn(type, variant, subType, position, velocity, spawner, seed)
+	local returnOurselves = false
+	local originalType = type
+	local originalVariant = variant
+	local originalSubType = subType
+	
 	if type == EntityType.ENTITY_STONEY then
-		if Game():GetRoom():GetFrameCount() > 0 or not MonsterDistributionOverhaulMod.RevertAfterbirthPlusReplacements then
+		if MonsterDistributionOverhaulMod.RevertAfterbirthPlusReplacements then
 			--replace stoneys
 			local replaceStonies = true
-			if Game():GetLevel():GetStage() == 12 then
+			if isVoid then
 				if MonsterDistributionOverhaulMod.AllowStoneysInTheVoid then
 					replaceStonies = false
 				end
@@ -45,42 +44,36 @@ function MonsterDistributionOverhaulMod:preEntitySpawn(type, variant, subType, p
 				local currentStage = piber20HelperMod:getCurrentStage()
 				
 				--defaults (basement)
-				local typeToReplace = EntityType.ENTITY_ATTACKFLY
-				local variantToReplace = 0
+				returnOurselves = true
+				type = EntityType.ENTITY_ATTACKFLY
+				variant = 0
+				subType = 0
 				
 				if currentStage == piber20HelperStage.CELLAR then
-					typeToReplace = EntityType.ENTITY_SPIDER
+					type = EntityType.ENTITY_SPIDER
 				elseif currentStage == piber20HelperStage.BURNING_BASEMENT then
-					typeToReplace = EntityType.ENTITY_GAPER --flaming gaper
-					variantToReplace = 2
+					type = EntityType.ENTITY_GAPER --flaming gaper
+					variant = 2
 				elseif currentStage == piber20HelperStage.FLOODED_CAVES then
-					typeToReplace = EntityType.ENTITY_CHARGER --drowned charger
-					variantToReplace = 1
+					type = EntityType.ENTITY_CHARGER --drowned charger
+					variant = 1
 				elseif currentStage == piber20HelperStage.DEPTHS or currentStage == piber20HelperStage.NECROPOLIS or currentStage == piber20HelperStage.DANK_DEPTHS then
-					typeToReplace = EntityType.ENTITY_FATTY --pale fatty
-					variantToReplace = 1
+					type = EntityType.ENTITY_FATTY --pale fatty
+					variant = 1
 				elseif currentStage == piber20HelperStage.WOMB or currentStage == piber20HelperStage.UTERO or currentStage == piber20HelperStage.SCARRED_WOMB then
-					typeToReplace = EntityType.ENTITY_LUMP
+					type = EntityType.ENTITY_LUMP
 				elseif currentStage == piber20HelperStage.BLUE_WOMB then
-					typeToReplace = EntityType.ENTITY_HUSH_FLY
+					type = EntityType.ENTITY_HUSH_FLY
 				elseif currentStage == piber20HelperStage.SHEOL then
-					typeToReplace = EntityType.ENTITY_NULLS
+					type = EntityType.ENTITY_NULLS
 				elseif currentStage == piber20HelperStage.CATHEDRAL then
-					typeToReplace = EntityType.ENTITY_BABY
+					type = EntityType.ENTITY_BABY
 				elseif currentStage == piber20HelperStage.DARK_ROOM then
-					typeToReplace = EntityType.ENTITY_NULLS
+					type = EntityType.ENTITY_NULLS
 				elseif currentStage == piber20HelperStage.CHEST then
-					typeToReplace = EntityType.ENTITY_FATTY --pale fatty
-					variantToReplace = 1
+					type = EntityType.ENTITY_FATTY --pale fatty
+					variant = 1
 				end
-				
-				local newData = {
-					typeToReplace,
-					variantToReplace,
-					0,
-					seed
-				}
-				return newData
 			end
 		end
 	elseif type == EntityType.ENTITY_PORTAL then
@@ -97,56 +90,72 @@ function MonsterDistributionOverhaulMod:preEntitySpawn(type, variant, subType, p
 			local currentStage = piber20HelperMod:getCurrentStage()
 				
 			--defaults (basement)
-			local typeToReplace = EntityType.ENTITY_SWARM
-			local variantToReplace = 0
+			returnOurselves = true
+			type = EntityType.ENTITY_SWARM
+			variant = 0
+			subType = 0
 			
 			if currentStage == piber20HelperStage.CELLAR then
-				typeToReplace = EntityType.ENTITY_BOIL --sack
-				variantToReplace = 2
+				type = EntityType.ENTITY_BOIL --sack
+				variant = 2
 			elseif currentStage == piber20HelperStage.BURNING_BASEMENT then
-				typeToReplace = EntityType.ENTITY_FATTY --flaming fatty
-				variantToReplace = 2
+				type = EntityType.ENTITY_FATTY --flaming fatty
+				variant = 2
 			elseif currentStage == piber20HelperStage.CAVES or currentStage == piber20HelperStage.CATACOMBS then
-				typeToReplace = EntityType.ENTITY_HIVE
+				type = EntityType.ENTITY_HIVE
 			elseif currentStage == piber20HelperStage.FLOODED_CAVES then
-				typeToReplace = EntityType.ENTITY_HIVE --drowned hive
-				variantToReplace = 1
+				type = EntityType.ENTITY_HIVE --drowned hive
+				variant = 1
 			elseif currentStage == piber20HelperStage.DEPTHS or currentStage == piber20HelperStage.NECROPOLIS or currentStage == piber20HelperStage.DANK_DEPTHS then
-				typeToReplace = EntityType.ENTITY_FAT_SACK
+				type = EntityType.ENTITY_FAT_SACK
 			elseif currentStage == piber20HelperStage.WOMB or currentStage == piber20HelperStage.UTERO or currentStage == piber20HelperStage.SCARRED_WOMB then
-				typeToReplace = EntityType.ENTITY_HOST --flesh host
-				variantToReplace = 1
+				type = EntityType.ENTITY_HOST --flesh host
+				variant = 1
 			elseif currentStage == piber20HelperStage.BLUE_WOMB then
-				typeToReplace = EntityType.ENTITY_HUSH_GAPER
+				type = EntityType.ENTITY_HUSH_GAPER
 			elseif currentStage == piber20HelperStage.SHEOL then
-				typeToReplace = EntityType.ENTITY_IMP
+				type = EntityType.ENTITY_IMP
 			elseif currentStage == piber20HelperStage.CATHEDRAL then
-				typeToReplace = EntityType.ENTITY_BABY --angelic baby
-				variantToReplace = 1
+				type = EntityType.ENTITY_BABY --angelic baby
+				variant = 1
 			elseif currentStage == piber20HelperStage.DARK_ROOM then
-				typeToReplace = EntityType.ENTITY_IMP
+				type = EntityType.ENTITY_IMP
 			elseif currentStage == piber20HelperStage.CHEST then
-				typeToReplace = EntityType.ENTITY_DINGA
+				type = EntityType.ENTITY_DINGA
 			end
-			
-			local newData = {
-				typeToReplace,
-				variantToReplace,
-				0,
-				seed
-			}
-			return newData
 		end
+	end
+	
+	--return our new data
+	if returnOurselves then
+		local message = "Replacing " .. originalType .. "." .. originalVariant .. "." .. originalSubType .. " with " .. type .. "." .. variant .. "." .. subType .. " in entity spawn"
+		if MonsterDistributionOverhaulMod.ReportReplacementsToLog then
+			Isaac.DebugString(message)
+		end
+		if MonsterDistributionOverhaulMod.ReportReplacementsToConsole then
+			Isaac.ConsoleOutput(message)
+		end
+		local newData = {
+			type,
+			variant,
+			subType,
+			seed
+		}
+		return newData
 	end
 end
 MonsterDistributionOverhaulMod:AddCallback(ModCallbacks.MC_PRE_ENTITY_SPAWN, MonsterDistributionOverhaulMod.preEntitySpawn)
 
 function MonsterDistributionOverhaulMod:preRoomEntitySpawn(type, variant, subType, gridIndex, seed)
+	local currentBackdrop = piber20HelperMod:getCurrentBackdrop()
+	
+	local returnOurselves = false
+	local originalType = type
+	local originalVariant = variant
+	local originalSubType = subType
+	
 	--disable ab+ replacements
 	if MonsterDistributionOverhaulMod.RevertAfterbirthPlusReplacements then
-		local currentStage = piber20HelperMod:getCurrentStage()
-		local returnOurselves = false
-		
 		--anti blister
 		if type == EntityType.ENTITY_KEEPER or type == EntityType.ENTITY_TICKING_SPIDER then
 			returnOurselves = true
@@ -154,8 +163,9 @@ function MonsterDistributionOverhaulMod:preRoomEntitySpawn(type, variant, subTyp
 		elseif type == EntityType.ENTITY_HOST then
 			returnOurselves = true
 			if MonsterDistributionOverhaulMod.BetterAfterbirthPlusReplacements then
+				local currentStage = piber20HelperMod:getCurrentStage()
 				if currentStage == piber20HelperStage.CAVES or currentStage == piber20HelperStage.CATACOMBS or currentStage == piber20HelperStage.FLOODED_CAVES then
-					if piber20HelperMod:getRandomNumber(1, 40) == 1 then
+					if piber20HelperMod:getRandomNumber(1, 40, seed) == 1 then
 						returnOurselves = false
 					end
 				end
@@ -167,7 +177,7 @@ function MonsterDistributionOverhaulMod:preRoomEntitySpawn(type, variant, subTyp
 		elseif type == EntityType.ENTITY_NERVE_ENDING and variant == 0 then
 			returnOurselves = true
 			if MonsterDistributionOverhaulMod.BetterAfterbirthPlusReplacements then
-				if piber20HelperMod:getRandomNumber(1, 40) == 1 then
+				if piber20HelperMod:getRandomNumber(1, 40, seed) == 1 then
 					returnOurselves = false
 				end
 			end
@@ -175,7 +185,7 @@ function MonsterDistributionOverhaulMod:preRoomEntitySpawn(type, variant, subTyp
 		elseif type == EntityType.ENTITY_BRAIN then
 			returnOurselves = true
 			if MonsterDistributionOverhaulMod.BetterAfterbirthPlusReplacements then
-				if piber20HelperMod:getRandomNumber(1, 40) == 1 then
+				if piber20HelperMod:getRandomNumber(1, 40, seed) == 1 then
 					returnOurselves = false
 				end
 			end
@@ -191,15 +201,216 @@ function MonsterDistributionOverhaulMod:preRoomEntitySpawn(type, variant, subTyp
 				end
 			end
 		end
-		
-		if returnOurselves then
-			local newData = {
-				type,
-				variant,
-				subType
-			}
-			return newData
+	end
+
+	--replace stuff when we're in a shop room
+	if currentBackdrop == piber20HelperBackdrop.SHOP and not isGreedMode then
+		if type == EntityType.ENTITY_KEEPER and variant == 0 then --replace keeper with spider
+			returnOurselves = true
+			type = EntityType.ENTITY_SPIDER
+			variant = 0
+			subType = 0
 		end
+	end
+	
+	--replace flaming enemies with normal ones if we're not in the burning basement
+	if currentBackdrop ~= piber20HelperBackdrop.BURNING_BASEMENT then
+		if type == EntityType.ENTITY_GAPER and variant == 2 then --replace flaming gapers with normal gapers
+			returnOurselves = true
+			type = EntityType.ENTITY_GAPER
+			variant = 1
+			subType = 0
+		end
+		if type == EntityType.ENTITY_FATTY and variant == 2 then --replace flaming fatties with normal fatties
+			returnOurselves = true
+			type = EntityType.ENTITY_FATTY
+			variant = 0
+			subType = 0
+		end
+		if type == EntityType.ENTITY_SKINNY and variant == 2 then --replace crispys with skinnys
+			returnOurselves = true
+			type = EntityType.ENTITY_SKINNY
+			variant = 0
+			subType = 0
+		end
+	end
+	
+	--replace drowned enemies with normal ones if we're not in the flooded caves
+	if currentBackdrop ~= piber20HelperBackdrop.FLOODED_CAVES then
+		if type == EntityType.ENTITY_BOOMFLY and variant == 2 then --replace drowned boom flies with normal boom flies
+			returnOurselves = true
+			type = EntityType.ENTITY_BOOMFLY
+			variant = 0
+			subType = 0
+		end
+		if type == EntityType.ENTITY_HIVE and variant == 1 then --replace drowned hives with normal hives
+			returnOurselves = true
+			type = EntityType.ENTITY_HIVE
+			variant = 0
+			subType = 0
+		end
+		if type == EntityType.ENTITY_CHARGER and variant == 1 then --replace drowned chargers with normal chargers
+			returnOurselves = true
+			type = EntityType.ENTITY_CHARGER
+			variant = 0
+			subType = 0
+		end
+	end
+	
+	--replace dank enemies with normal ones if we're not in the dank depths
+	if currentBackdrop ~= piber20HelperBackdrop.DANK_DEPTHS then
+		if type == EntityType.ENTITY_GLOBIN and variant == 2 then --replace dank globin with normal globin
+			returnOurselves = true
+			type = EntityType.ENTITY_GLOBIN
+			variant = 0
+			subType = 0
+		end
+		if type == EntityType.ENTITY_TARBOY and variant == 0 then --replace tar boy with nightcrawler
+			returnOurselves = true
+			type = EntityType.ENTITY_NIGHT_CRAWLER
+			variant = 0
+			subType = 0
+		end
+		if type == EntityType.ENTITY_GUSH and variant == 0 then --replace gush with sack
+			returnOurselves = true
+			type = EntityType.ENTITY_BOIL
+			variant = 2
+			subType = 0
+		end
+		if type == EntityType.ENTITY_SQUIRT and variant == 1 then --replace dank squirt with normal squirt
+			returnOurselves = true
+			type = EntityType.ENTITY_SQUIRT
+			variant = 0
+			subType = 0
+		end
+		if type == EntityType.ENTITY_CHARGER and variant == 2 then --replace dank chargers with normal chargers
+			returnOurselves = true
+			type = EntityType.ENTITY_CHARGER
+			variant = 0
+			subType = 0
+		end
+	end
+	
+	--replace scarred enemies with normal ones if we're not in the scarred womb
+	if currentBackdrop ~= piber20HelperBackdrop.SCARRED_WOMB then
+		if type == EntityType.ENTITY_GUTS and variant == 1 then --replace scarred guts with normal guts
+			returnOurselves = true
+			type = EntityType.ENTITY_GUTS
+			variant = 0
+			subType = 0
+		end
+		if type == EntityType.ENTITY_VIS and variant == 3 then --replace scarred double vis with normal double vis
+			returnOurselves = true
+			type = EntityType.ENTITY_VIS
+			variant = 1
+			subType = 0
+		end
+	end
+	
+	--replace some womb enemies with normal ones if we're not in any womb chapters
+	if currentBackdrop ~= piber20HelperBackdrop.UTERO and currentBackdrop ~= piber20HelperBackdrop.WOMB and currentBackdrop ~= piber20HelperBackdrop.SCARRED_WOMB then
+		if type == EntityType.ENTITY_FLESH_DEATHS_HEAD and variant == 0 then --replace flesh death's head with normal death's head
+			returnOurselves = true
+			type = EntityType.ENTITY_DEATHS_HEAD
+			variant = 0
+			subType = 0
+		end
+		if type == EntityType.ENTITY_RED_GHOST and variant == 0 then --replace red ghost with normal wizoob
+			returnOurselves = true
+			type = EntityType.ENTITY_WIZOOB
+			variant = 0
+			subType = 0
+		end
+	end
+	
+	--do ab+ replacements in a better way
+	if MonsterDistributionOverhaulMod.BetterAfterbirthPlusReplacements then
+		--Ministro
+		if type == EntityType.ENTITY_CLOTTY then
+			if variant ~= 1 then --no clots
+				local chance = 300
+				if variant == 2 then --i blob
+					chance = 50
+				end
+				if piber20HelperMod:getRandomNumber(1, chance, seed) == 1 then
+					returnOurselves = true
+					type = EntityType.ENTITY_MINISTRO
+					variant = 0
+					subType = 0
+				end
+			end
+		end
+		--Blister
+		local currentStage = piber20HelperMod:getCurrentStage()
+		if currentStage > 2 then
+			if type == EntityType.ENTITY_HOPPER and variant == 1 then
+				local chance = 200
+				if currentStage > 4 then
+					chance = 35
+				end
+				if piber20HelperMod:getRandomNumber(1, chance, seed) == 1 then
+					returnOurselves = true
+					type = EntityType.ENTITY_BLISTER
+					variant = 0
+					subType = 0
+				end
+			end
+		end
+	end
+	
+	--force some normal enemies to be the alt floor versions if the player is in the alt floor
+	if MonsterDistributionOverhaulMod.ForceAfterbirthFloorAlts then
+		if currentBackdrop == piber20HelperBackdrop.FLOODED_CAVES then
+			if type == EntityType.ENTITY_BOOMFLY and (variant == 1 or variant == 2) then
+				returnOurselves = true
+				type = EntityType.ENTITY_BOOMFLY
+				variant = 2
+				subType = 0
+			end
+			if type == EntityType.ENTITY_HIVE and variant == 0 then
+				returnOurselves = true
+				type = EntityType.ENTITY_HIVE
+				variant = 1
+				subType = 0
+			end
+			if type == EntityType.ENTITY_CHARGER and (variant == 0 or variant == 2) then
+				returnOurselves = true
+				type = EntityType.ENTITY_CHARGER
+				variant = 1
+				subType = 0
+			end
+		end
+		if currentBackdrop == piber20HelperBackdrop.DANK_DEPTHS then
+			if type == EntityType.ENTITY_GLOBIN and variant == 0 then
+				returnOurselves = true
+				type = EntityType.ENTITY_GLOBIN
+				variant = 2
+				subType = 0
+			end
+			if type == EntityType.ENTITY_CHARGER and (variant == 0 or variant == 1) then
+				returnOurselves = true
+				type = EntityType.ENTITY_CHARGER
+				variant = 2
+				subType = 0
+			end
+		end
+	end
+	
+	--return our new data
+	if returnOurselves then
+		local message = "Replacing " .. originalType .. "." .. originalVariant .. "." .. originalSubType .. " with " .. type .. "." .. variant .. "." .. subType .. " in room spawn"
+		if MonsterDistributionOverhaulMod.ReportReplacementsToLog then
+			Isaac.DebugString(message)
+		end
+		if MonsterDistributionOverhaulMod.ReportReplacementsToConsole then
+			Isaac.ConsoleOutput(message)
+		end
+		local newData = {
+			type,
+			variant,
+			subType
+		}
+		return newData
 	end
 end
 MonsterDistributionOverhaulMod:AddCallback(ModCallbacks.MC_PRE_ROOM_ENTITY_SPAWN, MonsterDistributionOverhaulMod.preRoomEntitySpawn)
@@ -210,7 +421,7 @@ function MonsterDistributionOverhaulMod:replaceEnemies(fromNewRoom)
 		fromNewRoom = false
 	end
 
-	--replace stuff when we're not in greed mode or we're in a treasure room
+	--replace stuff when we're not in greed mode and ultra greed isnt here
 	if not isGreedMode then
 		if not foundUltraGreed then
 			for _, greedGaper in pairs(Isaac.FindByType(EntityType.ENTITY_GREED_GAPER, 0, -1, false, true)) do --replace greed gaper with attack fly
@@ -219,7 +430,7 @@ function MonsterDistributionOverhaulMod:replaceEnemies(fromNewRoom)
 		end
 	end
 	
-	--replace stuff when we're not in a boss room
+	--replace stuff when we're not in a boss room and certain bosses aren't here
 	if not isBossRoom then
 		if not foundRagBoss then
 			for _, ragManRagLing in pairs(Isaac.FindByType(EntityType.ENTITY_RAGLING, 1, -1, false, true)) do --replace rag man's ragling with normal ragling
@@ -233,87 +444,8 @@ function MonsterDistributionOverhaulMod:replaceEnemies(fromNewRoom)
 		end
 	end
 
-	--replace stuff when we're in a shop room
-	if isShopRoom then
-		for _, keeper in pairs(Isaac.FindByType(EntityType.ENTITY_KEEPER, 0, -1, false, true)) do --replace keeper with spider
-			piber20HelperMod:replaceEntity(keeper, EntityType.ENTITY_SPIDER, 0, 0, true)
-		end
-	end
-	
-	--replace flaming enemies with normal ones if we're not in the burning basement
-	if not isFlaming then
-		for _, flamingGaper in pairs(Isaac.FindByType(EntityType.ENTITY_GAPER, 2, -1, false, true)) do --replace flaming gapers with normal gapers
-			piber20HelperMod:replaceEntity(flamingGaper, EntityType.ENTITY_GAPER, 1, 0, true)
-		end
-		for _, flamingFatty in pairs(Isaac.FindByType(EntityType.ENTITY_FATTY, 2, -1, false, true)) do --replace flaming fatties with normal fatties
-			piber20HelperMod:replaceEntity(flamingFatty, EntityType.ENTITY_FATTY, 0, 0, true)
-		end
-		for _, crispy in pairs(Isaac.FindByType(EntityType.ENTITY_SKINNY, 2, -1, false, true)) do --replace crispys with skinnys
-			piber20HelperMod:replaceEntity(crispy, EntityType.ENTITY_SKINNY, 0, 0, true)
-		end
-	end
-	
-	--replace drowned enemies with normal ones if we're not in the flooded caves
-	if not isFlooded then
-		for _, drownedBoomFly in pairs(Isaac.FindByType(EntityType.ENTITY_BOOMFLY, 2, -1, false, true)) do --replace drowned boom flies with normal boom flies
-			piber20HelperMod:replaceEntity(drownedBoomFly, EntityType.ENTITY_BOOMFLY, 0, 0, true)
-		end
-		for _, drownedHive in pairs(Isaac.FindByType(EntityType.ENTITY_HIVE, 1, -1, false, true)) do --replace drowned hives with normal hives
-			piber20HelperMod:replaceEntity(drownedHive, EntityType.ENTITY_HIVE, 0, 0, true)
-		end
-		for _, drownedCharger in pairs(Isaac.FindByType(EntityType.ENTITY_CHARGER, 1, -1, false, true)) do --replace drowned chargers with normal chargers
-			piber20HelperMod:replaceEntity(drownedCharger, EntityType.ENTITY_CHARGER, 0, 0, true)
-		end
-	else --replace flaming enemies with normal ones if we're in the flooded caves
-		for _, flamingHopper in pairs(Isaac.FindByType(EntityType.ENTITY_FLAMINGHOPPER, 0, -1, false, true)) do --replace flaming hoppers with normal hoppers if we're in flooded caves (the floor is covered with water...)
-			piber20HelperMod:replaceEntity(flamingHopper, EntityType.ENTITY_HOPPER, 0, 0, true)
-		end
-	end
-	
-	--replace dank enemies with normal ones if we're not in the dank depths
-	if not isDank then
-		for _, dankGlobin in pairs(Isaac.FindByType(EntityType.ENTITY_GLOBIN, 2, -1, false, true)) do --replace dank globin with normal globin
-			piber20HelperMod:replaceEntity(dankGlobin, EntityType.ENTITY_GLOBIN, 0, 0, true)
-		end
-		for _, dankDeathsHead in pairs(Isaac.FindByType(EntityType.ENTITY_DEATHS_HEAD, 1, -1, false, true)) do --replace dank death's head with normal death's head
-			piber20HelperMod:replaceEntity(dankDeathsHead, EntityType.ENTITY_DEATHS_HEAD, 0, 0, true)
-		end
-		for _, tarBoy in pairs(Isaac.FindByType(EntityType.ENTITY_TARBOY, 0, -1, false, true)) do --replace tar boy with nightcrawler
-			piber20HelperMod:replaceEntity(tarBoy, EntityType.ENTITY_NIGHT_CRAWLER, 0, 0, true)
-		end
-		for _, gush in pairs(Isaac.FindByType(EntityType.ENTITY_GUSH, 0, -1, false, true)) do --replace gush with sack
-			piber20HelperMod:replaceEntity(gush, EntityType.ENTITY_BOIL, 2, 0, true)
-		end
-		for _, dankSquirt in pairs(Isaac.FindByType(EntityType.ENTITY_SQUIRT, 1, -1, false, true)) do --replace dank squirt with normal squirt
-			piber20HelperMod:replaceEntity(dankSquirt, EntityType.ENTITY_SQUIRT, 0, 0, true)
-		end
-		for _, dankCharger in pairs(Isaac.FindByType(EntityType.ENTITY_CHARGER, 2, -1, false, true)) do --replace dank chargers with normal chargers
-			piber20HelperMod:replaceEntity(dankCharger, EntityType.ENTITY_CHARGER, 0, 0, true)
-		end
-	end
-	
-	--replace scarred enemies with normal ones if we're not in the scarred womb
-	if not isScarred then
-		for _, scarredGuts in pairs(Isaac.FindByType(EntityType.ENTITY_GUTS, 1, -1, false, true)) do --replace scarred guts with normal guts
-			piber20HelperMod:replaceEntity(scarredGuts, EntityType.ENTITY_GUTS, 0, 0, true)
-		end
-		for _, scarredDoubleVis in pairs(Isaac.FindByType(EntityType.ENTITY_VIS, 3, -1, false, true)) do --replace scarred double vis with normal double vis
-			piber20HelperMod:replaceEntity(scarredDoubleVis, EntityType.ENTITY_VIS, 1, 0, true)
-		end
-	end
-	
-	--replace some womb enemies with normal ones if we're not in any womb chapters
-	if currentStage ~= 7 and currentStage ~= 8 then
-		for _, fleshDeathsHead in pairs(Isaac.FindByType(EntityType.ENTITY_FLESH_DEATHS_HEAD, 0, -1, false, true)) do --replace flesh death's head with normal death's head
-			piber20HelperMod:replaceEntity(fleshDeathsHead, EntityType.ENTITY_DEATHS_HEAD, 0, 0, true)
-		end
-		for _, redGhost in pairs(Isaac.FindByType(EntityType.ENTITY_RED_GHOST, 0, -1, false, true)) do --replace red ghost with normal wizoob
-			piber20HelperMod:replaceEntity(redGhost, EntityType.ENTITY_WIZOOB, 0, 0, true)
-		end
-	end
-
 	--replace stuff when we're not in the hush floor
-	if currentStage ~= 9 then
+	if currentBackdrop ~= piber20HelperBackdrop.BLUE_WOMB then
 		if not foundHush then
 			for _, hushGaper in pairs(Isaac.FindByType(EntityType.ENTITY_HUSH_GAPER, 0, -1, false, true)) do --replace hush gaper with normal gaper
 				piber20HelperMod:replaceEntity(hushGaper, EntityType.ENTITY_GAPER, 1, 0, true)
@@ -323,66 +455,6 @@ function MonsterDistributionOverhaulMod:replaceEnemies(fromNewRoom)
 			end
 			for _, hushBoil in pairs(Isaac.FindByType(EntityType.ENTITY_HUSH_BOIL, 0, -1, false, true)) do --replace hush boil with normal boil
 				piber20HelperMod:replaceEntity(hushBoil, EntityType.ENTITY_BOIL, 0, 0, true)
-			end
-		end
-	end
-	
-	--do ab+ replacements in a better way
-	if MonsterDistributionOverhaulMod.BetterAfterbirthPlusReplacements then
-		--Ministro
-		for _, clotty in pairs(Isaac.FindByType(EntityType.ENTITY_CLOTTY, -1, -1, false, true)) do
-			if clotty.Variant ~= 1 then --no clots
-				local chance = 300
-				if variant == 2 then --i blob
-					chance = 50
-				end
-				if piber20HelperMod:getRandomNumber(1, chance) == 1 then
-					piber20HelperMod:replaceEntity(clotty, EntityType.ENTITY_MINISTRO, 0, 0, true)
-				end
-			end
-		end
-		--Blister
-		if currentStage > 2 then
-			for _, trite in pairs(Isaac.FindByType(EntityType.ENTITY_HOPPER, 1, -1, false, true)) do
-				local chance = 200
-				if currentStage > 4 then
-					chance = 35
-				end
-				if piber20HelperMod:getRandomNumber(1, chance) == 1 then
-					piber20HelperMod:replaceEntity(trite, EntityType.ENTITY_BLISTER, 0, 0, true)
-				end
-			end
-		end
-	end
-	
-	--force some normal enemies to be the alt floor versions if the player is in the alt floor
-	if MonsterDistributionOverhaulMod.ForceAfterbirthFloorAlts then
-		if isFlooded then
-			for _, boomFly in pairs(Isaac.FindByType(EntityType.ENTITY_BOOMFLY, 0, -1, false, true)) do
-				piber20HelperMod:replaceEntity(boomFly, EntityType.ENTITY_BOOMFLY, 2, 0, true)
-			end
-			for _, redBoomFly in pairs(Isaac.FindByType(EntityType.ENTITY_BOOMFLY, 1, -1, false, true)) do
-				piber20HelperMod:replaceEntity(redBoomFly, EntityType.ENTITY_BOOMFLY, 2, 0, true)
-			end
-			for _, hive in pairs(Isaac.FindByType(EntityType.ENTITY_HIVE, 0, -1, false, true)) do
-				piber20HelperMod:replaceEntity(hive, EntityType.ENTITY_HIVE, 1, 0, true)
-			end
-			for _, charger in pairs(Isaac.FindByType(EntityType.ENTITY_CHARGER, 0, -1, false, true)) do
-				piber20HelperMod:replaceEntity(charger, EntityType.ENTITY_CHARGER, 1, 0, true)
-			end
-			for _, dankCharger in pairs(Isaac.FindByType(EntityType.ENTITY_CHARGER, 2, -1, false, true)) do
-				piber20HelperMod:replaceEntity(charger, EntityType.ENTITY_CHARGER, 1, 0, true)
-			end
-		end
-		if isDank then
-			for _, globin in pairs(Isaac.FindByType(EntityType.ENTITY_GLOBIN, 0, -1, false, true)) do
-				piber20HelperMod:replaceEntity(globin, EntityType.ENTITY_GLOBIN, 2, 0, true)
-			end
-			for _, charger in pairs(Isaac.FindByType(EntityType.ENTITY_CHARGER, 0, -1, false, true)) do
-				piber20HelperMod:replaceEntity(charger, EntityType.ENTITY_CHARGER, 2, 0, true)
-			end
-			for _, drownedCharger in pairs(Isaac.FindByType(EntityType.ENTITY_CHARGER, 1, -1, false, true)) do
-				piber20HelperMod:replaceEntity(charger, EntityType.ENTITY_CHARGER, 2, 0, true)
 			end
 		end
 	end
@@ -450,12 +522,6 @@ function MonsterDistributionOverhaulMod:onRoomChange()
 	currentStageType = level:GetStageType()
 	isGreedMode = Game():IsGreedMode()
 	isBossRoom = false
-	isShopRoom = false
-	isTreasureRoom = false
-	isFlaming = false
-	isFlooded = false
-	isDank = false
-	isScarred = false
 	isVoid = false
 	foundHush = false
 	foundUltraGreed = false
@@ -464,10 +530,6 @@ function MonsterDistributionOverhaulMod:onRoomChange()
 	
 	if roomType == RoomType.ROOM_BOSS then
 		isBossRoom = true
-	elseif roomType == RoomType.ROOM_SHOP then
-		isShopRoom = true
-	elseif roomType == RoomType.ROOM_TREASURE then
-		isTreasureRoom = true
 	end
 	
 	if MonsterDistributionOverhaulMod.AllowStandaloneBossEnemies then
@@ -532,17 +594,6 @@ function MonsterDistributionOverhaulMod:onRoomChange()
 			elseif roomStage == 17 then
 				currentStage = 11
 				currentStageType = 1
-			end
-		end
-		if currentStageType == 2 then
-			if currentStage == 1 or currentStage == 2 then
-				isFlaming = true
-			elseif currentStage == 3 or currentStage == 4 then
-				isFlooded = true
-			elseif currentStage == 5 or currentStage == 6 then
-				isDank = true
-			elseif currentStage == 7 or currentStage == 8 then
-				isScarred = true
 			end
 		end
 	else
