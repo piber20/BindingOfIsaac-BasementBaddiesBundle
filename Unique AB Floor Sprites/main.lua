@@ -1,88 +1,124 @@
 UniqueAfterbirthFloorEnemiesMod = RegisterMod("Unique AB Floor Sprites", 1)
 
-UniqueAfterbirthFloorSpritesets = {
-	NONE = 0,
-	FLAMING = 1,
-	FLOODED = 2,
-	DANK = 3,
-	SCARRED = 4
-}
+--load piber20helper
+local _, err = pcall(require, "piber20helper")
+if not string.match(tostring(err), "attempt to call a nil value %(method 'ForceError'%)") then
+	Isaac.DebugString(err)
+end
 
-function UniqueAfterbirthFloorEnemiesMod:getSpritesetsToUse()
-	local level = Game():GetLevel()
-	local currentStage = level:GetStage()
-	local spritesetToUse = UniqueAfterbirthFloorSpritesets.NONE
-	if not Game():IsGreedMode() then
-		if currentStage == 12 then
-			local room = level:GetCurrentRoom()
-			local roomStage = room:GetRoomConfigStage()
-			
-			if roomStage == 3 then
-				spritesetToUse = UniqueAfterbirthFloorSpritesets.FLAMING
-			elseif roomStage == 6 then 
-				spritesetToUse = UniqueAfterbirthFloorSpritesets.FLOODED
-			elseif roomStage == 9 then
-				spritesetToUse = UniqueAfterbirthFloorSpritesets.DANK
-			elseif roomStage == 12 then
-				spritesetToUse = UniqueAfterbirthFloorSpritesets.SCARRED
-			end
-		else
-			local currentStageType = level:GetStageType()
-			if currentStageType == 2 then
-				if currentStage == 1 or currentStage == 2 then
-					spritesetToUse = UniqueAfterbirthFloorSpritesets.FLAMING
-				elseif currentStage == 3 or currentStage == 4 then
-					spritesetToUse = UniqueAfterbirthFloorSpritesets.FLOODED
-				elseif currentStage == 5 or currentStage == 6 then
-					spritesetToUse = UniqueAfterbirthFloorSpritesets.DANK
-				elseif currentStage == 7 or currentStage == 8 then
-					spritesetToUse = UniqueAfterbirthFloorSpritesets.SCARRED
-				end
-			end
-		end
+function UniqueAfterbirthFloorEnemiesMod:getData(entity)
+	local data = entity:GetData()
+	if data.UniqueABFloorSprites == nil then
+		data.UniqueABFloorSprites = {}
 	end
-	
-	return spritesetToUse
+	return data.UniqueABFloorSprites
 end
 
 function UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, variant, subtype, layer, flamingSpritesheet, floodedSpritesheet, dankSpritesheet, scarredSpritesheet)
 	local frameCount = entity.FrameCount
-	if frameCount <= 1 then
+	
+	local thisType = entity.Type
+	local thisVariant = entity.Variant
+	local thisSubType = entity.SubType
+	
+	local data = UniqueAfterbirthFloorEnemiesMod:getData(entity)
+	if data.LastType == nil then
+		data.LastType = thisType
+	end
+	if data.LastVariant == nil then
+		data.LastVariant = thisVariant
+	end
+	if data.LastSubType == nil then
+		data.LastSubType = thisSubType
+	end
+	if data.entityTypesChanged == nil then
+		data.entityTypesChanged = frameCount
+	end
+	
+	if data.LastType ~= thisType then
+		data.entityTypesChanged = frameCount
+	end
+	if data.LastVariant ~= thisVariant then
+		data.entityTypesChanged = frameCount
+	end
+	if data.LastSubType ~= thisSubType then
+		data.entityTypesChanged = frameCount
+	end
+	
+	data.LastType = thisType
+	data.LastVariant = thisVariant
+	data.LastSubType = thisSubType
+	
+	if frameCount <= 1 or frameCount == data.entityTypesChanged or frameCount == (data.entityTypesChanged + 1) then
 		if variant == nil then
 			variant = -1
 		end
-		if entity.Variant == variant or variant == -1 then
+		if thisVariant == variant or variant == -1 then
 			if subtype == nil then
 				subtype = -1
 			end
-			if entity.SubType == subtype or subtype == -1 then
-				local spritesetToUse = UniqueAfterbirthFloorEnemiesMod:getSpritesetsToUse()
-				if spritesetToUse ~= UniqueAfterbirthFloorSpritesets.NONE then
-					local spritesheet = nil
-					if spritesetToUse == UniqueAfterbirthFloorSpritesets.FLAMING then
-						spritesheet = flamingSpritesheet
-					elseif spritesetToUse == UniqueAfterbirthFloorSpritesets.FLOODED then
-						spritesheet = floodedSpritesheet
-					elseif spritesetToUse == UniqueAfterbirthFloorSpritesets.DANK then
-						spritesheet = dankSpritesheet
-					elseif spritesetToUse == UniqueAfterbirthFloorSpritesets.SCARRED then
-						spritesheet = scarredSpritesheet
+			if thisSubType == subtype or subtype == -1 then
+				local backdrop = piber20HelperMod:getCurrentBackdrop()
+				local spritesheet = nil
+				if backdrop == piber20HelperBackdrop.BURNING_BASEMENT then
+					spritesheet = flamingSpritesheet
+				elseif backdrop == piber20HelperBackdrop.FLOODED_CAVES then
+					spritesheet = floodedSpritesheet
+				elseif backdrop == piber20HelperBackdrop.DANK_DEPTHS then
+					spritesheet = dankSpritesheet
+				elseif backdrop == piber20HelperBackdrop.SCARRED_WOMB then
+					spritesheet = scarredSpritesheet
+				end
+				if spritesheet ~= nil then
+					local sprite = entity:GetSprite()
+					if layer == nil then
+						layer = 0
 					end
-					if spritesheet ~= nil then
-						local sprite = entity:GetSprite()
-						if layer >= 0 then
-							sprite:ReplaceSpritesheet(layer, spritesheet) 
-						else
-							sprite:Load(spritesheet, true)
-							sprite:Play(sprite:GetDefaultAnimation(), false)
-						end
+					if layer >= 0 then
+						sprite:ReplaceSpritesheet(layer, spritesheet) 
 						sprite:LoadGraphics()
+					else
+						sprite:Load(spritesheet, true)
+						sprite:Play(sprite:GetDefaultAnimation(), false)
 					end
 				end
 			end
 		end
 	end
 end
+
+function UniqueAfterbirthFloorEnemiesMod:onBloodProjectileUpdate(entity)
+	local spawnerType = entity.SpawnerType
+	local spawnerVariant = entity.SpawnerVariant
+	if spawnerType ~= 0 then
+		if spawnerType ~= EntityType.ENTITY_FIREPLACE and spawnerType ~= EntityType.ENTITY_STONEHEAD and spawnerType ~= EntityType.ENTITY_POOTER and spawnerType ~= EntityType.ENTITY_SUCKER and spawnerType ~= EntityType.ENTITY_BOIL and spawnerType ~= EntityType.ENTITY_WALKINGBOIL and spawnerType ~= EntityType.ENTITY_HOST and spawnerType ~= EntityType.ENTITY_MOBILE_HOST and spawnerType ~= EntityType.ENTITY_FLESH_MOBILE_HOST and spawnerType ~= EntityType.ENTITY_CONSTANT_STONE_SHOOTER then
+			if spawnerType ~= EntityType.ENTITY_BOOMFLY or spawnerType == EntityType.ENTITY_BOOMFLY and spawnerVariant ~= 1 then
+				local backdrop = piber20HelperMod:getCurrentBackdrop()
+				if backdrop == piber20HelperBackdrop.FLOODED_CAVES then
+					UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, ProjectileVariant.PROJECTILE_NORMAL, -1, 0, nil, "gfx/enemybullets_flooded.png", nil, nil)
+					local data = UniqueAfterbirthFloorEnemiesMod:getData(entity)
+					data.isFloodedProjectile = true
+				end
+			end
+		end
+	end
+end
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_PROJECTILE_UPDATE, UniqueAfterbirthFloorEnemiesMod.onBloodProjectileUpdate, ProjectileVariant.PROJECTILE_NORMAL)
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_PROJECTILE_INIT, UniqueAfterbirthFloorEnemiesMod.onBloodProjectileUpdate, ProjectileVariant.PROJECTILE_NORMAL)
+
+function UniqueAfterbirthFloorEnemiesMod:onProjectileRemove(entity)
+	if entity.Variant == ProjectileVariant.PROJECTILE_NORMAL then
+		local data = UniqueAfterbirthFloorEnemiesMod:getData(entity)
+		if data.isFloodedProjectile then
+			for _, poof in pairs(Isaac.FindByType(EntityType.ENTITY_EFFECT, EffectVariant.BULLET_POOF, -1, false, false)) do
+				if (poof.Position - entity.Position):Length() < 5 then
+					UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(poof, EffectVariant.BULLET_POOF, -1, 0, nil, "gfx/effects/effect_003_bloodtear_flooded.png", nil, nil)
+				end
+			end
+		end
+	end
+end
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_ENTITY_REMOVE, UniqueAfterbirthFloorEnemiesMod.onProjectileRemove, EntityType.ENTITY_PROJECTILE)
 
 function UniqueAfterbirthFloorEnemiesMod:onGaperUpdate(entity)
 	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, 1, "gfx/monsters/flaming/singed_frowning_gaper.png", nil, nil, nil) --frowning
@@ -104,23 +140,11 @@ UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, UniqueAf
 UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, UniqueAfterbirthFloorEnemiesMod.onCyclopiaUpdate, EntityType.ENTITY_CYCLOPIA)
 
 function UniqueAfterbirthFloorEnemiesMod:onFattyUpdate(entity)
-	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, 0, "gfx/monsters/afterbirth/207.002_flamingfatty.png", nil, nil, nil) --regular
-	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, 1, "gfx/monsters/afterbirth/207.002_flamingfatty.png", nil, nil, nil)
+	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, 0, "gfx/monsters/afterbirth/207.002_flamingfatty.png", "gfx/monsters/flooded/drowned_monster_207_fatty.png", nil, nil) --regular
+	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, 1, "gfx/monsters/afterbirth/207.002_flamingfatty.png", "gfx/monsters/flooded/drowned_monster_207_fatty.png", nil, nil)
 end
 UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, UniqueAfterbirthFloorEnemiesMod.onFattyUpdate, EntityType.ENTITY_FATTY)
 UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, UniqueAfterbirthFloorEnemiesMod.onFattyUpdate, EntityType.ENTITY_FATTY)
-
-function UniqueAfterbirthFloorEnemiesMod:onBloodProjectileUpdate(entity)
-	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, ProjectileVariant.PROJECTILE_NORMAL, -1, 0, nil, "gfx/enemybullets_flooded.png", nil, nil)
-end
-UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_PROJECTILE_UPDATE, UniqueAfterbirthFloorEnemiesMod.onBloodProjectileUpdate, ProjectileVariant.PROJECTILE_NORMAL)
-UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_PROJECTILE_INIT, UniqueAfterbirthFloorEnemiesMod.onBloodProjectileUpdate, ProjectileVariant.PROJECTILE_NORMAL)
-
-function UniqueAfterbirthFloorEnemiesMod:onBloodProjectilePoofUpdate(entity)
-	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, EffectVariant.BULLET_POOF, -1, 0, nil, "gfx/effects/effect_003_bloodtear_flooded.png", nil, nil)
-end
-UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, UniqueAfterbirthFloorEnemiesMod.onBloodProjectilePoofUpdate, EffectVariant.BULLET_POOF)
-UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_EFFECT_INIT, UniqueAfterbirthFloorEnemiesMod.onBloodProjectilePoofUpdate, EffectVariant.BULLET_POOF)
 
 function UniqueAfterbirthFloorEnemiesMod:onCrazyLongLegsUpdate(entity)
 	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, 0, nil, "gfx/monsters/flooded/drowned_long_legs.png", nil, nil) --regular
@@ -150,39 +174,10 @@ UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, Uniqu
 
 function UniqueAfterbirthFloorEnemiesMod:onClottyUpdate(entity)
 	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, 0, nil, "gfx/monsters/flooded/drowned_monster_065_clotty.png", nil, nil) --regular
+	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 2, -1, 0, nil, "gfx/monsters/flooded/drowned_monster_075_lblob.png", nil, nil) --i. blob
 end
 UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, UniqueAfterbirthFloorEnemiesMod.onClottyUpdate, EntityType.ENTITY_CLOTTY)
 UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, UniqueAfterbirthFloorEnemiesMod.onClottyUpdate, EntityType.ENTITY_CLOTTY)
-
-function UniqueAfterbirthFloorEnemiesMod:onSuckerUpdate(entity)
-	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, 0, nil, "gfx/monsters/flooded/drowned_monster_078_sucker.png", nil, nil) --regular
-end
-UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, UniqueAfterbirthFloorEnemiesMod.onSuckerUpdate, EntityType.ENTITY_SUCKER)
-UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, UniqueAfterbirthFloorEnemiesMod.onSuckerUpdate, EntityType.ENTITY_SUCKER)
-
-function UniqueAfterbirthFloorEnemiesMod:onBoilUpdate(entity)
-	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, 0, nil, "gfx/monsters/flooded/drowned_monster_087_boil.png", nil, nil) --regular
-end
-UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, UniqueAfterbirthFloorEnemiesMod.onBoilUpdate, EntityType.ENTITY_BOIL)
-UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, UniqueAfterbirthFloorEnemiesMod.onBoilUpdate, EntityType.ENTITY_BOIL)
-
-function UniqueAfterbirthFloorEnemiesMod:onWalkingBoilUpdate(entity)
-	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, -1, nil, "gfx/drowned_walking_boil.anm2", nil, nil) --regular
-end
-UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, UniqueAfterbirthFloorEnemiesMod.onWalkingBoilUpdate, EntityType.ENTITY_WALKINGBOIL)
-UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, UniqueAfterbirthFloorEnemiesMod.onWalkingBoilUpdate, EntityType.ENTITY_WALKINGBOIL)
-
-function UniqueAfterbirthFloorEnemiesMod:onBoomFlyUpdate(entity)
-	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 1, -1, 0, nil, "gfx/monsters/flooded/drowned_monster_101_redboomfly.png", nil, nil) --red
-end
-UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, UniqueAfterbirthFloorEnemiesMod.onBoomFlyUpdate, EntityType.ENTITY_BOOMFLY)
-UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, UniqueAfterbirthFloorEnemiesMod.onBoomFlyUpdate, EntityType.ENTITY_BOOMFLY)
-
-function UniqueAfterbirthFloorEnemiesMod:onBoomFlyUpdate(entity)
-	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 1, -1, 0, nil, "gfx/monsters/flooded/drowned_monster_101_redboomfly.png", nil, nil) --red
-end
-UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, UniqueAfterbirthFloorEnemiesMod.onBoomFlyUpdate, EntityType.ENTITY_BOOMFLY)
-UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, UniqueAfterbirthFloorEnemiesMod.onBoomFlyUpdate, EntityType.ENTITY_BOOMFLY)
 
 function UniqueAfterbirthFloorEnemiesMod:onMaggotUpdate(entity)
 	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, 0, nil, "gfx/monsters/flooded/drowned_monster_105_maggot.png", nil, nil)
@@ -228,12 +223,6 @@ end
 UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, UniqueAfterbirthFloorEnemiesMod.onWallCreepUpdate, EntityType.ENTITY_WALL_CREEP)
 UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, UniqueAfterbirthFloorEnemiesMod.onWallCreepUpdate, EntityType.ENTITY_WALL_CREEP)
 
-function UniqueAfterbirthFloorEnemiesMod:onWallCreepUpdate(entity)
-	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, 0, nil, "gfx/monsters/flooded/drowned_monster_240_wallcreep.png", nil, nil)
-end
-UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, UniqueAfterbirthFloorEnemiesMod.onWallCreepUpdate, EntityType.ENTITY_WALL_CREEP)
-UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, UniqueAfterbirthFloorEnemiesMod.onWallCreepUpdate, EntityType.ENTITY_WALL_CREEP)
-
 function UniqueAfterbirthFloorEnemiesMod:onBlindCreepUpdate(entity)
 	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, 0, nil, "gfx/monsters/flooded/drowned_monster_242_blindcreep.png", nil, nil)
 end
@@ -245,3 +234,42 @@ function UniqueAfterbirthFloorEnemiesMod:onConjoinedSpittyUpdate(entity)
 end
 UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, UniqueAfterbirthFloorEnemiesMod.onConjoinedSpittyUpdate, EntityType.ENTITY_CONJOINED_SPITTY)
 UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, UniqueAfterbirthFloorEnemiesMod.onConjoinedSpittyUpdate, EntityType.ENTITY_CONJOINED_SPITTY)
+
+function UniqueAfterbirthFloorEnemiesMod:onConjoinedFattyUpdate(entity)
+	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, 0, nil, "gfx/monsters/flooded/drowned_257.000_conjoinedfatty.png", nil, nil)
+	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, 1, nil, "gfx/monsters/flooded/drowned_257.000_conjoinedfatty.png", nil, nil)
+end
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, UniqueAfterbirthFloorEnemiesMod.onConjoinedFattyUpdate, EntityType.ENTITY_CONJOINED_FATTY)
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, UniqueAfterbirthFloorEnemiesMod.onConjoinedFattyUpdate, EntityType.ENTITY_CONJOINED_FATTY)
+
+function UniqueAfterbirthFloorEnemiesMod:onHopperUpdate(entity)
+	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, 0, nil, "gfx/monsters/flooded/drowned_monster_044_hopperleaper.png", nil, nil) --regular
+	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 1, -1, 0, nil, "gfx/monsters/flooded/drowned_monster_082_trite.png", nil, nil) --trite
+end
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, UniqueAfterbirthFloorEnemiesMod.onHopperUpdate, EntityType.ENTITY_HOPPER)
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, UniqueAfterbirthFloorEnemiesMod.onHopperUpdate, EntityType.ENTITY_HOPPER)
+
+function UniqueAfterbirthFloorEnemiesMod:onLeaperUpdate(entity)
+	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, 0, nil, "gfx/monsters/flooded/drowned_monster_044_hopperleaper.png", nil, nil)
+end
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, UniqueAfterbirthFloorEnemiesMod.onLeaperUpdate, EntityType.ENTITY_LEAPER)
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, UniqueAfterbirthFloorEnemiesMod.onLeaperUpdate, EntityType.ENTITY_LEAPER)
+
+function UniqueAfterbirthFloorEnemiesMod:onMawUpdate(entity)
+	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, 0, nil, "gfx/monsters/flooded/drowned_monster_141_maw.png", nil, nil) --regular
+	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 1, -1, 0, nil, "gfx/monsters/flooded/drowned_monster_142_redmaw.png", nil, nil) --red maw
+end
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, UniqueAfterbirthFloorEnemiesMod.onMawUpdate, EntityType.ENTITY_MAW)
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, UniqueAfterbirthFloorEnemiesMod.onMawUpdate, EntityType.ENTITY_MAW)
+
+function UniqueAfterbirthFloorEnemiesMod:onMushroomUpdate(entity)
+	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, 0, nil, "gfx/monsters/flooded/drowned_monster_300_mushroomman.png", nil, nil)
+end
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, UniqueAfterbirthFloorEnemiesMod.onMushroomUpdate, EntityType.ENTITY_MUSHROOM)
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, UniqueAfterbirthFloorEnemiesMod.onMushroomUpdate, EntityType.ENTITY_MUSHROOM)
+
+function UniqueAfterbirthFloorEnemiesMod:onMinistroUpdate(entity)
+	UniqueAfterbirthFloorEnemiesMod:onRespritableEntityUpdate(entity, 0, -1, 0, nil, "gfx/monsters/flooded/drowned_monster_305_ministro.png", nil, nil)
+end
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, UniqueAfterbirthFloorEnemiesMod.onMinistroUpdate, EntityType.ENTITY_MINISTRO)
+UniqueAfterbirthFloorEnemiesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, UniqueAfterbirthFloorEnemiesMod.onMinistroUpdate, EntityType.ENTITY_MINISTRO)
