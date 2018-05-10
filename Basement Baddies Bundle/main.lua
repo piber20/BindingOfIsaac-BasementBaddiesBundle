@@ -4,7 +4,9 @@ BBBaddiesEntityType = {
 	ENTITY_CUSTOM_TEAR = Isaac.GetEntityTypeByName("Bubble Tear"),
 	ENTITY_METEOR_MAW = Isaac.GetEntityTypeByName("Meteor Maw"),
 	ENTITY_CUSTOM_CREEP = Isaac.GetEntityTypeByName("Drowned Creep"),
-	ENTITY_DANK_DUKIE = Isaac.GetEntityTypeByName("Dank Dukie")
+	ENTITY_DANK_DUKIE = Isaac.GetEntityTypeByName("Dank Dukie"),
+	ENTITY_CUSTOM_GAPER = Isaac.GetEntityTypeByName("Murmur"),
+	ENTITY_FAT_GLOBIN = Isaac.GetEntityTypeByName("Fat Globin")
 }
 
 BBBaddiesProjectileVariant = {
@@ -23,7 +25,11 @@ BBBaddiesEntityVariant = {
 	CREEP_STICKY = Isaac.GetEntityVariantByName("Sticky Creep"),
 	CREEP_CHIMERA = Isaac.GetEntityVariantByName("Chimera Creep"),
 	ROUNDY_SPINY = Isaac.GetEntityVariantByName("Spiny"),
-	LEAPER_BOUNCER = Isaac.GetEntityVariantByName("Bouncer")
+	LEAPER_BOUNCER = Isaac.GetEntityVariantByName("Bouncer"),
+	GAPER_MURMUR = Isaac.GetEntityVariantByName("Murmur"),
+	GUSHER_GRIPE = Isaac.GetEntityVariantByName("Gripe"),
+	FAT_GLOBIN_BLUBBER = Isaac.GetEntityVariantByName("Fat Globin Blubber"),
+	FAT_GLOBIN_STACK = Isaac.GetEntityVariantByName("Fat Globin Stack")
 }
 
 BBBaddiesEffectVariant = {
@@ -39,6 +45,9 @@ require("bbbaddies.meteor_maw")
 require("bbbaddies.projectiles")
 require("bbbaddies.creeps")
 require("bbbaddies.bouncer")
+require("bbbaddies.gapers")
+require("bbbaddies.gushers")
+require("bbbaddies.fat_globin")
 
 BBBaddiesDebugString = "Sorry Nothing"
 
@@ -148,6 +157,26 @@ function BBBaddiesMod:LeaperVariants(npc)
 		end
 	end
 end
+function BBBaddiesMod:GurgleVariants(npc)	
+	if (npc.Variant == BBBaddiesEntityVariant.GURGLE_MURMUR) then
+		BBBaddiesMod:Murmur(npc)
+	end
+end
+function BBBaddiesMod:GurgleVariantsTakeDamage(npc, dmg, dmgType, dmgSrc, dmgCountDown)
+	if (npc.Variant == BBBaddiesEntityVariant.GURGLE_MURMUR) then
+		toReturn = BBBaddiesMod:MurmurTakeDamage(npc, dmg, dmgType, dmgSrc, dmgCountDown)
+		if toReturn ~= nil then
+			return toReturn
+		end
+	end
+end
+function BBBaddiesMod:SplasherVariants(npc)	
+	if (npc.Variant == BBBaddiesEntityVariant.SPLASHER_GRIPE) then
+		BBBaddiesMod:Splasher(npc)
+	end
+end
+
+
 
 function BBBaddiesMod:RoundyVariants(npc)
 	if npc.Variant == BBBaddiesEntityVariant.ROUNDY_SPINY then
@@ -161,16 +190,16 @@ function BBBaddiesMod:MinistroVariants(npc)
 end
 
 
-function BBBaddiesMod:HorfAlts(npc)
-	if (npc.Variant == 0) then
-		if (npc.FrameCount == 0) then
-			local backdrop = Game():GetRoom():GetBackdropType()
-			if (backdrop == 3 and math.random(0,1) == 0) then
-				npc:Morph(BBBaddiesEntityType.ENTITY_METEOR_MAW, npc.Variant, npc.SubType, npc:GetChampionColorIdx())
-			end
-		end
-	end
-end
+-- function BBBaddiesMod:HorfAlts(npc)
+	-- if (npc.Variant == 0) then
+		-- if (npc.FrameCount == 0) then
+			-- local backdrop = Game():GetRoom():GetBackdropType()
+			-- if (backdrop == 3 and math.random(0,1) == 0) then
+				-- npc:Morph(BBBaddiesEntityType.ENTITY_METEOR_MAW, npc.Variant, npc.SubType, npc:GetChampionColorIdx())
+			-- end
+		-- end
+	-- end
+-- end
 function BBBaddiesMod:DukieAlts(npc)
 	if (npc.Variant == 0) then
 		if (npc.FrameCount == 0) then
@@ -325,6 +354,12 @@ BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.RoundyVariant
 BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.MinistroVariants, EntityType.ENTITY_MINISTRO)
 BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.DingaVariants, EntityType.ENTITY_DINGA)
 BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.LeaperVariants, EntityType.ENTITY_LEAPER)
+BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.GurgleVariants, BBBaddiesEntityType.ENTITY_GURGLE)
+BBBaddiesMod:AddCallback( ModCallbacks.MC_ENTITY_TAKE_DMG, BBBaddiesMod.GurgleVariantsTakeDamage, EntityType.ENTITY_GURGLE)
+BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.SplasherVariants, BBBaddiesEntityType.ENTITY_SPLASHER)
+
+BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.SplasherVariants, BBBaddiesEntityType.ENTITY_SPLASHER)
+BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.SplasherVariants, BBBaddiesEntityType.ENTITY_SPLASHER)
 
 
 BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.HorfAlts, EntityType.ENTITY_HORF)

@@ -8,7 +8,7 @@ function BBBaddiesMod:CustomTears(npc)
 		end
 	end
 	
-	if (npc.Variant == BBBaddiesProjectileVariant.PROJECTILE_TAR) then	
+	if (npc.Variant == BBBaddiesProjectileVariant.PROJECTILE_TAR) then
 		--I1 = size
 		--StateFrame = range
 		--V1.X = targetSpeed
@@ -294,5 +294,58 @@ function BBBaddiesMod:ProjectileUpdate(ent)
 			sprite:LoadGraphics()
 		end
 	end
+	
+	if ((ent.SpawnerType == BBBaddiesEntityType.ENTITY_CUSTOM_GAPER and ent.SpawnerVariant == BBBaddiesEntityVariant.GAPER_MURMUR) or
+		(ent.SpawnerType == EntityType.ENTITY_GUSHER and ent.SpawnerVariant == BBBaddiesEntityVariant.GUSHER_GRIPE)) then
+		local sprite = ent:GetSprite()
+		local proj = ent:ToProjectile()
+		local room = Game():GetRoom()
+		local tlPos = room:GetTopLeftPos()
+		local brPos = room:GetBottomRightPos()
+		local projectedPosition = ent.Position + ent.Velocity
+		
+		sprite.Scale = Vector(1 + (math.sin(ent.FrameCount * 0.5) * 0.2), 1 + (math.cos(1+ (ent.FrameCount * 0.5)) * 0.2))
+		
+		local kill = false
+		if (proj.Height >= -5) then kill = true end
+		if (projectedPosition.X < tlPos.X or projectedPosition.X > brPos.X or
+			projectedPosition.Y < tlPos.Y or projectedPosition.Y > brPos.Y) then kill = true end
+		if (kill) then
+			local projectileVelocity = Vector(0,1)
+			for i=0,5,1 do
+				projectileVelocity = projectileVelocity:Rotated(math.random(30,120))
+				local newProj = Isaac.Spawn(9, 0, 0, ent.Position, projectileVelocity * (math.random(0,60) * 0.1), nil):ToProjectile()
+				newProj.Height = sprite.Offset.Y
+				newProj.FallingSpeed = math.random(-280,-120) * 0.1
+				newProj.FallingAccel = 1
+				newProj.Scale = math.random(5,18) * 0.1
+				
+				if (newProj.Height > -1) then newProj.Height = -1 end
+			end
+			ent:Kill()
+			--ent.SpawnerEntity:PlaySound(258, 1.0, 0, false, 1.0)
+		end
+		
+		if (ent.FrameCount <= 1) then
+			sprite.Color = Color(1,1,1,1,0,0,0)
+			proj.Scale = proj.Scale + 1
+			proj.ProjectileFlags = ProjectileFlags.NO_WALL_COLLIDE
+			ent.GridCollisionClass = 0
+		elseif (ent.FrameCount % 3 == 0) then
+			local fx = Isaac.Spawn(1000, 111, 0, ent.Position, Vector(math.random(-20,20) * 0.2,math.random(-20,20) * 0.2), ent):ToEffect()
+			fx.SpriteOffset = Vector(0, (proj.Height * 0.65))--ent.SpriteOffset
+			fx.DepthOffset = -24
+		end	
+		
+	end
 end
 BBBaddiesMod:AddCallback( ModCallbacks.MC_POST_PROJECTILE_UPDATE, BBBaddiesMod.ProjectileUpdate)
+
+function BBBaddiesMod:EffectInit(fx)
+	if (fx.FrameCount <= 1) then
+		if ((fx.SpawnerType == EntityType.ENTITY_GURGLE and fx.SpawnerVariant == BBBaddiesEntityVariant.GURGLE_MURMUR)) then
+			fx:GetSprite ().Color = Color(1,1,1,1,0,0,0)
+		end
+	end
+end
+BBBaddiesMod:AddCallback( ModCallbacks.MC_POST_EFFECT_UPDATE, BBBaddiesMod.EffectInit)
