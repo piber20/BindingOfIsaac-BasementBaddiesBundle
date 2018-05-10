@@ -25,9 +25,11 @@ FixedDirtSpritesDirt = { --custom enum that tells us which dirt sprite to use
 	BLUE_WOMB = 4,
 	DIRT_DARK = 5,
 	GRAY = 6,
-	BLACK = 7
+	BLACK = 7,
+	DELIRIUM = 999
 }
 
+local deliriumWasInRoom = false
 function FixedDirtSpritesMod:getDirtToUse()
 	local backdrop = piber20HelperMod:getCurrentBackdrop()
 	local dirtToUse = FixedDirtSpritesDirt.DIRT
@@ -49,8 +51,9 @@ function FixedDirtSpritesMod:getDirtToUse()
 		dirtToUse = FixedDirtSpritesDirt.NONE
 	end
 	
-	if Isaac.CountEntities(nil, EntityType.ENTITY_DELIRIUM, -1, -1) > 0 then
-		dirtToUse = FixedDirtSpritesDirt.NONE --disable self if delirium is in this room
+	if Isaac.CountEntities(nil, EntityType.ENTITY_DELIRIUM, -1, -1) > 0 or deliriumWasInRoom then
+		dirtToUse = FixedDirtSpritesDirt.DELIRIUM
+		deliriumWasInRoom = true
 	end
 	
 	if StageSystem then
@@ -63,7 +66,7 @@ function FixedDirtSpritesMod:getDirtToUse()
 	return dirtToUse
 end
 
-function FixedDirtSpritesMod:setDirtSprite(entity, variant, layer, dirt, womb, scarred, flooded, blueWomb, dirtDark, gray, black)
+function FixedDirtSpritesMod:setDirtSprite(entity, variant, layer, dirt, womb, scarred, flooded, blueWomb, dirtDark, gray, black, delirium)
 	local frameCount = entity.FrameCount
 	
 	local thisType = entity.Type
@@ -106,7 +109,7 @@ function FixedDirtSpritesMod:setDirtSprite(entity, variant, layer, dirt, womb, s
 	data.LastSubType = thisSubType
 	data.LastHealth = thisHealth
 	
-	if frameCount <= 1 or (frameCount >= data.entityTypesChanged and frameCount <= (data.entityTypesChanged + 2)) then
+	if frameCount <= 2 or (frameCount >= data.entityTypesChanged and frameCount <= (data.entityTypesChanged + 2)) then
 		local dirtToUse = FixedDirtSpritesMod:getDirtToUse()
 		if dirtToUse ~= FixedDirtSpritesDirt.NONE then
 			if entity.Variant == variant then
@@ -128,6 +131,8 @@ function FixedDirtSpritesMod:setDirtSprite(entity, variant, layer, dirt, womb, s
 					spritesheet = gray
 				elseif black and dirtToUse == FixedDirtSpritesDirt.BLACK then
 					spritesheet = black
+				elseif delirium and dirtToUse == FixedDirtSpritesDirt.DELIRIUM then
+					spritesheet = delirium
 				end
 				
 				if spritesheet ~= nil then
@@ -149,6 +154,8 @@ function FixedDirtSpritesMod:setDirtSprite(entity, variant, layer, dirt, womb, s
 							spritesheet = "gfx/bosses/afterbirth/boss_thefrail2_gray.png"
 						elseif spritesheet == "gfx/bosses/afterbirth/boss_thefrail_black.png" then
 							spritesheet = "gfx/bosses/afterbirth/boss_thefrail2_black.png"
+						elseif spritesheet == "gfx/bosses/afterbirthplus/deliriumforms/afterbirth/boss_thefrail.png" then
+							spritesheet = "gfx/bosses/afterbirthplus/deliriumforms/afterbirth/boss_thefrail2.png"
 						end
 					end
 					
@@ -160,6 +167,19 @@ function FixedDirtSpritesMod:setDirtSprite(entity, variant, layer, dirt, womb, s
 		end
 	end
 end
+
+function FixedDirtSpritesMod:onDeliriumInit(entity)
+	deliriumWasInRoom = true
+end
+FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, FixedDirtSpritesMod.onDeliriumInit, EntityType.ENTITY_DELIRIUM)
+
+function FixedDirtSpritesMod:onRoomChange()
+	deliriumWasInRoom = false
+	if Isaac.CountEntities(nil, EntityType.ENTITY_DELIRIUM, -1, -1) > 0 then
+		deliriumWasInRoom = true
+	end
+end
+FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, FixedDirtSpritesMod.onRoomChange)
 
 -----------
 --ENEMIES--
@@ -197,7 +217,7 @@ FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, FixedDirtSpritesM
 
 function FixedDirtSpritesMod:onRoundWormUpdate(entity)
 	FixedDirtSpritesMod:setDirtSprite(entity, 0, 0, "gfx/monsters/rebirth/monster_244_roundworm.png", "gfx/monsters/rebirth/monster_244_roundworm_womb.png", "gfx/monsters/rebirth/monster_244_roundworm_scarred.png", "gfx/monsters/rebirth/monster_244_roundworm_flooded.png", "gfx/monsters/rebirth/monster_244_roundworm_blue_womb.png", "gfx/monsters/rebirth/monster_244_roundworm_dirt_dark.png", "gfx/monsters/rebirth/monster_244_roundworm_gray.png", "gfx/monsters/rebirth/monster_244_roundworm_black.png")
-	FixedDirtSpritesMod:setDirtSprite(entity, 1, 0, "gfx/monsters/afterbirthplus/tubeworm_dirt.png", "gfx/monsters/afterbirthplus/tubeworm_scarred.png", "gfx/monsters/afterbirthplus/tubeworm.png", "gfx/monsters/afterbirthplus/tubeworm_womb.png", "gfx/monsters/afterbirthplus/tubeworm_blue_womb.png", "gfx/monsters/afterbirthplus/tubeworm_dirt_dark.png", "gfx/monsters/afterbirthplus/tubeworm_gray.png", "gfx/monsters/afterbirthplus/tubeworm_black.png")
+	FixedDirtSpritesMod:setDirtSprite(entity, 1, 0, "gfx/monsters/afterbirthplus/tubeworm_dirt.png", "gfx/monsters/afterbirthplus/tubeworm_womb.png", "gfx/monsters/afterbirthplus/tubeworm_scarred.png", "gfx/monsters/afterbirthplus/tubeworm.png", "gfx/monsters/afterbirthplus/tubeworm_blue_womb.png", "gfx/monsters/afterbirthplus/tubeworm_dirt_dark.png", "gfx/monsters/afterbirthplus/tubeworm_gray.png", "gfx/monsters/afterbirthplus/tubeworm_black.png")
 end
 FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, FixedDirtSpritesMod.onRoundWormUpdate, EntityType.ENTITY_ROUND_WORM)
 FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, FixedDirtSpritesMod.onRoundWormUpdate, EntityType.ENTITY_ROUND_WORM)
@@ -218,36 +238,36 @@ FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, FixedDirtSpritesM
 --BOSSES--
 ----------
 function FixedDirtSpritesMod:onPinUpdate(entity)
-	FixedDirtSpritesMod:setDirtSprite(entity, 0, 0, "gfx/bosses/classic/boss_019_pin.png", "gfx/bosses/classic/boss_019_pin_womb.png", "gfx/bosses/classic/boss_019_pin_scarred.png", "gfx/bosses/classic/boss_019_pin_flooded.png", "gfx/bosses/classic/boss_019_pin_blue_womb.png", "gfx/bosses/classic/boss_019_pin_dirt_dark.png", "gfx/bosses/classic/boss_019_pin_gray.png", "gfx/bosses/classic/boss_019_pin_black.png")
-	FixedDirtSpritesMod:setDirtSprite(entity, 1, 0, "gfx/bosses/classic/boss_062_scolex_dirt.png", "gfx/bosses/classic/boss_062_scolex.png", "gfx/bosses/classic/boss_062_scolex_scarred.png", "gfx/bosses/classic/boss_062_scolex_flooded.png", "gfx/bosses/classic/boss_062_scolex_blue_womb.png", "gfx/bosses/classic/boss_062_scolex_dirt_dark.png", "gfx/bosses/classic/boss_062_scolex_gray.png", "gfx/bosses/classic/boss_062_scolex_black.png")
+	FixedDirtSpritesMod:setDirtSprite(entity, 0, 0, "gfx/bosses/classic/boss_019_pin.png", "gfx/bosses/classic/boss_019_pin_womb.png", "gfx/bosses/classic/boss_019_pin_scarred.png", "gfx/bosses/classic/boss_019_pin_flooded.png", "gfx/bosses/classic/boss_019_pin_blue_womb.png", "gfx/bosses/classic/boss_019_pin_dirt_dark.png", "gfx/bosses/classic/boss_019_pin_gray.png", "gfx/bosses/classic/boss_019_pin_black.png", "gfx/bosses/afterbirthplus/deliriumforms/classic/boss_019_pin.png")
+	FixedDirtSpritesMod:setDirtSprite(entity, 1, 0, "gfx/bosses/classic/boss_062_scolex_dirt.png", "gfx/bosses/classic/boss_062_scolex.png", "gfx/bosses/classic/boss_062_scolex_scarred.png", "gfx/bosses/classic/boss_062_scolex_flooded.png", "gfx/bosses/classic/boss_062_scolex_blue_womb.png", "gfx/bosses/classic/boss_062_scolex_dirt_dark.png", "gfx/bosses/classic/boss_062_scolex_gray.png", "gfx/bosses/classic/boss_062_scolex_black.png", "gfx/bosses/afterbirthplus/deliriumforms/classic/boss_062_scolex.png")
 	if entity.SubType ~= 1 then
-		FixedDirtSpritesMod:setDirtSprite(entity, 2, 0, "gfx/bosses/afterbirth/boss_thefrail.png", "gfx/bosses/afterbirth/boss_thefrail_womb.png", "gfx/bosses/afterbirth/boss_thefrail_scarred.png", "gfx/bosses/afterbirth/boss_thefrail_flooded.png", "gfx/bosses/afterbirth/boss_thefrail_blue_womb.png", "gfx/bosses/afterbirth/boss_thefrail_dirt_dark.png", "gfx/bosses/afterbirth/boss_thefrail_gray.png", "gfx/bosses/afterbirth/boss_thefrail_black.png")
+		FixedDirtSpritesMod:setDirtSprite(entity, 2, 0, "gfx/bosses/afterbirth/boss_thefrail.png", "gfx/bosses/afterbirth/boss_thefrail_womb.png", "gfx/bosses/afterbirth/boss_thefrail_scarred.png", "gfx/bosses/afterbirth/boss_thefrail_flooded.png", "gfx/bosses/afterbirth/boss_thefrail_blue_womb.png", "gfx/bosses/afterbirth/boss_thefrail_dirt_dark.png", "gfx/bosses/afterbirth/boss_thefrail_gray.png", "gfx/bosses/afterbirth/boss_thefrail_black.png", "gfx/bosses/afterbirthplus/deliriumforms/afterbirth/boss_thefrail.png")
 	else
-		FixedDirtSpritesMod:setDirtSprite(entity, 2, 0, "gfx/bosses/afterbirth/boss_thefrail2.png", "gfx/bosses/afterbirth/boss_thefrail2_womb.png", "gfx/bosses/afterbirth/boss_thefrail2_scarred.png", "gfx/bosses/afterbirth/boss_thefrail2_flooded.png", "gfx/bosses/afterbirth/boss_thefrail2_blue_womb.png", "gfx/bosses/afterbirth/boss_thefrail2_dirt_dark.png", "gfx/bosses/afterbirth/boss_thefrail2_gray.png", "gfx/bosses/afterbirth/boss_thefrail2_black.png")
+		FixedDirtSpritesMod:setDirtSprite(entity, 2, 0, "gfx/bosses/afterbirth/boss_thefrail2.png", "gfx/bosses/afterbirth/boss_thefrail2_womb.png", "gfx/bosses/afterbirth/boss_thefrail2_scarred.png", "gfx/bosses/afterbirth/boss_thefrail2_flooded.png", "gfx/bosses/afterbirth/boss_thefrail2_blue_womb.png", "gfx/bosses/afterbirth/boss_thefrail2_dirt_dark.png", "gfx/bosses/afterbirth/boss_thefrail2_gray.png", "gfx/bosses/afterbirth/boss_thefrail2_black.png", "gfx/bosses/afterbirthplus/deliriumforms/afterbirth/boss_thefrail2.png")
 	end
 end
 FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, FixedDirtSpritesMod.onPinUpdate, EntityType.ENTITY_PIN)
 FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, FixedDirtSpritesMod.onPinUpdate, EntityType.ENTITY_PIN)
 
 function FixedDirtSpritesMod:onPolycephalusUpdate(entity)
-	FixedDirtSpritesMod:setDirtSprite(entity, 0, 0, "gfx/bosses/rebirth/polycephalus.png", "gfx/bosses/rebirth/polycephalus_womb.png", "gfx/bosses/rebirth/polycephalus_scarred.png", "gfx/bosses/rebirth/polycephalus_flooded.png", "gfx/bosses/rebirth/polycephalus_blue_womb.png", "gfx/bosses/rebirth/polycephalus_dirt_dark.png", "gfx/bosses/rebirth/polycephalus_gray.png", "gfx/bosses/rebirth/polycephalus_black.png")
-	FixedDirtSpritesMod:setDirtSprite(entity, 0, 1, "gfx/bosses/rebirth/polycephalus.png", "gfx/bosses/rebirth/polycephalus_womb.png", "gfx/bosses/rebirth/polycephalus_scarred.png", "gfx/bosses/rebirth/polycephalus_flooded.png", "gfx/bosses/rebirth/polycephalus_blue_womb.png", "gfx/bosses/rebirth/polycephalus_dirt_dark.png", "gfx/bosses/rebirth/polycephalus_gray.png", "gfx/bosses/rebirth/polycephalus_black.png")
+	FixedDirtSpritesMod:setDirtSprite(entity, 0, 0, "gfx/bosses/rebirth/polycephalus.png", "gfx/bosses/rebirth/polycephalus_womb.png", "gfx/bosses/rebirth/polycephalus_scarred.png", "gfx/bosses/rebirth/polycephalus_flooded.png", "gfx/bosses/rebirth/polycephalus_blue_womb.png", "gfx/bosses/rebirth/polycephalus_dirt_dark.png", "gfx/bosses/rebirth/polycephalus_gray.png", "gfx/bosses/rebirth/polycephalus_black.png", "gfx/bosses/afterbirthplus/deliriumforms/rebirth/polycephalus.png")
+	FixedDirtSpritesMod:setDirtSprite(entity, 0, 1, "gfx/bosses/rebirth/polycephalus.png", "gfx/bosses/rebirth/polycephalus_womb.png", "gfx/bosses/rebirth/polycephalus_scarred.png", "gfx/bosses/rebirth/polycephalus_flooded.png", "gfx/bosses/rebirth/polycephalus_blue_womb.png", "gfx/bosses/rebirth/polycephalus_dirt_dark.png", "gfx/bosses/rebirth/polycephalus_gray.png", "gfx/bosses/rebirth/polycephalus_black.png", "gfx/bosses/afterbirthplus/deliriumforms/rebirth/polycephalus.png")
 end
 FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, FixedDirtSpritesMod.onPolycephalusUpdate, EntityType.ENTITY_POLYCEPHALUS)
 FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, FixedDirtSpritesMod.onPolycephalusUpdate, EntityType.ENTITY_POLYCEPHALUS)
 
 function FixedDirtSpritesMod:onMrFredUpdate(entity)
-	FixedDirtSpritesMod:setDirtSprite(entity, 0, 0, "gfx/bosses/rebirth/megafred_dirt.png", "gfx/bosses/rebirth/megafred.png", "gfx/bosses/rebirth/megafred_scarred.png", "gfx/bosses/rebirth/megafred_flooded.png", "gfx/bosses/rebirth/megafred_blue_womb.png", "gfx/bosses/rebirth/megafred_dirt_dark.png", "gfx/bosses/rebirth/megafred_gray.png", "gfx/bosses/rebirth/megafred_black.png")
-	FixedDirtSpritesMod:setDirtSprite(entity, 0, 1, "gfx/bosses/rebirth/megafred_dirt.png", "gfx/bosses/rebirth/megafred.png", "gfx/bosses/rebirth/megafred_scarred.png", "gfx/bosses/rebirth/megafred_flooded.png", "gfx/bosses/rebirth/megafred_blue_womb.png", "gfx/bosses/rebirth/megafred_dirt_dark.png", "gfx/bosses/rebirth/megafred_gray.png", "gfx/bosses/rebirth/megafred_black.png")
+	FixedDirtSpritesMod:setDirtSprite(entity, 0, 0, "gfx/bosses/rebirth/megafred_dirt.png", "gfx/bosses/rebirth/megafred.png", "gfx/bosses/rebirth/megafred_scarred.png", "gfx/bosses/rebirth/megafred_flooded.png", "gfx/bosses/rebirth/megafred_blue_womb.png", "gfx/bosses/rebirth/megafred_dirt_dark.png", "gfx/bosses/rebirth/megafred_gray.png", "gfx/bosses/rebirth/megafred_black.png", "gfx/bosses/afterbirthplus/deliriumforms/rebirth/megafred.png")
+	FixedDirtSpritesMod:setDirtSprite(entity, 0, 1, "gfx/bosses/rebirth/megafred_dirt.png", "gfx/bosses/rebirth/megafred.png", "gfx/bosses/rebirth/megafred_scarred.png", "gfx/bosses/rebirth/megafred_flooded.png", "gfx/bosses/rebirth/megafred_blue_womb.png", "gfx/bosses/rebirth/megafred_dirt_dark.png", "gfx/bosses/rebirth/megafred_gray.png", "gfx/bosses/rebirth/megafred_black.png", "gfx/bosses/afterbirthplus/deliriumforms/rebirth/megafred.png")
 end
 FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, FixedDirtSpritesMod.onMrFredUpdate, EntityType.ENTITY_MR_FRED)
 FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, FixedDirtSpritesMod.onMrFredUpdate, EntityType.ENTITY_MR_FRED)
 
 function FixedDirtSpritesMod:onStainUpdate(entity)
-	FixedDirtSpritesMod:setDirtSprite(entity, 0, 0, "gfx/bosses/afterbirth/thestain.png", "gfx/bosses/afterbirth/thestain_womb.png", "gfx/bosses/afterbirth/thestain_scarred.png", "gfx/bosses/afterbirth/thestain_flooded.png", "gfx/bosses/afterbirth/thestain_blue_womb.png", "gfx/bosses/afterbirth/thestain_dirt_dark.png", "gfx/bosses/afterbirth/thestain_gray.png", "gfx/bosses/afterbirth/thestain_black.png")
-	FixedDirtSpritesMod:setDirtSprite(entity, 0, 1, "gfx/bosses/afterbirth/thestain.png", "gfx/bosses/afterbirth/thestain_womb.png", "gfx/bosses/afterbirth/thestain_scarred.png", "gfx/bosses/afterbirth/thestain_flooded.png", "gfx/bosses/afterbirth/thestain_blue_womb.png", "gfx/bosses/afterbirth/thestain_dirt_dark.png", "gfx/bosses/afterbirth/thestain_gray.png", "gfx/bosses/afterbirth/thestain_black.png")
-	FixedDirtSpritesMod:setDirtSprite(entity, 0, 2, "gfx/bosses/afterbirth/thestain.png", "gfx/bosses/afterbirth/thestain_womb.png", "gfx/bosses/afterbirth/thestain_scarred.png", "gfx/bosses/afterbirth/thestain_flooded.png", "gfx/bosses/afterbirth/thestain_blue_womb.png", "gfx/bosses/afterbirth/thestain_dirt_dark.png", "gfx/bosses/afterbirth/thestain_gray.png", "gfx/bosses/afterbirth/thestain_black.png")
-	FixedDirtSpritesMod:setDirtSprite(entity, 0, 3, "gfx/bosses/afterbirth/thestain.png", "gfx/bosses/afterbirth/thestain_womb.png", "gfx/bosses/afterbirth/thestain_scarred.png", "gfx/bosses/afterbirth/thestain_flooded.png", "gfx/bosses/afterbirth/thestain_blue_womb.png", "gfx/bosses/afterbirth/thestain_dirt_dark.png", "gfx/bosses/afterbirth/thestain_gray.png", "gfx/bosses/afterbirth/thestain_black.png")
+	FixedDirtSpritesMod:setDirtSprite(entity, 0, 0, "gfx/bosses/afterbirth/thestain.png", "gfx/bosses/afterbirth/thestain_womb.png", "gfx/bosses/afterbirth/thestain_scarred.png", "gfx/bosses/afterbirth/thestain_flooded.png", "gfx/bosses/afterbirth/thestain_blue_womb.png", "gfx/bosses/afterbirth/thestain_dirt_dark.png", "gfx/bosses/afterbirth/thestain_gray.png", "gfx/bosses/afterbirth/thestain_black.png", "gfx/bosses/afterbirthplus/deliriumforms/afterbirth/thestain.png")
+	FixedDirtSpritesMod:setDirtSprite(entity, 0, 1, "gfx/bosses/afterbirth/thestain.png", "gfx/bosses/afterbirth/thestain_womb.png", "gfx/bosses/afterbirth/thestain_scarred.png", "gfx/bosses/afterbirth/thestain_flooded.png", "gfx/bosses/afterbirth/thestain_blue_womb.png", "gfx/bosses/afterbirth/thestain_dirt_dark.png", "gfx/bosses/afterbirth/thestain_gray.png", "gfx/bosses/afterbirth/thestain_black.png", "gfx/bosses/afterbirthplus/deliriumforms/afterbirth/thestain.png")
+	FixedDirtSpritesMod:setDirtSprite(entity, 0, 2, "gfx/bosses/afterbirth/thestain.png", "gfx/bosses/afterbirth/thestain_womb.png", "gfx/bosses/afterbirth/thestain_scarred.png", "gfx/bosses/afterbirth/thestain_flooded.png", "gfx/bosses/afterbirth/thestain_blue_womb.png", "gfx/bosses/afterbirth/thestain_dirt_dark.png", "gfx/bosses/afterbirth/thestain_gray.png", "gfx/bosses/afterbirth/thestain_black.png", "gfx/bosses/afterbirthplus/deliriumforms/afterbirth/thestain.png")
+	FixedDirtSpritesMod:setDirtSprite(entity, 0, 3, "gfx/bosses/afterbirth/thestain.png", "gfx/bosses/afterbirth/thestain_womb.png", "gfx/bosses/afterbirth/thestain_scarred.png", "gfx/bosses/afterbirth/thestain_flooded.png", "gfx/bosses/afterbirth/thestain_blue_womb.png", "gfx/bosses/afterbirth/thestain_dirt_dark.png", "gfx/bosses/afterbirth/thestain_gray.png", "gfx/bosses/afterbirth/thestain_black.png", "gfx/bosses/afterbirthplus/deliriumforms/afterbirth/thestain.png")
 end
 FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, FixedDirtSpritesMod.onStainUpdate, EntityType.ENTITY_STAIN)
 FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, FixedDirtSpritesMod.onStainUpdate, EntityType.ENTITY_STAIN)
