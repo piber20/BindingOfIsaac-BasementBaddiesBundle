@@ -2,7 +2,10 @@ function BBBaddiesMod:GusherVarients(npc)
 	
 	if (npc.Variant == BBBaddiesEntityVariant.GUSHER_GRIPE) then
 		if npc.State == 4 then
-			BBBaddiesMod:MovementGaper(npc,1.8)
+			local sprite = npc:GetSprite()
+			if not sprite:IsOverlayPlaying("Blood") then sprite:PlayOverlay("Blood") end
+			
+			
 			if (npc.StateFrame < 30) then
 				npc.StateFrame = npc.StateFrame + 1
 			else

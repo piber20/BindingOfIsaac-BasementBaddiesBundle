@@ -1,4 +1,4 @@
-function BBBaddiesMod:GaperVarients(npc)
+function BBBaddiesMod:GaperVariants(npc)
 	local init = false
 	local room = Game():GetRoom()
 	if npc.State == 0 then
@@ -62,7 +62,7 @@ function BBBaddiesMod:MovementGaper(npc, moveSpeed)
 	
 	npc:AnimWalkFrame("WalkHori", "WalkVert", 1.0)
 end
-function BBBaddiesMod:GaperVarientsTakeDamage(npc, dmg, dmgType, dmgSrc, dmgCountDown)
+function BBBaddiesMod:GaperVariantsTakeDamage(npc, dmg, dmgType, dmgSrc, dmgCountDown)
 	if (npc.HitPoints < dmg and math.random(0,4) == 0) then
 		local gripe = Isaac.Spawn(EntityType.ENTITY_GUSHER, BBBaddiesEntityVariant.GUSHER_GRIPE, 0, npc.Position, Vector(0,0), npc)
 		gripe:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
@@ -71,5 +71,5 @@ end
 
 
 
-BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.GaperVarients, BBBaddiesEntityType.ENTITY_CUSTOM_GAPER)
-BBBaddiesMod:AddCallback( ModCallbacks.MC_ENTITY_TAKE_DMG, BBBaddiesMod.GaperVarientsTakeDamage, EntityType.ENTITY_CUSTOM_GAPER)
+BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.GaperVariants, BBBaddiesEntityType.ENTITY_CUSTOM_GAPER)
+BBBaddiesMod:AddCallback( ModCallbacks.MC_ENTITY_TAKE_DMG, BBBaddiesMod.GaperVariantsTakeDamage, BBBaddiesEntityType.ENTITY_CUSTOM_GAPER)
