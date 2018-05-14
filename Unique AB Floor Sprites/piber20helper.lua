@@ -1,5 +1,5 @@
 --the version of this helper mod script
-local currentVersion = 8
+local currentVersion = 9
 
 --remove any previous versions that may exist
 if piber20HelperMod then
@@ -1172,6 +1172,8 @@ if not piber20HelperMod then
 		if isShopItem then
 			price = pickup.Price
 		end
+		
+		--get all the players
 		for i = 1, Game():GetNumPlayers() do
 			local player = Isaac.GetPlayer(i - 1)
 			if not piber20HelperMod:isPlayerGhost(player) then --dead players shouldn't be able to pick up stuff
@@ -1182,6 +1184,37 @@ if not piber20HelperMod then
 				end
 			end
 		end
+		
+		--try to get a player from bone club swings
+		if not isShopItem then
+			for _, knife in pairs(Isaac.FindByType(EntityType.ENTITY_KNIFE, -1, 4, false, false)) do
+				if knife.FrameCount > 0 then
+					if knife.Parent then
+						local parent = knife.Parent
+						if parent:ToPlayer() then
+							local player = parent:ToPlayer()
+							
+							--find the center of the swing object
+							knife = knife:ToKnife()
+							local position = knife.Position
+							local scale = 30 * knife.SpriteScale.X
+							local offset = Vector(scale,0)
+							offset = offset:Rotated(knife.Rotation)
+							position = position + offset
+							
+							--do player checks
+							if not piber20HelperMod:isPlayerGhost(player) then --dead players shouldn't be able to pick up stuff
+								if (position - pickup.Position):Length() < pickup.Size + scale then --check if the player is touching it
+									return player
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+		
+		--didnt find any player touching the pickup
 		return false
 	end
 
