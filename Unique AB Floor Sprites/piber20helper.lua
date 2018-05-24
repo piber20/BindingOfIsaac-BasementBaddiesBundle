@@ -1,15 +1,16 @@
 --the version of this helper mod script
-local currentVersion = 9
+local currentVersion = 10
 
 --remove any previous versions that may exist
+local callbacksAlreadyLoaded = nil
 if piber20HelperMod then
 	local thisVersion = 1
 	if piber20HelperMod.Version ~= nil then
 		thisVersion = piber20HelperMod.Version
 	end
 	if thisVersion < currentVersion then
-		if piber20HelperMod.RemoveCallbacks then
-			piber20HelperMod:RemoveCallbacks()
+		if piber20HelperMod.AddedCallback then
+			callbacksAlreadyLoaded = piber20HelperMod.AddedCallback
 		end
 		piber20HelperMod = nil
 		Isaac.DebugString("Removed older piber20 helper mod (version " .. thisVersion .. ")")
@@ -22,14 +23,10 @@ if not piber20HelperMod then
 	piber20HelperMod.GameStarted = false
 	piber20HelperMod.IsSaveGame = false
 	Isaac.DebugString("Loading piber20 helper mod version " .. piber20HelperMod.Version)
-	function piber20HelperMod:RemoveCallbacks()
-		piber20HelperMod:RemoveCallback(ModCallbacks.MC_POST_NEW_ROOM, piber20HelperMod.onRoomChange)
-		piber20HelperMod:RemoveCallback(ModCallbacks.MC_USE_ITEM, piber20HelperMod.onUseItem)
-		piber20HelperMod:RemoveCallback(ModCallbacks.MC_USE_CARD, piber20HelperMod.onUseCard)
-		piber20HelperMod:RemoveCallback(ModCallbacks.MC_USE_PILL, piber20HelperMod.onUsePill)
-		piber20HelperMod:RemoveCallback(ModCallbacks.MC_POST_GAME_STARTED, piber20HelperMod.onGameStart)
-		piber20HelperMod:RemoveCallback(ModCallbacks.MC_POST_UPDATE, piber20HelperMod.onUpdate)
-		piber20HelperMod:RemoveCallback(ModCallbacks.MC_POST_RENDER, piber20HelperMod.onRender)
+	
+	piber20HelperMod.AddedCallback = {}
+	if callbacksAlreadyLoaded then
+		piber20HelperMod.AddedCallback = callbacksAlreadyLoaded
 	end
 	
 	----------------
@@ -1739,7 +1736,6 @@ if not piber20HelperMod then
 		end
 		pickupToRestock = {}
 	end
-	piber20HelperMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, piber20HelperMod.onRoomChange)
 	
 	function piber20HelperMod:onUseItem(itemID, rng)
 		local player = piber20HelperMod:getPlayerUsingItem()
@@ -1752,7 +1748,6 @@ if not piber20HelperMod then
 		end
 		data.ItemsUsedInThisRoom[itemID] = data.ItemsUsedInThisRoom[itemID] + 1
 	end
-	piber20HelperMod:AddCallback(ModCallbacks.MC_USE_ITEM, piber20HelperMod.onUseItem)
 	
 	function piber20HelperMod:onUseCard(cardID)
 		local player = piber20HelperMod:getPlayerUsingItem()
@@ -1765,7 +1760,6 @@ if not piber20HelperMod then
 		end
 		data.CardsUsedInThisRoom[cardID] = data.CardsUsedInThisRoom[cardID] + 1
 	end
-	piber20HelperMod:AddCallback(ModCallbacks.MC_USE_CARD, piber20HelperMod.onUseCard)
 	
 	function piber20HelperMod:onUsePill(pillEffect)
 		local player = piber20HelperMod:getPlayerUsingItem()
@@ -1778,7 +1772,6 @@ if not piber20HelperMod then
 		end
 		data.PillEffectsUsedInThisRoom[pillEffect] = data.PillEffectsUsedInThisRoom[pillEffect] + 1
 	end
-	piber20HelperMod:AddCallback(ModCallbacks.MC_USE_PILL, piber20HelperMod.onUsePill)
 	
 	function piber20HelperMod:onGameStart(isSaveGame)
 		piber20HelperMod.GameStarted = true
@@ -1797,7 +1790,6 @@ if not piber20HelperMod then
 		shouldRenderAchievement = false
 		pickupToRestock = {}
 	end
-	piber20HelperMod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, piber20HelperMod.onGameStart)
 	
 	function piber20HelperMod:onUpdate()
 		local room = Game():GetRoom()
@@ -2240,7 +2232,6 @@ if not piber20HelperMod then
 			shouldRenderAchievement = false
 		end
 	end
-	piber20HelperMod:AddCallback(ModCallbacks.MC_POST_UPDATE, piber20HelperMod.onUpdate)
 	
 	function piber20HelperMod:onRender()
 		--for use with schedule
@@ -2365,7 +2356,35 @@ if not piber20HelperMod then
 			end
 		end
 	end
-	piber20HelperMod:AddCallback(ModCallbacks.MC_POST_RENDER, piber20HelperMod.onRender)
+	
+	if not piber20HelperMod.AddedCallback[ModCallbacks.MC_POST_NEW_ROOM] then
+		piber20HelperMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, piber20HelperMod.onRoomChange)
+		piber20HelperMod.AddedCallback[ModCallbacks.MC_POST_NEW_ROOM] = true
+	end
+	if not piber20HelperMod.AddedCallback[ModCallbacks.MC_USE_ITEM] then
+		piber20HelperMod:AddCallback(ModCallbacks.MC_USE_ITEM, piber20HelperMod.onUseItem)
+		piber20HelperMod.AddedCallback[ModCallbacks.MC_USE_ITEM] = true
+	end
+	if not piber20HelperMod.AddedCallback[ModCallbacks.MC_USE_CARD] then
+		piber20HelperMod:AddCallback(ModCallbacks.MC_USE_CARD, piber20HelperMod.onUseCard)
+		piber20HelperMod.AddedCallback[ModCallbacks.MC_USE_CARD] = true
+	end
+	if not piber20HelperMod.AddedCallback[ModCallbacks.MC_USE_PILL] then
+		piber20HelperMod:AddCallback(ModCallbacks.MC_USE_PILL, piber20HelperMod.onUsePill)
+		piber20HelperMod.AddedCallback[ModCallbacks.MC_USE_PILL] = true
+	end
+	if not piber20HelperMod.AddedCallback[ModCallbacks.MC_POST_GAME_STARTED] then
+		piber20HelperMod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, piber20HelperMod.onGameStart)
+		piber20HelperMod.AddedCallback[ModCallbacks.MC_POST_GAME_STARTED] = true
+	end
+	if not piber20HelperMod.AddedCallback[ModCallbacks.MC_POST_UPDATE] then
+		piber20HelperMod:AddCallback(ModCallbacks.MC_POST_UPDATE, piber20HelperMod.onUpdate)
+		piber20HelperMod.AddedCallback[ModCallbacks.MC_POST_UPDATE] = true
+	end
+	if not piber20HelperMod.AddedCallback[ModCallbacks.MC_POST_RENDER] then
+		piber20HelperMod:AddCallback(ModCallbacks.MC_POST_RENDER, piber20HelperMod.onRender)
+		piber20HelperMod.AddedCallback[ModCallbacks.MC_POST_RENDER] = true
+	end
 end
 
 piber20HelperMod:ForceError() --this function doesn't exist, we do this to cause an error intentionally
