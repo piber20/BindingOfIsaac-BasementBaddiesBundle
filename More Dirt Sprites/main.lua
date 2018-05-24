@@ -234,6 +234,14 @@ end
 FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, FixedDirtSpritesMod.onUlcerUpdate, EntityType.ENTITY_ULCER)
 FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, FixedDirtSpritesMod.onUlcerUpdate, EntityType.ENTITY_ULCER)
 
+function FixedDirtSpritesMod:onPitfallUpdate(entity)
+	FixedDirtSpritesMod:setDirtSprite(entity, 0, 0, "gfx/monsters/afterbirth/291.000_pitfall.png", "gfx/monsters/afterbirth/291.000_pitfall_womb.png", "gfx/monsters/afterbirth/291.000_pitfall_scarred.png", "gfx/monsters/afterbirth/291.000_pitfall_flooded.png", "gfx/monsters/afterbirth/291.000_pitfall_blue_womb.png", "gfx/monsters/afterbirth/291.000_pitfall_dirt_dark.png", "gfx/monsters/afterbirth/291.000_pitfall_gray.png", "gfx/monsters/afterbirth/291.000_pitfall_black.png")
+	FixedDirtSpritesMod:setDirtSprite(entity, 1, 0, "gfx/monsters/afterbirth/291.000_pitfall.png", "gfx/monsters/afterbirth/291.000_pitfall_womb.png", "gfx/monsters/afterbirth/291.000_pitfall_scarred.png", "gfx/monsters/afterbirth/291.000_pitfall_flooded.png", "gfx/monsters/afterbirth/291.000_pitfall_blue_womb.png", "gfx/monsters/afterbirth/291.000_pitfall_dirt_dark.png", "gfx/monsters/afterbirth/291.000_pitfall_gray.png", "gfx/monsters/afterbirth/291.000_pitfall_black.png")
+	FixedDirtSpritesMod:setDirtSprite(entity, 2, 0, "gfx/monsters/afterbirth/291.000_pitfall.png", "gfx/monsters/afterbirth/291.000_pitfall_womb.png", "gfx/monsters/afterbirth/291.000_pitfall_scarred.png", "gfx/monsters/afterbirth/291.000_pitfall_flooded.png", "gfx/monsters/afterbirth/291.000_pitfall_blue_womb.png", "gfx/monsters/afterbirth/291.000_pitfall_dirt_dark.png", "gfx/monsters/afterbirth/291.000_pitfall_gray.png", "gfx/monsters/afterbirth/291.000_pitfall_black.png")
+end
+FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, FixedDirtSpritesMod.onPitfallUpdate, EntityType.ENTITY_PITFALL)
+FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, FixedDirtSpritesMod.onPitfallUpdate, EntityType.ENTITY_PITFALL)
+
 ----------
 --BOSSES--
 ----------
@@ -271,6 +279,31 @@ function FixedDirtSpritesMod:onStainUpdate(entity)
 end
 FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, FixedDirtSpritesMod.onStainUpdate, EntityType.ENTITY_STAIN)
 FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, FixedDirtSpritesMod.onStainUpdate, EntityType.ENTITY_STAIN)
+
+function FixedDirtSpritesMod:onLittleHornUpdate(entity)
+	FixedDirtSpritesMod:setDirtSprite(entity, 0, 0, "gfx/bosses/afterbirth/littlehorn.png", "gfx/bosses/afterbirth/littlehorn_womb.png", "gfx/bosses/afterbirth/littlehorn_scarred.png", "gfx/bosses/afterbirth/littlehorn_flooded.png", "gfx/bosses/afterbirth/littlehorn_blue_womb.png", "gfx/bosses/afterbirth/littlehorn_dirt_dark.png", "gfx/bosses/afterbirth/littlehorn_gray.png", "gfx/bosses/afterbirth/littlehorn_black.png", "gfx/bosses/afterbirthplus/deliriumforms/afterbirth/littlehorn.png")
+	FixedDirtSpritesMod:setDirtSprite(entity, 0, 1, "gfx/bosses/afterbirth/littlehorn.png", "gfx/bosses/afterbirth/littlehorn_womb.png", "gfx/bosses/afterbirth/littlehorn_scarred.png", "gfx/bosses/afterbirth/littlehorn_flooded.png", "gfx/bosses/afterbirth/littlehorn_blue_womb.png", "gfx/bosses/afterbirth/littlehorn_dirt_dark.png", "gfx/bosses/afterbirth/littlehorn_gray.png", "gfx/bosses/afterbirth/littlehorn_black.png", "gfx/bosses/afterbirthplus/deliriumforms/afterbirth/littlehorn.png")
+	FixedDirtSpritesMod:setDirtSprite(entity, 0, 2, "gfx/bosses/afterbirth/littlehorn.png", "gfx/bosses/afterbirth/littlehorn_womb.png", "gfx/bosses/afterbirth/littlehorn_scarred.png", "gfx/bosses/afterbirth/littlehorn_flooded.png", "gfx/bosses/afterbirth/littlehorn_blue_womb.png", "gfx/bosses/afterbirth/littlehorn_dirt_dark.png", "gfx/bosses/afterbirth/littlehorn_gray.png", "gfx/bosses/afterbirth/littlehorn_black.png", "gfx/bosses/afterbirthplus/deliriumforms/afterbirth/littlehorn.png")
+end
+FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, FixedDirtSpritesMod.onLittleHornUpdate, EntityType.ENTITY_LITTLE_HORN)
+FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, FixedDirtSpritesMod.onLittleHornUpdate, EntityType.ENTITY_LITTLE_HORN)
+
+function FixedDirtSpritesMod:onBigHornUpdate(entity)
+	FixedDirtSpritesMod:setDirtSprite(entity, 0, 0, "gfx/bosses/afterbirthplus/boss_bighorn.png", "gfx/bosses/afterbirthplus/boss_bighorn_womb.png", "gfx/bosses/afterbirthplus/boss_bighorn_scarred.png", "gfx/bosses/afterbirthplus/boss_bighorn_flooded.png", "gfx/bosses/afterbirthplus/boss_bighorn_blue_womb.png", "gfx/bosses/afterbirthplus/boss_bighorn_dirt_dark.png", "gfx/bosses/afterbirthplus/boss_bighorn_gray.png", "gfx/bosses/afterbirthplus/boss_bighorn_black.png", "gfx/bosses/afterbirthplus/deliriumforms/afterbirthplus/boss_bighorn.png")
+	FixedDirtSpritesMod:setDirtSprite(entity, 0, 1, "gfx/bosses/afterbirthplus/boss_bighorn.png", "gfx/bosses/afterbirthplus/boss_bighorn_womb.png", "gfx/bosses/afterbirthplus/boss_bighorn_scarred.png", "gfx/bosses/afterbirthplus/boss_bighorn_flooded.png", "gfx/bosses/afterbirthplus/boss_bighorn_blue_womb.png", "gfx/bosses/afterbirthplus/boss_bighorn_dirt_dark.png", "gfx/bosses/afterbirthplus/boss_bighorn_gray.png", "gfx/bosses/afterbirthplus/boss_bighorn_black.png", "gfx/bosses/afterbirthplus/deliriumforms/afterbirthplus/boss_bighorn.png")
+	FixedDirtSpritesMod:setDirtSprite(entity, 0, 2, "gfx/bosses/afterbirthplus/boss_bighorn.png", "gfx/bosses/afterbirthplus/boss_bighorn_womb.png", "gfx/bosses/afterbirthplus/boss_bighorn_scarred.png", "gfx/bosses/afterbirthplus/boss_bighorn_flooded.png", "gfx/bosses/afterbirthplus/boss_bighorn_blue_womb.png", "gfx/bosses/afterbirthplus/boss_bighorn_dirt_dark.png", "gfx/bosses/afterbirthplus/boss_bighorn_gray.png", "gfx/bosses/afterbirthplus/boss_bighorn_black.png", "gfx/bosses/afterbirthplus/deliriumforms/afterbirthplus/boss_bighorn.png")
+	FixedDirtSpritesMod:setDirtSprite(entity, 0, 3, "gfx/bosses/afterbirthplus/boss_bighorn.png", "gfx/bosses/afterbirthplus/boss_bighorn_womb.png", "gfx/bosses/afterbirthplus/boss_bighorn_scarred.png", "gfx/bosses/afterbirthplus/boss_bighorn_flooded.png", "gfx/bosses/afterbirthplus/boss_bighorn_blue_womb.png", "gfx/bosses/afterbirthplus/boss_bighorn_dirt_dark.png", "gfx/bosses/afterbirthplus/boss_bighorn_gray.png", "gfx/bosses/afterbirthplus/boss_bighorn_black.png", "gfx/bosses/afterbirthplus/deliriumforms/afterbirthplus/boss_bighorn.png")
+	FixedDirtSpritesMod:setDirtSprite(entity, 1, 0, "gfx/bosses/afterbirthplus/boss_bighorn.png", "gfx/bosses/afterbirthplus/boss_bighorn_womb.png", "gfx/bosses/afterbirthplus/boss_bighorn_scarred.png", "gfx/bosses/afterbirthplus/boss_bighorn_flooded.png", "gfx/bosses/afterbirthplus/boss_bighorn_blue_womb.png", "gfx/bosses/afterbirthplus/boss_bighorn_dirt_dark.png", "gfx/bosses/afterbirthplus/boss_bighorn_gray.png", "gfx/bosses/afterbirthplus/boss_bighorn_black.png", "gfx/bosses/afterbirthplus/deliriumforms/afterbirthplus/boss_bighorn.png")
+	FixedDirtSpritesMod:setDirtSprite(entity, 1, 1, "gfx/bosses/afterbirthplus/boss_bighorn.png", "gfx/bosses/afterbirthplus/boss_bighorn_womb.png", "gfx/bosses/afterbirthplus/boss_bighorn_scarred.png", "gfx/bosses/afterbirthplus/boss_bighorn_flooded.png", "gfx/bosses/afterbirthplus/boss_bighorn_blue_womb.png", "gfx/bosses/afterbirthplus/boss_bighorn_dirt_dark.png", "gfx/bosses/afterbirthplus/boss_bighorn_gray.png", "gfx/bosses/afterbirthplus/boss_bighorn_black.png", "gfx/bosses/afterbirthplus/deliriumforms/afterbirthplus/boss_bighorn.png")
+	FixedDirtSpritesMod:setDirtSprite(entity, 1, 2, "gfx/bosses/afterbirthplus/boss_bighorn.png", "gfx/bosses/afterbirthplus/boss_bighorn_womb.png", "gfx/bosses/afterbirthplus/boss_bighorn_scarred.png", "gfx/bosses/afterbirthplus/boss_bighorn_flooded.png", "gfx/bosses/afterbirthplus/boss_bighorn_blue_womb.png", "gfx/bosses/afterbirthplus/boss_bighorn_dirt_dark.png", "gfx/bosses/afterbirthplus/boss_bighorn_gray.png", "gfx/bosses/afterbirthplus/boss_bighorn_black.png", "gfx/bosses/afterbirthplus/deliriumforms/afterbirthplus/boss_bighorn.png")
+	FixedDirtSpritesMod:setDirtSprite(entity, 1, 3, "gfx/bosses/afterbirthplus/boss_bighorn.png", "gfx/bosses/afterbirthplus/boss_bighorn_womb.png", "gfx/bosses/afterbirthplus/boss_bighorn_scarred.png", "gfx/bosses/afterbirthplus/boss_bighorn_flooded.png", "gfx/bosses/afterbirthplus/boss_bighorn_blue_womb.png", "gfx/bosses/afterbirthplus/boss_bighorn_dirt_dark.png", "gfx/bosses/afterbirthplus/boss_bighorn_gray.png", "gfx/bosses/afterbirthplus/boss_bighorn_black.png", "gfx/bosses/afterbirthplus/deliriumforms/afterbirthplus/boss_bighorn.png")
+	FixedDirtSpritesMod:setDirtSprite(entity, 2, 0, "gfx/bosses/afterbirthplus/boss_bighorn.png", "gfx/bosses/afterbirthplus/boss_bighorn_womb.png", "gfx/bosses/afterbirthplus/boss_bighorn_scarred.png", "gfx/bosses/afterbirthplus/boss_bighorn_flooded.png", "gfx/bosses/afterbirthplus/boss_bighorn_blue_womb.png", "gfx/bosses/afterbirthplus/boss_bighorn_dirt_dark.png", "gfx/bosses/afterbirthplus/boss_bighorn_gray.png", "gfx/bosses/afterbirthplus/boss_bighorn_black.png", "gfx/bosses/afterbirthplus/deliriumforms/afterbirthplus/boss_bighorn.png")
+	FixedDirtSpritesMod:setDirtSprite(entity, 2, 1, "gfx/bosses/afterbirthplus/boss_bighorn.png", "gfx/bosses/afterbirthplus/boss_bighorn_womb.png", "gfx/bosses/afterbirthplus/boss_bighorn_scarred.png", "gfx/bosses/afterbirthplus/boss_bighorn_flooded.png", "gfx/bosses/afterbirthplus/boss_bighorn_blue_womb.png", "gfx/bosses/afterbirthplus/boss_bighorn_dirt_dark.png", "gfx/bosses/afterbirthplus/boss_bighorn_gray.png", "gfx/bosses/afterbirthplus/boss_bighorn_black.png", "gfx/bosses/afterbirthplus/deliriumforms/afterbirthplus/boss_bighorn.png")
+	FixedDirtSpritesMod:setDirtSprite(entity, 2, 2, "gfx/bosses/afterbirthplus/boss_bighorn.png", "gfx/bosses/afterbirthplus/boss_bighorn_womb.png", "gfx/bosses/afterbirthplus/boss_bighorn_scarred.png", "gfx/bosses/afterbirthplus/boss_bighorn_flooded.png", "gfx/bosses/afterbirthplus/boss_bighorn_blue_womb.png", "gfx/bosses/afterbirthplus/boss_bighorn_dirt_dark.png", "gfx/bosses/afterbirthplus/boss_bighorn_gray.png", "gfx/bosses/afterbirthplus/boss_bighorn_black.png", "gfx/bosses/afterbirthplus/deliriumforms/afterbirthplus/boss_bighorn.png")
+	FixedDirtSpritesMod:setDirtSprite(entity, 2, 3, "gfx/bosses/afterbirthplus/boss_bighorn.png", "gfx/bosses/afterbirthplus/boss_bighorn_womb.png", "gfx/bosses/afterbirthplus/boss_bighorn_scarred.png", "gfx/bosses/afterbirthplus/boss_bighorn_flooded.png", "gfx/bosses/afterbirthplus/boss_bighorn_blue_womb.png", "gfx/bosses/afterbirthplus/boss_bighorn_dirt_dark.png", "gfx/bosses/afterbirthplus/boss_bighorn_gray.png", "gfx/bosses/afterbirthplus/boss_bighorn_black.png", "gfx/bosses/afterbirthplus/deliriumforms/afterbirthplus/boss_bighorn.png")
+end
+FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, FixedDirtSpritesMod.onBigHornUpdate, EntityType.ENTITY_BIG_HORN)
+FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, FixedDirtSpritesMod.onBigHornUpdate, EntityType.ENTITY_BIG_HORN)
 
 -----------
 --EFFECTS--
@@ -372,6 +405,16 @@ function FixedDirtSpritesMod:checkForModContent()
 			end
 			FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, FixedDirtSpritesMod.onRoundWormTrioUpdate, FixedDirtSpritesOtherModEntityType.ENTITY_SMOLYCEPHALUS)
 			FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, FixedDirtSpritesMod.onRoundWormTrioUpdate, FixedDirtSpritesOtherModEntityType.ENTITY_SMOLYCEPHALUS)
+		end
+		
+		------------------------------------------------------
+		--BLANK OUT REAL VISUAL FIXES' DIRT SPRITES FUNCTION--
+		------------------------------------------------------
+		--this isn't a personal attack, im the creator of visual fixes too. im doing this just so i can remove any possible conflicts.
+		if RealConeHeadVisualFixesMod then
+			function RealConeHeadVisualFixesMod:setDirtSprite()
+				return --do nothing
+			end
 		end
 		
 		checkedForModContent = true
