@@ -407,16 +407,6 @@ function FixedDirtSpritesMod:checkForModContent()
 			FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, FixedDirtSpritesMod.onRoundWormTrioUpdate, FixedDirtSpritesOtherModEntityType.ENTITY_SMOLYCEPHALUS)
 		end
 		
-		------------------------------------------------------
-		--BLANK OUT REAL VISUAL FIXES' DIRT SPRITES FUNCTION--
-		------------------------------------------------------
-		--this isn't a personal attack, im the creator of visual fixes too. im doing this just so i can remove any possible conflicts.
-		if RealConeHeadVisualFixesMod then
-			function RealConeHeadVisualFixesMod:setDirtSprite()
-				return --do nothing
-			end
-		end
-		
 		checkedForModContent = true
 	end
 end
