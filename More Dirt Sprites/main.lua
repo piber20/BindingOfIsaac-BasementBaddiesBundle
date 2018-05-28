@@ -112,7 +112,7 @@ function FixedDirtSpritesMod:setDirtSprite(entity, variant, layer, dirt, womb, s
 	if frameCount <= 2 or (frameCount >= data.entityTypesChanged and frameCount <= (data.entityTypesChanged + 2)) then
 		local dirtToUse = FixedDirtSpritesMod:getDirtToUse()
 		if dirtToUse ~= FixedDirtSpritesDirt.NONE then
-			if entity.Variant == variant then
+			if entity.Variant == variant or variant == -1 then
 				local spritesheet = nil
 				
 				if dirt and dirtToUse == FixedDirtSpritesDirt.DIRT then
@@ -287,6 +287,15 @@ function FixedDirtSpritesMod:onLittleHornUpdate(entity)
 end
 FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_NPC_UPDATE, FixedDirtSpritesMod.onLittleHornUpdate, EntityType.ENTITY_LITTLE_HORN)
 FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, FixedDirtSpritesMod.onLittleHornUpdate, EntityType.ENTITY_LITTLE_HORN)
+
+function FixedDirtSpritesMod:onBombUpdate(entity) --resprite little horn's bombs too
+	local sprite = entity:GetSprite()
+	if sprite:IsPlaying("BombReturn") then
+		FixedDirtSpritesMod:setDirtSprite(entity, -1, 1, "gfx/items/pick ups/pickup_016_bomb.png", "gfx/items/pick ups/pickup_016_bomb_womb.png", "gfx/items/pick ups/pickup_016_bomb_scarred.png", "gfx/items/pick ups/pickup_016_bomb_flooded.png", "gfx/items/pick ups/pickup_016_bomb_blue_womb.png", "gfx/items/pick ups/pickup_016_bomb_dirt_dark.png", "gfx/items/pick ups/pickup_016_bomb_gray.png", "gfx/items/pick ups/pickup_016_bomb_black.png")
+	end
+end
+FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_POST_BOMB_UPDATE, FixedDirtSpritesMod.onBombUpdate)
+FixedDirtSpritesMod:AddCallback(ModCallbacks.MC_POST_BOMB_INIT, FixedDirtSpritesMod.onBombUpdate)
 
 function FixedDirtSpritesMod:onBigHornUpdate(entity)
 	FixedDirtSpritesMod:setDirtSprite(entity, 0, 0, "gfx/bosses/afterbirthplus/boss_bighorn.png", "gfx/bosses/afterbirthplus/boss_bighorn_womb.png", "gfx/bosses/afterbirthplus/boss_bighorn_scarred.png", "gfx/bosses/afterbirthplus/boss_bighorn_flooded.png", "gfx/bosses/afterbirthplus/boss_bighorn_blue_womb.png", "gfx/bosses/afterbirthplus/boss_bighorn_dirt_dark.png", "gfx/bosses/afterbirthplus/boss_bighorn_gray.png", "gfx/bosses/afterbirthplus/boss_bighorn_black.png", "gfx/bosses/afterbirthplus/deliriumforms/afterbirthplus/boss_bighorn.png")
