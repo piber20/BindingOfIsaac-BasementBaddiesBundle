@@ -351,7 +351,7 @@ function FixedDirtSpritesMod:checkForModContent()
 		---------------------
 		FixedDirtSpritesOtherModEntityType.ENTITY_3_EYED_NIGHT_CRAWLER = Isaac.GetEntityTypeByName("3 Eyed Night Crawler")
 		FixedDirtSpritesOtherModEntityVariant.ENTITY_3_EYED_NIGHT_CRAWLER = Isaac.GetEntityVariantByName("3 Eyed Night Crawler")
-		if FixedDirtSpritesOtherModEntityType.ENTITY_3_EYED_NIGHT_CRAWLER ~= -1 then
+		if FixedDirtSpritesOtherModEntityType.ENTITY_3_EYED_NIGHT_CRAWLER > 0 then
 			function FixedDirtSpritesMod:onThreeEyedNightCrawlerUpdate(entity)
 				FixedDirtSpritesMod:setDirtSprite(entity, FixedDirtSpritesOtherModEntityVariant.ENTITY_3_EYED_NIGHT_CRAWLER, 0, "gfx/animations/enemies/sheet_enemy_3eyednightcrawler.png", "gfx/animations/enemies/sheet_enemy_3eyednightcrawler_womb.png", "gfx/animations/enemies/sheet_enemy_3eyednightcrawler_scarred.png", "gfx/animations/enemies/sheet_enemy_3eyednightcrawler_flooded.png", "gfx/animations/enemies/sheet_enemy_3eyednightcrawler_blue_womb.png", "gfx/animations/enemies/sheet_enemy_3eyednightcrawler_dirt_dark.png", "gfx/animations/enemies/sheet_enemy_3eyednightcrawler_gray.png", "gfx/animations/enemies/sheet_enemy_3eyednightcrawler_black.png")
 			end
@@ -361,7 +361,7 @@ function FixedDirtSpritesMod:checkForModContent()
 		
 		FixedDirtSpritesOtherModEntityType.ENTITY_DIP_ULCER = Isaac.GetEntityTypeByName("Dip Ulcer")
 		FixedDirtSpritesOtherModEntityVariant.ENTITY_DIP_ULCER = Isaac.GetEntityVariantByName("Dip Ulcer")
-		if FixedDirtSpritesOtherModEntityType.ENTITY_DIP_ULCER ~= -1 then
+		if FixedDirtSpritesOtherModEntityType.ENTITY_DIP_ULCER > 0 then
 			function FixedDirtSpritesMod:onDipUlcerUpdate(entity)
 				FixedDirtSpritesMod:setDirtSprite(entity, FixedDirtSpritesOtherModEntityVariant.ENTITY_DIP_ULCER, 0, "gfx/animations/enemies/sheet_enemy_dipulcer.png", "gfx/animations/enemies/sheet_enemy_dipulcer_womb.png", "gfx/animations/enemies/sheet_enemy_dipulcer_scarred.png", "gfx/animations/enemies/sheet_enemy_dipulcer_flooded.png", "gfx/animations/enemies/sheet_enemy_dipulcer_blue_womb.png", "gfx/animations/enemies/sheet_enemy_dipulcer_dirt_dark.png", "gfx/animations/enemies/sheet_enemy_dipulcer_gray.png", "gfx/animations/enemies/sheet_enemy_dipulcer_black.png")
 			end
@@ -371,7 +371,7 @@ function FixedDirtSpritesMod:checkForModContent()
 		
 		FixedDirtSpritesOtherModEntityType.ENTITY_INJURED_ROUND_WORM = Isaac.GetEntityTypeByName("Injured Round Worm")
 		FixedDirtSpritesOtherModEntityVariant.ENTITY_INJURED_ROUND_WORM = Isaac.GetEntityVariantByName("Injured Round Worm")
-		if FixedDirtSpritesOtherModEntityType.ENTITY_INJURED_ROUND_WORM ~= -1 then
+		if FixedDirtSpritesOtherModEntityType.ENTITY_INJURED_ROUND_WORM > 0 then
 			function FixedDirtSpritesMod:onInjuredRoundWormUpdate(entity)
 				FixedDirtSpritesMod:setDirtSprite(entity, FixedDirtSpritesOtherModEntityVariant.ENTITY_INJURED_ROUND_WORM, 0, "gfx/animations/enemies/sheet_enemy_injuredroundworm.png", "gfx/animations/enemies/sheet_enemy_injuredroundworm_womb.png", "gfx/animations/enemies/sheet_enemy_injuredroundworm_scarred.png", "gfx/animations/enemies/sheet_enemy_injuredroundworm_flooded.png", "gfx/animations/enemies/sheet_enemy_injuredroundworm_blue_womb.png", "gfx/animations/enemies/sheet_enemy_injuredroundworm_dirt_dark.png", "gfx/animations/enemies/sheet_enemy_injuredroundworm_gray.png", "gfx/animations/enemies/sheet_enemy_injuredroundworm_black.png")
 			end
@@ -381,7 +381,7 @@ function FixedDirtSpritesMod:checkForModContent()
 		
 		FixedDirtSpritesOtherModEntityType.ENTITY_ROUND_WORM_TRIO = Isaac.GetEntityTypeByName("Round Worm Trio")
 		FixedDirtSpritesOtherModEntityVariant.ENTITY_ROUND_WORM_TRIO = Isaac.GetEntityVariantByName("Round Worm Trio")
-		if FixedDirtSpritesOtherModEntityType.ENTITY_ROUND_WORM_TRIO ~= -1 then
+		if FixedDirtSpritesOtherModEntityType.ENTITY_ROUND_WORM_TRIO > 0 then
 			function FixedDirtSpritesMod:onRoundWormTrioUpdate(entity)
 				FixedDirtSpritesMod:setDirtSprite(entity, FixedDirtSpritesOtherModEntityVariant.ENTITY_ROUND_WORM_TRIO, 0, "gfx/animations/enemies/sheet_enemy_roundwormtrio.png", "gfx/animations/enemies/sheet_enemy_roundwormtrio_womb.png", "gfx/animations/enemies/sheet_enemy_roundwormtrio_scarred.png", "gfx/animations/enemies/sheet_enemy_roundwormtrio_flooded.png", "gfx/animations/enemies/sheet_enemy_roundwormtrio_blue_womb.png", "gfx/animations/enemies/sheet_enemy_roundwormtrio_dirt_dark.png", "gfx/animations/enemies/sheet_enemy_roundwormtrio_gray.png", "gfx/animations/enemies/sheet_enemy_roundwormtrio_black.png")
 			end
@@ -394,7 +394,7 @@ function FixedDirtSpritesMod:checkForModContent()
 		---------------------
 		FixedDirtSpritesOtherModEntityType.ENTITY_LIL_MINER = Isaac.GetEntityTypeByName("Lil Miner")
 		FixedDirtSpritesOtherModEntityVariant.ENTITY_LIL_MINER = Isaac.GetEntityVariantByName("Lil Miner")
-		if FixedDirtSpritesOtherModEntityType.ENTITY_LIL_MINER ~= -1 then
+		if FixedDirtSpritesOtherModEntityType.ENTITY_LIL_MINER > 0 then
 			function FixedDirtSpritesMod:onLilMinerUpdate(entity)
 				FixedDirtSpritesMod:setDirtSprite(entity, FixedDirtSpritesOtherModEntityVariant.ENTITY_LIL_MINER, 0, "gfx/animations/familiars/sheet_familiar_lilminer.png", "gfx/animations/familiars/sheet_familiar_lilminer_womb.png", "gfx/animations/familiars/sheet_familiar_lilminer_scarred.png", "gfx/animations/familiars/sheet_familiar_lilminer_flooded.png", "gfx/animations/familiars/sheet_familiar_lilminer_blue_womb.png", "gfx/animations/familiars/sheet_familiar_lilminer_dirt_dark.png", "gfx/animations/familiars/sheet_familiar_lilminer_gray.png", "gfx/animations/familiars/sheet_familiar_lilminer_black.png")
 			end
@@ -407,7 +407,7 @@ function FixedDirtSpritesMod:checkForModContent()
 		-------------------------
 		FixedDirtSpritesOtherModEntityType.ENTITY_SMOLYCEPHALUS = Isaac.GetEntityTypeByName("Smolycephalus")
 		FixedDirtSpritesOtherModEntityVariant.ENTITY_SMOLYCEPHALUS = Isaac.GetEntityVariantByName("Smolycephalus")
-		if FixedDirtSpritesOtherModEntityType.ENTITY_SMOLYCEPHALUS ~= -1 then
+		if FixedDirtSpritesOtherModEntityType.ENTITY_SMOLYCEPHALUS > 0 then
 			function FixedDirtSpritesMod:onRoundWormTrioUpdate(entity)
 				FixedDirtSpritesMod:setDirtSprite(entity, FixedDirtSpritesOtherModEntityVariant.ENTITY_SMOLYCEPHALUS, 0, "gfx/monsters/enemySmolycephalus.png", "gfx/monsters/enemySmolycephalus_womb.png", "gfx/monsters/enemySmolycephalus_scarred.png", "gfx/monsters/enemySmolycephalus_flooded.png", "gfx/monsters/enemySmolycephalus_blue_womb.png", "gfx/monsters/enemySmolycephalus_dirt_dark.png", "gfx/monsters/enemySmolycephalus_gray.png", "gfx/monsters/enemySmolycephalus_black.png")
 				FixedDirtSpritesMod:setDirtSprite(entity, FixedDirtSpritesOtherModEntityVariant.ENTITY_SMOLYCEPHALUS, 1, "gfx/monsters/enemySmolycephalus.png", "gfx/monsters/enemySmolycephalus_womb.png", "gfx/monsters/enemySmolycephalus_scarred.png", "gfx/monsters/enemySmolycephalus_flooded.png", "gfx/monsters/enemySmolycephalus_blue_womb.png", "gfx/monsters/enemySmolycephalus_dirt_dark.png", "gfx/monsters/enemySmolycephalus_gray.png", "gfx/monsters/enemySmolycephalus_black.png")

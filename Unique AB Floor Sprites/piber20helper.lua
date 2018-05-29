@@ -1291,7 +1291,6 @@ if not piber20HelperMod then
 	function piber20HelperMod:getCenterEntity()
 		local room = Game():GetRoom()
 		for _, entity in pairs(Isaac.GetRoomEntities()) do
-			--stuff for mortal coil
 			if (room:GetCenterPos() - entity.Position):Length() < 40 then
 				return entity
 			end
