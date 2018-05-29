@@ -6,12 +6,14 @@ BBBaddiesEntityType = {
 	ENTITY_CUSTOM_CREEP = Isaac.GetEntityTypeByName("Drowned Creep"),
 	ENTITY_DANK_DUKIE = Isaac.GetEntityTypeByName("Dank Dukie"),
 	ENTITY_CUSTOM_GAPER = Isaac.GetEntityTypeByName("Murmur"),
-	ENTITY_FAT_GLOBIN = Isaac.GetEntityTypeByName("Fat Globin")
+	ENTITY_FAT_GLOBIN = Isaac.GetEntityTypeByName("Fat Globin"),
+	ENTITY_CUSTOM_HIVE = Isaac.GetEntityTypeByName("Boilligan")
 }
 
 BBBaddiesProjectileVariant = {
 	PROJECTILE_BUBBLE = Isaac.GetEntityVariantByName("Bubble Tear"),
-	PROJECTILE_TAR = Isaac.GetEntityVariantByName("Tar Tear")
+	PROJECTILE_TAR = Isaac.GetEntityVariantByName("Tar Tear"),
+	PROJECTILE_BOIL = Isaac.GetEntityVariantByName("Boil Tear")
 }
 
 BBBaddiesEntityVariant = {
@@ -29,7 +31,8 @@ BBBaddiesEntityVariant = {
 	GAPER_MURMUR = Isaac.GetEntityVariantByName("Murmur"),
 	GUSHER_GRIPE = Isaac.GetEntityVariantByName("Gripe"),
 	FAT_GLOBIN_BLUBBER = Isaac.GetEntityVariantByName("Fat Globin Blubber"),
-	FAT_GLOBIN_STACK = Isaac.GetEntityVariantByName("Fat Globin Stack")
+	FAT_GLOBIN_STACK = Isaac.GetEntityVariantByName("Fat Globin Stack"),
+	HIVE_BOILLIGAN = Isaac.GetEntityVariantByName("Boilligan")
 }
 
 BBBaddiesEffectVariant = {
@@ -44,6 +47,7 @@ require("bbbaddies.ministro_ii")
 require("bbbaddies.meteor_maw")
 require("bbbaddies.projectiles")
 require("bbbaddies.creeps")
+require("bbbaddies.hives")
 require("bbbaddies.bouncer")
 require("bbbaddies.gapers")
 require("bbbaddies.gushers")
@@ -175,6 +179,7 @@ function BBBaddiesMod:SplasherVariants(npc)
 		BBBaddiesMod:Splasher(npc)
 	end
 end
+
 
 
 
@@ -354,12 +359,10 @@ BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.RoundyVariant
 BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.MinistroVariants, EntityType.ENTITY_MINISTRO)
 BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.DingaVariants, EntityType.ENTITY_DINGA)
 BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.LeaperVariants, EntityType.ENTITY_LEAPER)
-BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.GurgleVariants, BBBaddiesEntityType.ENTITY_GURGLE)
+BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.GurgleVariants, EntityType.ENTITY_GURGLE)
 BBBaddiesMod:AddCallback( ModCallbacks.MC_ENTITY_TAKE_DMG, BBBaddiesMod.GurgleVariantsTakeDamage, EntityType.ENTITY_GURGLE)
-BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.SplasherVariants, BBBaddiesEntityType.ENTITY_SPLASHER)
+BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.SplasherVariants, EntityType.ENTITY_SPLASHER)
 
-BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.SplasherVariants, BBBaddiesEntityType.ENTITY_SPLASHER)
-BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.SplasherVariants, BBBaddiesEntityType.ENTITY_SPLASHER)
 
 
 BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.HorfAlts, EntityType.ENTITY_HORF)
