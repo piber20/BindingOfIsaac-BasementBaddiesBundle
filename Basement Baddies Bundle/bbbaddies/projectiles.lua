@@ -51,7 +51,14 @@ function BBBaddiesMod:CustomTears(npc)
 		
 		
 		if (npc.SpriteOffset.Y >= 0) then
-			Isaac.Spawn(30, 0, 0, npc.Position, Vector(0,0),npc)
+			local boil = Isaac.Spawn(30, 0, 0, npc.Position, Vector(0,0),npc):ToNPC()
+			boil:Update()
+			boil.HitPoints = math.random(1,7)
+			
+			while (boil.State == NpcState.STATE_APPEAR) do
+				boil:Update()
+			end
+			
 			npc:Kill()
 			npc:PlaySound(258, 1.0, 0, false, 1.0)
 		else
