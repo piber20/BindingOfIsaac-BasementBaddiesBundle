@@ -75,6 +75,7 @@ function BBBaddiesMod:CustomTears(npc)
 		if npc.State == 0 or npc.State == 1 or npc.State == 2 then
 			npc.SpriteOffset = Vector(0,-16)
 			npc.EntityCollisionClass = 1
+			npc.GridCollisionClass = 6
 			npc.State = 3
 			npc.SplatColor = Color(0,0,0,0,0,0,0)--Color(0.725,0.81,1,1,0,0,0)
 			
@@ -143,7 +144,9 @@ function BBBaddiesMod:CustomTears(npc)
 		if (npc.SpriteOffset.Y >= 0) then
 			npc:Kill()
 			npc:PlaySound(258, 1.0, 0, false, 1.0)
-			Isaac.Spawn(1000, 12, 0, npc.Position, Vector(0,0),npc)
+			local poof = Isaac.Spawn(1000, 12, 0, npc.Position, Vector(0,0),npc)
+			poof:GetSprite():ReplaceSpritesheet(0,"gfx/effects/inktearpoof.png")
+			poof:GetSprite():LoadGraphics()
 		else
 			npc.SpriteOffset = Vector(0,npc.SpriteOffset.Y + (16 / npc.StateFrame))
 		end
