@@ -8,6 +8,63 @@ function BBBaddiesMod:CustomTears(npc)
 		end
 	end
 	
+	if (npc.Variant == BBBaddiesProjectileVariant.PROJECTILE_BOIL) then
+		--I1 = size
+		--StateFrame = range
+		--V1.X = targetSpeed
+		--V1.Y = bounceLimit
+		
+		local sprite = npc:GetSprite()
+		if npc.State == 0 or npc.State == 1 or npc.State == 2 then
+			npc.SpriteOffset = Vector(0,-14)
+			npc.EntityCollisionClass = 1
+			npc.State = 3
+			npc.SplatColor = Color(0,0,0,0,0,0,0)--Color(0.725,0.81,1,1,0,0,0)
+			
+			if npc.I1 == 0 then
+				sprite:Play("RegularTear4", true)
+			elseif npc.I1 == 1 then
+				sprite:Play("RegularTear5", true)
+			elseif npc.I1 == 2 then
+				sprite:Play("RegularTear6", true)
+			elseif npc.I1 == 3 then
+				sprite:Play("RegularTear7", true)
+			elseif npc.I1 == 4 then
+				sprite:Play("RegularTear8", true)
+			elseif npc.I1 == 5 then
+				sprite:Play("RegularTear9", true)
+			elseif npc.I1 == 6 then
+				sprite:Play("RegularTear10", true)
+			elseif npc.I1 == 7 then
+				sprite:Play("RegularTear11", true)
+			elseif npc.I1 == 8 then
+				sprite:Play("RegularTear12", true)
+			else
+				sprite:Play("RegularTear13", true)
+			end
+			
+			npc:SetSize(6 + npc.I1, Vector(1,1), 12)
+		end
+		
+		
+		npc.V1 = Vector(npc.V1.X + npc.V1.Y,npc.V1.Y)
+		
+		
+		if (npc.SpriteOffset.Y >= 0) then
+			local boil = Isaac.Spawn(30, 0, 0, npc.Position, Vector(0,0),npc):ToNPC()
+			boil:Update()
+			boil.HitPoints = math.random(1,7)
+			
+			while (boil.State == NpcState.STATE_APPEAR) do
+				boil:Update()
+			end
+			
+			npc:Kill()
+			npc:PlaySound(258, 1.0, 0, false, 1.0)
+		else
+			npc.SpriteOffset = Vector(0,npc.SpriteOffset.Y + npc.V1.X)
+		end
+	end
 	if (npc.Variant == BBBaddiesProjectileVariant.PROJECTILE_TAR) then
 		--I1 = size
 		--StateFrame = range
@@ -18,6 +75,7 @@ function BBBaddiesMod:CustomTears(npc)
 		if npc.State == 0 or npc.State == 1 or npc.State == 2 then
 			npc.SpriteOffset = Vector(0,-16)
 			npc.EntityCollisionClass = 1
+			npc.GridCollisionClass = 6
 			npc.State = 3
 			npc.SplatColor = Color(0,0,0,0,0,0,0)--Color(0.725,0.81,1,1,0,0,0)
 			
@@ -74,7 +132,9 @@ function BBBaddiesMod:CustomTears(npc)
 			else
 				npc:Kill()
 				npc:PlaySound(258, 1.0, 0, false, 1.0)
-				Isaac.Spawn(1000, 12, 0, npc.Position, Vector(0,0),npc)
+				local poof = Isaac.Spawn(1000, 12, 0, npc.Position, Vector(0,0),npc)
+				poof:GetSprite():ReplaceSpritesheet(0,"gfx/effects/inktearpoof.png")
+				poof:GetSprite():LoadGraphics()
 			end		
 		end
 		if npc.Velocity:Length() < npc.V1.X then 
@@ -86,7 +146,9 @@ function BBBaddiesMod:CustomTears(npc)
 		if (npc.SpriteOffset.Y >= 0) then
 			npc:Kill()
 			npc:PlaySound(258, 1.0, 0, false, 1.0)
-			Isaac.Spawn(1000, 12, 0, npc.Position, Vector(0,0),npc)
+			local poof = Isaac.Spawn(1000, 12, 0, npc.Position, Vector(0,0),npc)
+			poof:GetSprite():ReplaceSpritesheet(0,"gfx/effects/inktearpoof.png")
+			poof:GetSprite():LoadGraphics()
 		else
 			npc.SpriteOffset = Vector(0,npc.SpriteOffset.Y + (16 / npc.StateFrame))
 		end
@@ -262,6 +324,12 @@ function BBBaddiesMod:CustomTearsPlayerCollision(npc, player)
 			npc:FireProjectiles(npc.Position, direction * speed, 0, schut)
 		end	
 		npc:PlaySound(178, 1.0, 0, false, 1.0)
+	elseif (npc.Variant == BBBaddiesProjectileVariant.PROJECTILE_TAR) then
+		npc:Kill()
+		npc:PlaySound(258, 1.0, 0, false, 1.0)
+		local poof = Isaac.Spawn(1000, 12, 0, npc.Position, Vector(0,0),npc)
+		poof:GetSprite():ReplaceSpritesheet(0,"gfx/effects/inktearpoof.png")
+		poof:GetSprite():LoadGraphics()
 	else
 		npc:Kill()
 		npc:PlaySound(258, 1.0, 0, false, 1.0)
