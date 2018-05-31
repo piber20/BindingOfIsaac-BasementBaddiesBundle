@@ -1,5 +1,5 @@
 --the version of this helper mod script
-local currentVersion = 10
+local currentVersion = 11
 
 --remove any previous versions that may exist
 local callbacksAlreadyLoaded = nil
@@ -1492,12 +1492,19 @@ if not piber20HelperMod then
 	-----------------------------
 	function piber20HelperMod:getScreenCenterPosition()
 		local room = Game():GetRoom()
+		local shape = room:GetRoomShape()
 		local centerOffset = (room:GetCenterPos()) - room:GetTopLeftPos()
 		local pos = room:GetCenterPos()
 		if centerOffset.X > 260 then
-		  pos.X = pos.X - 260
+			pos.X = pos.X - 260
+		end
+		if shape == RoomShape.ROOMSHAPE_LBL or shape == RoomShape.ROOMSHAPE_LTL then
+			pos.X = pos.X - 260
 		end
 		if centerOffset.Y > 140 then
+			pos.Y = pos.Y - 140
+		end
+		if shape == RoomShape.ROOMSHAPE_LTR or shape == RoomShape.ROOMSHAPE_LTL then
 			pos.Y = pos.Y - 140
 		end
 		return Isaac.WorldToRenderPosition(pos, false)
