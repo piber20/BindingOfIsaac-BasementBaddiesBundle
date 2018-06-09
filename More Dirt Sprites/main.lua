@@ -3,7 +3,7 @@ FixedDirtSpritesMod = RegisterMod("More Dirt Sprites", 1)
 --load piber20helper
 local _, err = pcall(require, "piber20helper")
 if not string.match(tostring(err), "attempt to call a nil value %(method 'ForceError'%)") then
-	Isaac.DebugString(err)
+	Isaac.DebugString(tostring(err))
 end
 
 FixedDirtSpritesMod.enabled = true

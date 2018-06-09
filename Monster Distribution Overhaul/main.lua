@@ -3,13 +3,24 @@ MonsterDistributionOverhaulMod = RegisterMod("Monster Distribution Overhaul", 1)
 --load piber20helper
 local _, err = pcall(require, "piber20helper")
 if not string.match(tostring(err), "attempt to call a nil value %(method 'ForceError'%)") then
-	Isaac.DebugString(err)
+	Isaac.DebugString(tostring(err))
 end
 
+--default config values (and just in case the config was unable to load)
+MonsterDistributionOverhaulMod.AllowStoneysInTheVoid = true
+MonsterDistributionOverhaulMod.AllowPortalsInTheVoid = true
+MonsterDistributionOverhaulMod.AllowStoneys = true
+MonsterDistributionOverhaulMod.AllowPortals = true
+MonsterDistributionOverhaulMod.RevertAfterbirthPlusReplacements = true
+MonsterDistributionOverhaulMod.BetterAfterbirthPlusReplacements = true
+MonsterDistributionOverhaulMod.ForceAfterbirthFloorAlts = false
+MonsterDistributionOverhaulMod.AllowStandaloneBossEnemies = false
+MonsterDistributionOverhaulMod.ReportReplacementsToLog = true
+MonsterDistributionOverhaulMod.ReportReplacementsToConsole = false
 --load config
 local _, err = pcall(require, "config")
 if not string.match(tostring(err), "attempt to call a nil value %(method 'ForceError'%)") then
-	Isaac.DebugString(err)
+	Isaac.DebugString(tostring(err))
 end
 
 --get local vars set up, these change when the room changes
