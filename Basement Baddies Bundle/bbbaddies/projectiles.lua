@@ -132,7 +132,9 @@ function BBBaddiesMod:CustomTears(npc)
 			else
 				npc:Kill()
 				npc:PlaySound(258, 1.0, 0, false, 1.0)
-				Isaac.Spawn(1000, 12, 0, npc.Position, Vector(0,0),npc)
+				local poof = Isaac.Spawn(1000, 12, 0, npc.Position, Vector(0,0),npc)
+				poof:GetSprite():ReplaceSpritesheet(0,"gfx/effects/inktearpoof.png")
+				poof:GetSprite():LoadGraphics()
 			end		
 		end
 		if npc.Velocity:Length() < npc.V1.X then 
@@ -322,6 +324,12 @@ function BBBaddiesMod:CustomTearsPlayerCollision(npc, player)
 			npc:FireProjectiles(npc.Position, direction * speed, 0, schut)
 		end	
 		npc:PlaySound(178, 1.0, 0, false, 1.0)
+	elseif (npc.Variant == BBBaddiesProjectileVariant.PROJECTILE_TAR) then
+		npc:Kill()
+		npc:PlaySound(258, 1.0, 0, false, 1.0)
+		local poof = Isaac.Spawn(1000, 12, 0, npc.Position, Vector(0,0),npc)
+		poof:GetSprite():ReplaceSpritesheet(0,"gfx/effects/inktearpoof.png")
+		poof:GetSprite():LoadGraphics()
 	else
 		npc:Kill()
 		npc:PlaySound(258, 1.0, 0, false, 1.0)
