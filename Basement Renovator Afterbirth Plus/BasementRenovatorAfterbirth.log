@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "BasementRenovatorAfterbirth.py", line 2741, in <module>
+  File "BasementRenovatorAfterbirth.py", line 47, in getEntityXML
+  File "C:\Python34\lib\xml\etree\ElementTree.py", line 1186, in parse
+  File "C:\Python34\lib\xml\etree\ElementTree.py", line 598, in parse
+xml.etree.ElementTree.ParseError: not well-formed (invalid token): line 12, column 1
+Traceback (most recent call last):
+  File "BasementRenovatorAfterbirth.py", line 2741, in <module>
+  File "BasementRenovatorAfterbirth.py", line 47, in getEntityXML
+  File "C:\Python34\lib\xml\etree\ElementTree.py", line 1186, in parse
+  File "C:\Python34\lib\xml\etree\ElementTree.py", line 598, in parse
+xml.etree.ElementTree.ParseError: not well-formed (invalid token): line 12, column 1
+Traceback (most recent call last):
+  File "BasementRenovatorAfterbirth.py", line 2741, in <module>
+  File "BasementRenovatorAfterbirth.py", line 47, in getEntityXML
+  File "C:\Python34\lib\xml\etree\ElementTree.py", line 1186, in parse
+  File "C:\Python34\lib\xml\etree\ElementTree.py", line 598, in parse
+xml.etree.ElementTree.ParseError: not well-formed (invalid token): line 12, column 1
