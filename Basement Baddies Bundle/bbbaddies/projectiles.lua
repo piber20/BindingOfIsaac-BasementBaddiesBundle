@@ -355,11 +355,15 @@ function BBBaddiesMod:ProjectileUpdate(ent)
 		end
 	end
 	if ((ent.SpawnerType == EntityType.ENTITY_LEAPER and ent.SpawnerVariant == BBBaddiesEntityVariant.LEAPER_BOUNCER) or
-		(ent.SpawnerType == EntityType.ENTITY_DIP and ent.SpawnerVariant == BBBaddiesEntityVariant.DIP_DANK)) then
-		if (ent.FrameCount <= 1) then				
+		(ent.SpawnerType == EntityType.ENTITY_DIP and ent.SpawnerVariant == BBBaddiesEntityVariant.DIP_DANK) or
+		(ent.SpawnerType == EntityType.ENTITY_DINGA and ent.SpawnerVariant == BBBaddiesEntityVariant.DINGA_DANK)) then	
+		if (ent.FrameCount <= 1) then			
+			--ent.SplatColor = Color(0,0,0,0,0,0,0)		
+			ent.Variant = 8
 			local sprite = ent:GetSprite()
 			sprite:ReplaceSpritesheet(0, "gfx/ink_bullets.png")
 			sprite:LoadGraphics()
+			sprite:Play("RegularTear7")
 		end
 	end
 	
@@ -409,11 +413,35 @@ function BBBaddiesMod:ProjectileUpdate(ent)
 end
 BBBaddiesMod:AddCallback( ModCallbacks.MC_POST_PROJECTILE_UPDATE, BBBaddiesMod.ProjectileUpdate)
 
+function BBBaddiesMod:PostProjectileRemove(ent)
+	if ((ent.SpawnerType == EntityType.ENTITY_LEAPER and ent.SpawnerVariant == BBBaddiesEntityVariant.LEAPER_BOUNCER) or
+		(ent.SpawnerType == EntityType.ENTITY_DIP and ent.SpawnerVariant == BBBaddiesEntityVariant.DIP_DANK) or
+		(ent.SpawnerType == EntityType.ENTITY_DINGA and ent.SpawnerVariant == BBBaddiesEntityVariant.DINGA_DANK)) then	
+		local poof = Isaac.Spawn(1000, 12, 0, ent.Position, Vector(0,0),ent)
+		poof:GetSprite():ReplaceSpritesheet(0,"gfx/effects/inktearpoof.png")
+		poof:GetSprite():LoadGraphics()
+		local soundSpider = Isaac.Spawn(85, 0, 0, ent.Position, Vector(0,0),ent):ToNPC()
+		soundSpider:PlaySound(150, 1.0, 0, false, 1.0)
+		soundSpider:Remove()
+	end
+end
+
+
 function BBBaddiesMod:EffectInit(fx)
 	if (fx.FrameCount <= 1) then
 		if ((fx.SpawnerType == EntityType.ENTITY_GURGLE and fx.SpawnerVariant == BBBaddiesEntityVariant.GURGLE_MURMUR)) then
 			fx:GetSprite ().Color = Color(1,1,1,1,0,0,0)
 		end
+		-- if ((fx.Parent.SpawnerType == EntityType.ENTITY_LEAPER and fx.Parent.SpawnerVariant == BBBaddiesEntityVariant.LEAPER_BOUNCER)) then
+			-- fx:GetSprite():ReplaceSpritesheet(0,"gfx/effects/inktearpoof.png")
+			-- fx:GetSprite():LoadGraphics()
+		-- end
+		-- if (fx.SpawnerEntity.Type == EntityType.ENTITY_PROJECTILE
+			-- --and (fx.Parent.SpawnerType == EntityType.ENTITY_LEAPER and fx.Parent.SpawnerVariant == BBBaddiesEntityVariant.LEAPER_BOUNCER)
+			-- ) then
+			-- fx:GetSprite():ReplaceSpritesheet(0,"gfx/effects/inktearpoof.png")
+			-- fx:GetSprite():LoadGraphics()
+		-- end
 	end
 end
 BBBaddiesMod:AddCallback( ModCallbacks.MC_POST_EFFECT_UPDATE, BBBaddiesMod.EffectInit)

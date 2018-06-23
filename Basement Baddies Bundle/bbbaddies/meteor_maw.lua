@@ -1,6 +1,9 @@
 local 	burnableEnemies = 	{ {10, 1} , {208, 0}, {29,0} }
 local 	burnedEnemies = 	{ {10, 2} , {208, 2}, {54,0} }
 
+
+local	meteorMawMaxSpeed = 15
+
 local function Lerp(a, b, weight)
 	return a * (1 - weight) + b * weight
 end
@@ -45,7 +48,7 @@ function BBBaddiesMod:MeteorMaw(npc)
 		if (npc.StateFrame == 0) then
 			if (npc:GetSprite():IsFinished("Attack")) then
 				npc.StateFrame = 1
-				npc.Velocity = Lerp(npc.Velocity,npc.TargetPosition * 12,0.5)
+				npc.Velocity = Lerp(npc.Velocity,npc.TargetPosition * meteorMawMaxSpeed,0.5)
 				npc.Mass = 20
 				npc.GridCollisionClass = 6
 				
@@ -104,7 +107,14 @@ function BBBaddiesMod:MeteorMaw(npc)
 			end
 			
 		
-			if (collided) then
+			if (collided) then		
+				local room = Game():GetRoom()		
+				local gridEntity = room:GetGridEntity(room:GetGridIndex(npc.Position + (npc.TargetPosition * 16)))--room:GetGridEntityFromPos(npc.Position + (npc.TargetPosition * 12))
+				if (gridEntity ~= nil and gridEntity:ToRock() ~= nil) then
+					gridEntity:Destroy(true)
+					npc:TakeDamage(npc.MaxHitPoints * 0.25, DamageFlag.DAMAGE_EXPLOSION, EntityRef(npc), 0)
+				end
+				
 				npc.StateFrame = 2
 				npc.Mass = 7
 				npc.GridCollisionClass = 3
@@ -124,7 +134,7 @@ function BBBaddiesMod:MeteorMaw(npc)
 					npc:FireProjectiles(npc.Position, projectileVelocity:Rotated(i*45), 0, schut)
 				end
 			else
-				npc.Velocity = Lerp(npc.Velocity,npc.TargetPosition * 12,0.5)
+				npc.Velocity = Lerp(npc.Velocity,npc.TargetPosition * meteorMawMaxSpeed,0.5)
 			end	
 		else
 			npc:MultiplyFriction(0.85)

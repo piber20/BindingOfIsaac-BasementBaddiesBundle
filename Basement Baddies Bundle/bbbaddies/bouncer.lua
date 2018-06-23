@@ -16,7 +16,7 @@ function BBBaddiesMod:Bouncer(npc)
 		end
 		if (sprite:IsEventTriggered("LandHeavy")) then				
 			local schut = ProjectileParams()
-			schut.Variant = 3
+			schut.Variant = 8--3
 			
 			
 			local projectileVelocity = Vector(0,1)

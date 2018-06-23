@@ -31,6 +31,22 @@
 	<entity anm2path="Bouncer.anm2" id="34" variant="1100" name="Bouncer" baseHP="20" boss="0" champion="1" collisionDamage="1" collisionMass="5" collisionRadius="13" friction="1" numGridCollisionPoints="12" shadowSize="14" stageHP="0" portrait="154" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="Hop">
 	<gibs amount="6" blood="1" bone="1" eye="1" gut="1" large="0" />
 	</entity>
+		
+    <entity anm2path="Glubin.anm2" id="24" variant="0" subtype="1100" name="Glubin" reroll="true" baseHP="33" boss="0" champion="1" collisionDamage="2" collisionMass="10" collisionRadius="13" friction="1" numGridCollisionPoints="12" shadowSize="14" stageHP="0" portrait="17" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="WalkVert" bestiaryOverlay="HeadWalk">
+        <gibs amount="6" blood="1" bone="1" eye="0" gut="1" large="0" worm="1" />
+        <preload-snd id="165" /> <!-- SOUND_ZOMBIE_WALKER_KID -->
+    </entity>
+    <entity anm2path="Gazing_Glubin.anm2" id="24" variant="1" subtype="1100" name="Gazing Glubin" reroll="true" baseHP="33" boss="0" champion="1" collisionDamage="2" collisionMass="10" collisionRadius="13" friction="1" numGridCollisionPoints="12" shadowSize="14" stageHP="0" portrait="18" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="WalkVert" bestiaryOverlay="HeadWalk">
+        <gibs amount="6" blood="1" bone="1" eye="1" gut="1" large="0" worm="1" />
+    </entity>
+	
+    <entity anm2path="Greediest_Keeper.anm2" id="86" variant="1100" name="Greediest Keeper" reroll="true" baseHP="999" boss="0" champion="1" collisionDamage="1" collisionMass="30" collisionRadius="13" friction="1" numGridCollisionPoints="12" shadowSize="17" stageHP="0" portrait="54" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="JumpDown">
+        <gibs amount="6" blood="1" bone="1" eye="0" gut="1" large="0" worm="1" />
+    </entity>
+    <entity anm2path="Greediest_Hanger.anm2" id="606" variant="0" name="Greediest Hanger" reroll="true" baseHP="999" boss="0" champion="0" collisionDamage="0" collisionMass="30" collisionRadius="13" friction="1" numGridCollisionPoints="12" shadowSize="14" stageHP="0" portrait="56" gridCollision="walls" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="Attack">
+        <gibs amount="6" blood="1" bone="1" eye="1" gut="1" large="0" />
+    </entity> <!-- Gets to be a from scratch NPC because making it a Hanger variant was producing some weird bugs and behaviours !-->
+	
 	
 	<entity anm2path="Meteor_Maw.anm2" id="601" variant="0" name="Meteor Maw" reroll="true" baseHP="20" boss="0" champion="1" collisionDamage="1" collisionMass="7" collisionRadius="13" friction="1" numGridCollisionPoints="12" shadowSize="13" stageHP="0" portrait="4" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="Shake" bestiaryOverlay="Head">
         <gibs amount="6" blood="1" bone="1" eye="0" gut="1" large="0" />
@@ -69,14 +85,19 @@
         <preload-snd id="143" /> <!-- SOUND_SCARED_WHIMPER -->
     </entity>
 	
+	<entity anm2path="Boilligan.anm2" id="606" variant="0" name="Boilligan" reroll="true" baseHP="18" boss="0" champion="1" collisionDamage="0" collisionMass="6" collisionRadius="13" friction="1" numGridCollisionPoints="12" shadowSize="13" stageHP="0" portrait="11" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="WalkVert" bestiaryOverlay="Walk">
+        <gibs amount="6" blood="1" bone="1" eye="1" gut="1" large="0" />
+        <preload-snd id="143" /> <!-- SOUND_SCARED_WHIMPER -->
+    </entity>
 	
-	<entity anm2path="Fat Globin Complete.anm2" id="605" variant="0" name="Fat Globin" reroll="true" baseHP="30" boss="0" champion="1" collisionDamage="1" collisionMass="10" collisionRadius="13" friction="1" numGridCollisionPoints="12" shadowSize="16" stageHP="0" portrait="0" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="WalkVert">
+	
+	<entity anm2path="Fat Globin Complete.anm2" id="610" variant="0" name="Fat Globin" reroll="true" baseHP="30" boss="0" champion="1" collisionDamage="1" collisionMass="10" collisionRadius="13" friction="1" numGridCollisionPoints="12" shadowSize="16" stageHP="0" portrait="0" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="WalkVert">
         <gibs amount="16" blood="1" bone="1" eye="1" gut="1" large="0" />
     </entity>
-	<entity anm2path="Fat Globin Blubber.anm2" id="605" variant="1" name="Fat Globin Blubber" reroll="true" baseHP="20" boss="0" champion="1" collisionDamage="1" collisionMass="10" collisionRadius="13" friction="1" numGridCollisionPoints="12" shadowSize="16" stageHP="0" portrait="0" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="WalkVert">
+	<entity anm2path="Fat Globin Blubber.anm2" id="610" variant="1" name="Fat Globin Blubber" reroll="true" baseHP="20" boss="0" champion="1" collisionDamage="1" collisionMass="10" collisionRadius="13" friction="1" numGridCollisionPoints="12" shadowSize="16" stageHP="0" portrait="0" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="WalkVert">
         <gibs amount="16" blood="1" bone="1" eye="1" gut="1" large="0" />
     </entity>
-	<entity anm2path="Fat Globin Half.anm2" id="605" variant="2" name="Fat Globin Stack" reroll="true" baseHP="20" boss="0" champion="1" collisionDamage="1" collisionMass="10" collisionRadius="13" friction="1" numGridCollisionPoints="12" shadowSize="16" stageHP="0" portrait="0" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="WalkVert">
+	<entity anm2path="Fat Globin Half.anm2" id="610" variant="2" name="Fat Globin Stack" reroll="true" baseHP="20" boss="0" champion="1" collisionDamage="1" collisionMass="10" collisionRadius="13" friction="1" numGridCollisionPoints="12" shadowSize="16" stageHP="0" portrait="0" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="WalkVert">
         <gibs amount="16" blood="1" bone="1" eye="1" gut="1" large="0" />
     </entity>
 	
