@@ -366,6 +366,26 @@ function BBBaddiesMod:ProjectileUpdate(ent)
 			sprite:Play("RegularTear7")
 		end
 	end
+	if (ent.FrameCount <= 1 and ent.Variant == 4) then
+		local sprite = ent:GetSprite()
+		
+		local tearSize = 1 
+		for i=1,13,1 do
+			if sprite:IsPlaying ("RegularTear" .. i) then tearSize = i end
+		end
+		
+		sprite:Load("gfx/tear_projectile.anm2",true)
+		sprite:Play("RegularTear" .. tearSize)
+		--sprite:ReplaceSpritesheet(0, "gfx/tear_bullets.png")
+		--sprite:LoadGraphics()
+		--sprite:Play("RegularTear7")
+	end
+	if (ent.Variant == 4 and ent.SpawnerType == EntityType.ENTITY_GLOBIN) then
+		local proj = ent:ToProjectile()
+		if (proj.FallingSpeed < 0) then
+			ent:ToProjectile():AddScale(0.1)
+		end
+	end
 	
 	if ((ent.SpawnerType == BBBaddiesEntityType.ENTITY_CUSTOM_GAPER and ent.SpawnerVariant == BBBaddiesEntityVariant.GAPER_MURMUR) or
 		(ent.SpawnerType == EntityType.ENTITY_GUSHER and ent.SpawnerVariant == BBBaddiesEntityVariant.GUSHER_GRIPE)) then

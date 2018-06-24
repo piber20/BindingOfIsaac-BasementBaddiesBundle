@@ -34,7 +34,8 @@ BBBaddiesEntityVariant = {
 	FAT_GLOBIN_BLUBBER = Isaac.GetEntityVariantByName("Fat Globin Blubber"),
 	FAT_GLOBIN_STACK = Isaac.GetEntityVariantByName("Fat Globin Stack"),
 	HIVE_BOILLIGAN = Isaac.GetEntityVariantByName("Boilligan"),
-	KEEPER_GREEDIEST = Isaac.GetEntityVariantByName("Greediest Keeper")
+	KEEPER_GREEDIEST = Isaac.GetEntityVariantByName("Greediest Keeper"),
+	FLY_GREEDIEST = Isaac.GetEntityVariantByName("Greediest Orbital")
 }
 
 BBBaddiesEffectVariant = {
@@ -105,6 +106,23 @@ function BBBaddiesMod:FlyVariants(npc)
 	--for some reason the fly sfx doesn't want to work, so this is gonna' go ahead and be a fly variant to make it do so
 	if (npc.Variant == BBBaddiesEntityVariant.FLY_LATCH) then 
 		BBBaddiesMod:FlyLatch(npc)
+	end
+	if (npc.Variant == BBBaddiesEntityVariant.FLY_GREEDIEST) then 
+		
+		if (npc.Parent == nil) then
+			Isaac.Spawn(5, 20, 0, npc.Position, Vector(0,0), npc)
+			npc:Remove()
+		else
+			local speed = npc.I2
+			local radiusAndAngle = npc.V2
+			
+			local vectorUp = Vector(0,1)
+			
+			npc.V2 = Vector(npc.V2.X, npc.V2.Y + speed)
+			
+			npc.TargetPosition = npc.Parent.Position + (vectorUp:Rotated(npc.V2.Y) * npc.V2.X)
+			npc.Velocity = BBBaddiesMod:Lerp(npc.Position, npc.TargetPosition, 0.85) - npc.Position
+		end
 	end
 end
 function BBBaddiesMod:DipVariants(npc)
@@ -190,9 +208,12 @@ function BBBaddiesMod:GlobinVariants(npc)
 			local sprite = npc:GetSprite() 
 			local frame = sprite:GetFrame()
 			
-			if (frame % 2 == 0 and frame < 20) then
+			if ((frame % 2 == 0 and frame < 16)
+				or (frame % 4 == 0 and frame < 24)
+				or (frame % 8 == 0 and frame < 32)
+				or (frame % 16 == 0 and frame < 40)) then
 				local projectileVelocity = Vector(1,0)
-				local projectileSpeed = math.random(0,15) * 0.1
+				local projectileSpeed = math.random(0,30) * 0.1
 				local schut = ProjectileParams()
 				
 				schut.HeightModifier = 10
@@ -200,6 +221,7 @@ function BBBaddiesMod:GlobinVariants(npc)
 				schut.FallingSpeedModifier = -30
 				schut.FallingAccelModifier = 1
 				schut.HeightModifier = 24
+				schut.Scale = 0.1
 				
 				npc:FireProjectiles(npc.Position, projectileVelocity:Rotated(math.random(0,360)) * projectileSpeed, 0, schut)
 				npc:PlaySound(178, 1.0, 0, false, 1.0)
@@ -218,9 +240,23 @@ function BBBaddiesMod:BabyVariants(npc)
 	local sprite = npc:GetSprite()
 	if (npc.State == 0) then
 		if (npc.Variant == 0) then
-			local fly = Isaac.Spawn(96, 0, 0, npc.Position, Vector(0,0), npc)
+			local startAngle = math.random(0,180)
+			
+			local fly = Isaac.Spawn(13, BBBaddiesEntityVariant.FLY_GREEDIEST, 0, npc.Position, Vector(0,0), npc)
 			fly.Parent = npc
-			fly:ToNPC().StateFrame = 6
+			fly:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
+			fly:Update()
+			fly.EntityCollisionClass = EntityCollisionClass.ENTCOLL_PLAYEROBJECTS
+			fly:ToNPC().I2 = 6
+			fly:ToNPC().V2 = Vector(32, startAngle)
+				
+			fly = Isaac.Spawn(13, BBBaddiesEntityVariant.FLY_GREEDIEST, 0, npc.Position, Vector(0,0), npc)
+			fly.Parent = npc
+			fly:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
+			fly:Update()
+			fly.EntityCollisionClass = EntityCollisionClass.ENTCOLL_PLAYEROBJECTS
+			fly:ToNPC().I2 = 6
+			fly:ToNPC().V2 = Vector(32, startAngle + 180)
 		end
 		npc.GridCollisionClass = 3
 		npc.State = 3
@@ -256,7 +292,6 @@ function BBBaddiesMod:BabyVariants(npc)
 	end
 	
 	if (npc.Variant == 0) then
-		local room = Game():GetRoom()
 		npc.Target = npc:GetPlayerTarget()
 		npc.TargetPosition = npc.Target.Position
 		local targetOffset = npc.TargetPosition - npc.Position
@@ -265,13 +300,22 @@ function BBBaddiesMod:BabyVariants(npc)
 		if (npc.State == NpcState.STATE_ATTACK ) then
 			if (sprite:IsEventTriggered("Shoot")) then
 				local projectileVelocity = targetOffset:Normalized()
-				local schut = ProjectileParams()
-				schut.BulletFlags = ProjectileFlags.GREED 
+				
+				local shotCount = math.random(4,6)
+				
+				for i=0,shotCount,1 do	
+					local schut = ProjectileParams()
+					schut.BulletFlags = ProjectileFlags.GREED 
+					schut.Variant = 7
 					
-				for i=-1,1,1 do	
-					local projectileSpeed = 7
-					if (i == 0) then projectileSpeed = 8 end
-					npc:FireProjectiles(npc.Position, projectileVelocity:Rotated(i * 15) * projectileSpeed, 0, schut)
+					schut.FallingSpeedModifier = math.random(-10,0)
+					schut.FallingAccelModifier = -schut.FallingSpeedModifier / 25
+					
+					local angle = math.random(-15,15)
+					local projectileSpeedRange = (15 - math.abs(angle))
+					local projectileSpeed = 7 + (math.random(-projectileSpeedRange, projectileSpeedRange) / 5)
+					
+					npc:FireProjectiles(npc.Position, projectileVelocity:Rotated(angle) * projectileSpeed, 0, schut)
 				end
 				npc:PlaySound(178, 1.0, 0, false, 1.0)
 			elseif sprite:IsFinished("Attack") then
@@ -309,7 +353,34 @@ end
 
 BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.BabyVariants, BBBaddiesEntityType.ENTITY_CUSTOM_BABY)
 
-
+function BBBaddiesMod:KeeperVariants(npc)
+	if (npc.Variant == BBBaddiesEntityVariant.KEEPER_GREEDIEST) then
+		if (npc.State == 8) then
+			npc.State = 9
+		elseif (npc.State == 9) then
+			local sprite = npc:GetSprite()
+			if (sprite:IsEventTriggered("Shoot")) then
+				npc.Target = npc:GetPlayerTarget()
+				local targetOffset = npc.Target.Position - npc.Position
+				local projectileVelocity = targetOffset:Normalized()
+				local schut = ProjectileParams()
+				schut.BulletFlags = ProjectileFlags.GREED 
+				schut.Variant = 7
+					
+				for i=-1,1,1 do	
+					local projectileSpeed = 7
+					if (i == 0) then projectileSpeed = 8 end
+					npc:FireProjectiles(npc.Position, projectileVelocity:Rotated(i * 15) * projectileSpeed, 0, schut)
+				end
+				npc:PlaySound(178, 1.0, 0, false, 1.0)
+			end
+			if (sprite:IsFinished("ShootDown")) then
+				npc.State = 3
+				npc.StateFrame = 0
+			end
+		end
+	end
+end
 function BBBaddiesMod:KeeperVariantsTakeDamage(npc, dmg, dmgType, dmgSrc, dmgCountDown)
 	if (npc.Variant == BBBaddiesEntityVariant.KEEPER_GREEDIEST) then
 		toReturn = BBBaddiesMod:GreediestTakeDamage(npc, dmg, dmgType, dmgSrc, dmgCountDown)
@@ -318,29 +389,35 @@ function BBBaddiesMod:KeeperVariantsTakeDamage(npc, dmg, dmgType, dmgSrc, dmgCou
 		end
 	end
 end
-function BBBaddiesMod:GreediestTakeDamage(ent, dmg, dmgType, dmgSrc, dmgCountDown)	
-	local npc = ent:ToNPC()			
-	npc.I1 = npc.I1 + 1
-	local coin = Isaac.Spawn(5, 20, 0, npc.Position, Vector(0,0), npc)
-	
-	if (npc.I1 > 5) then
-		if (npc.I1 > 20 or math.random(0,10) == 0) then
-			npc.I2 = 1
-			npc:Kill()
-			local coinCount = math.random(2,4)
-			local coinVelocity = Vector(1,0)
-			for i=0,coinCount,1 do
-				Isaac.Spawn(5, 20, 0, npc.Position, coinVelocity:Rotated(math.random(0,360)), npc)
-			end
-			npc:PlaySound(141, 1.0, 0, false, 1.0)
+function BBBaddiesMod:GreediestTakeDamage(npc, dmg, dmgType, dmgSrc, dmgCountDown)	
+	if (npc.HitPoints < dmg) then
+		local coinCount = math.random(4,6)
+		local coinVelocity = Vector(1,0)
+		for i=1,coinCount,1 do
+			Isaac.Spawn(5, 20, 0, npc.Position, coinVelocity:Rotated(math.random(0,360)), npc)
 		end
+		npc:PlaySound(141, 1.0, 0, false, 1.0)
 	end
+	
+	-- local npc = ent:ToNPC()			
+	-- npc.I1 = npc.I1 + 1
+	-- if (math.random(0,3) == 0) then Isaac.Spawn(5, 20, 0, npc.Position, Vector(0,0), npc) end
+	
+	-- if (npc.I1 > 5) then
+		-- if (npc.I1 > 20 or math.random(0,10) == 0) then
+			-- npc.I2 = 1
+			-- npc:Kill()
+			-- local coinCount = math.random(3,5)
+			-- local coinVelocity = Vector(1,0)
+			-- for i=0,coinCount,1 do
+				-- Isaac.Spawn(5, 20, 0, npc.Position, coinVelocity:Rotated(math.random(0,360)), npc)
+			-- end
+			-- npc:PlaySound(141, 1.0, 0, false, 1.0)
+		-- end
+	-- end
 end
 function BBBaddiesMod:GreediestDie(npc)
-	if (npc.I2 == 0) then
-		local item = Isaac.Spawn(5, 100, CollectibleType.COLLECTIBLE_DOLLAR, npc.Position, Vector(0,0), npc)
-		npc.I2 = 1
-	end
+	
 end 
 
 
@@ -558,6 +635,7 @@ BBBaddiesMod:AddCallback( ModCallbacks.MC_ENTITY_TAKE_DMG, BBBaddiesMod.GurgleVa
 BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.SplasherVariants, EntityType.ENTITY_SPLASHER)
 BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.GlobinVariants, EntityType.ENTITY_GLOBIN)
 
+BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.KeeperVariants, EntityType.ENTITY_KEEPER)
 BBBaddiesMod:AddCallback( ModCallbacks.MC_ENTITY_TAKE_DMG, BBBaddiesMod.KeeperVariantsTakeDamage, EntityType.ENTITY_KEEPER)
 BBBaddiesMod:AddCallback( ModCallbacks.MC_ENTITY_TAKE_DMG, BBBaddiesMod.BabyVariantsTakeDamage, BBBaddiesEntityType.ENTITY_CUSTOM_BABY)
 
