@@ -35,6 +35,8 @@
 	<entity BaseHP="18" Group="Mulligans" ID="605" Image="resources/Entities/605.0.0 - Boilligan.png" Kind="Enemies" Name="Boilligan" Subtype="0" Variant="0" />
 	<entity BaseHP="40" Group="Gapers" ID="604" Image="resources/Entities/604.0.0 - Murmur.png" Kind="Enemies" Name="Murmur" Subtype="0" Variant="0" />
 	<entity BaseHP="10" Group="Gapers" ID="11" Image="resources/Entities/11.2.0 - Gripe.png" Kind="Enemies" Name="Gripe" Subtype="0" Variant="2" />
+	<entity BaseHP="33" Group="Gapers" ID="24" Image="resources/Entities/24.0.1100 - Glubin.png" Kind="Enemies" Name="Glubin" Subtype="1100" Variant="0" />
+	<entity BaseHP="33" Group="Gapers" ID="24" Image="resources/Entities/24.1.1100 - Gazing Glubin.png" Kind="Enemies" Name="Gazing Glubin" Subtype="1100" Variant="1" />
 
 	<entity Group="Broken" ID="1" Image="resources/Entities/1.0.0 - Player.png" Kind="Stage" Name="Player (crashes)" Subtype="0" Variant="0" />
 	<entity Group="Tears" ID="2" Image="resources/Entities/2.0.0 - Tear.png" Kind="Stage" Name="Tear" Subtype="0" Variant="0" />
