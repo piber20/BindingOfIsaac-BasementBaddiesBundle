@@ -21,6 +21,13 @@ function BBBaddiesMod:CustomTears(npc)
 			npc.State = 3
 			npc.SplatColor = Color(0,0,0,0,0,0,0)--Color(0.725,0.81,1,1,0,0,0)
 			
+			-- if npc.Velocity.X < 0 then
+				-- sprite:Load("gfx/tears_boil_R.anm2",true)
+			-- else
+			if npc.Velocity.X < 0 and sprite:GetFilename() ~= "gfx/tears_boil_L.anm2" then
+				sprite:Load("gfx/tears_boil_L.anm2",true)
+			end
+		
 			if npc.I1 == 0 then
 				sprite:Play("RegularTear4", true)
 			elseif npc.I1 == 1 then
@@ -47,13 +54,75 @@ function BBBaddiesMod:CustomTears(npc)
 		end
 		
 		
+		if (npc.Velocity.X < 0) then
+			if (sprite:GetFilename() ~= "gfx/tears_boil_L.anm2") then
+				sprite:Load("gfx/tears_boil_L.anm2",true)
+			
+				if npc.I1 == 0 then
+					sprite:Play("RegularTear4", true)
+				elseif npc.I1 == 1 then
+					sprite:Play("RegularTear5", true)
+				elseif npc.I1 == 2 then
+					sprite:Play("RegularTear6", true)
+				elseif npc.I1 == 3 then
+					sprite:Play("RegularTear7", true)
+				elseif npc.I1 == 4 then
+					sprite:Play("RegularTear8", true)
+				elseif npc.I1 == 5 then
+					sprite:Play("RegularTear9", true)
+				elseif npc.I1 == 6 then
+					sprite:Play("RegularTear10", true)
+				elseif npc.I1 == 7 then
+					sprite:Play("RegularTear11", true)
+				elseif npc.I1 == 8 then
+					sprite:Play("RegularTear12", true)
+				else
+					sprite:Play("RegularTear13", true)
+				end
+			end
+		else
+			if (sprite:GetFilename() ~= "gfx/tears_boil_R.anm2") then
+				sprite:Load("gfx/tears_boil_R.anm2",true)
+			
+				if npc.I1 == 0 then
+					sprite:Play("RegularTear4", true)
+				elseif npc.I1 == 1 then
+					sprite:Play("RegularTear5", true)
+				elseif npc.I1 == 2 then
+					sprite:Play("RegularTear6", true)
+				elseif npc.I1 == 3 then
+					sprite:Play("RegularTear7", true)
+				elseif npc.I1 == 4 then
+					sprite:Play("RegularTear8", true)
+				elseif npc.I1 == 5 then
+					sprite:Play("RegularTear9", true)
+				elseif npc.I1 == 6 then
+					sprite:Play("RegularTear10", true)
+				elseif npc.I1 == 7 then
+					sprite:Play("RegularTear11", true)
+				elseif npc.I1 == 8 then
+					sprite:Play("RegularTear12", true)
+				else
+					sprite:Play("RegularTear13", true)
+				end
+			end
+		end
+		
+		-- if (sprite:IsPlaying("RegularTear6") == false) then 
+			-- sprite:Play("RegularTear6", true)
+			-- sprite.PlaybackSpeed = 1
+		-- end
+		
+		-- if (npc.Velocity.X > 0) then sprite.PlaybackSpeed = 1
+		-- else sprite.PlaybackSpeed = -1 end
+		
 		npc.V1 = Vector(npc.V1.X + npc.V1.Y,npc.V1.Y)
 		
 		
 		if (npc.SpriteOffset.Y >= 0) then
 			local boil = Isaac.Spawn(30, 0, 0, npc.Position, Vector(0,0),npc):ToNPC()
 			boil:Update()
-			boil.HitPoints = math.random(1,7)
+			boil.HitPoints = 1 + (npc.I1 * 2)
 			
 			while (boil.State == NpcState.STATE_APPEAR) do
 				boil:Update()

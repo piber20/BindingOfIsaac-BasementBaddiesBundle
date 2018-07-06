@@ -89,10 +89,10 @@
         <preload-snd id="143" /> <!-- SOUND_SCARED_WHIMPER -->
     </entity>
 	
-	<entity anm2path="Boilligan.anm2" id="606" variant="0" name="Boilligan" reroll="true" baseHP="18" boss="0" champion="1" collisionDamage="0" collisionMass="6" collisionRadius="13" friction="1" numGridCollisionPoints="12" shadowSize="13" stageHP="0" portrait="11" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="WalkVert" bestiaryOverlay="Walk">
+	<!--<entity anm2path="Boilligan.anm2" id="606" variant="0" name="Boilligan" reroll="true" baseHP="18" boss="0" champion="1" collisionDamage="0" collisionMass="6" collisionRadius="13" friction="1" numGridCollisionPoints="12" shadowSize="13" stageHP="0" portrait="11" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="WalkVert" bestiaryOverlay="Walk">
         <gibs amount="6" blood="1" bone="1" eye="1" gut="1" large="0" />
-        <preload-snd id="143" /> <!-- SOUND_SCARED_WHIMPER -->
-    </entity>
+        <preload-snd id="143" />
+    </entity> !-->
 	
 	
 	<entity anm2path="Fat Globin Complete.anm2" id="610" variant="0" name="Fat Globin" reroll="true" baseHP="30" boss="0" champion="1" collisionDamage="1" collisionMass="10" collisionRadius="13" friction="1" numGridCollisionPoints="12" shadowSize="16" stageHP="0" portrait="0" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="WalkVert">
@@ -114,7 +114,7 @@
 	<entity anm2path="tears_tar.anm2" id="675" variant="1" name="Tar Tear" reroll="true" baseHP="1" boss="0" champion="1" collisionDamage="1" collisionMass="35" collisionRadius="0" friction="1" numGridCollisionPoints="12" shadowSize="15" stageHP="0" portrait="19" bestiary="false">
         <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
     </entity>
-	<entity anm2path="009.000_Projectile.anm2" id="675" variant="2" name="Boil Tear" reroll="true" baseHP="1" boss="0" champion="1" collisionDamage="1" collisionMass="35" collisionRadius="0" friction="1" numGridCollisionPoints="12" shadowSize="15" stageHP="0" portrait="19" bestiary="false">
+	<entity anm2path="tears_boil_R.anm2" id="675" variant="2" name="Boil Tear" reroll="true" baseHP="1" boss="0" champion="1" collisionDamage="1" collisionMass="35" collisionRadius="0" friction="1" numGridCollisionPoints="12" shadowSize="15" stageHP="0" portrait="19" bestiary="false">
         <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
     </entity>
 	

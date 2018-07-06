@@ -151,7 +151,7 @@ function BBBaddiesMod:HiveVariants(npc)
 				
 				local boilBall = Isaac.Spawn(BBBaddiesEntityType.ENTITY_CUSTOM_TEAR, 2, 0, npc.Position + projectileVelocity, projectileVelocity,npc)
 				boilBall:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
-				boilBall:ToNPC().I1 = 4
+				boilBall:ToNPC().I1 = math.random(0,2)--4
 				boilBall:ToNPC().V1 = Vector(math.random(-8,-4),0.35)
 				boilBall.Parent = npc
 			end
@@ -169,7 +169,7 @@ function BBBaddiesMod:HiveVariantsTakeDamage(npc, dmg, dmgType, dmgSrc, dmgCount
 				
 				local boilBall = Isaac.Spawn(BBBaddiesEntityType.ENTITY_CUSTOM_TEAR, 2, 0, npc.Position + projectileVelocity, projectileVelocity,npc)
 				boilBall:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
-				boilBall:ToNPC().I1 = 4
+				boilBall:ToNPC().I1 = math.random(0,2)--4
 				boilBall:ToNPC().V1 = Vector(math.random(-8,-4),0.35)
 				boilBall.Parent = npc
 			end
