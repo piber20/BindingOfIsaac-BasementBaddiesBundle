@@ -184,7 +184,7 @@ function BBBaddiesMod:CustomTears(npc)
 		if (bounce) then
 			if npc.V1.Y > 0 then
 				npc.V1 = Vector(npc.V1.X, npc.V1.Y - 1)
-				npc.Velocity = npc.Velocity:Rotated(math.random(-30,30))				
+				npc.Velocity = npc.Velocity:Rotated(math.random(-30,30))		
 				npc.StateFrame = 24
 				
 				-- npc.Velocity = npc.Velocity:Rotated(math.random(-30,30))
@@ -416,11 +416,101 @@ BBBaddiesMod:AddCallback( ModCallbacks.MC_PRE_PLAYER_COLLISION, BBBaddiesMod.Pla
 --TO BE REPLACED
 
 function BBBaddiesMod:ProjectileUpdate(ent)
+	if (ent.Variant == 1100) then
+		if (ent.FrameCount <= 1) then
+			ent:GetSprite():Play("Flickering")
+			
+			if (ent.Child == nil) then				
+				local fireFX = Isaac.Spawn(1000, 51, 0, ent.Position, Vector(0,0), ent)
+				fireFX.Parent = ent
+				fireFX:GetSprite().Scale = Vector(0,0)
+				fireFX:ToEffect():FollowParent(fireFX.Parent)
+				ent.Child = fireFX
+			end
+		end
+	end
+	if (ent.Variant == 1101) then
+		if (ent.FrameCount <= 1) then			
+			ent:GetSprite():Play("RegularTear" .. math.floor(ent.Scale * 8), true)
+			ent:SetSize(4 + ent.Scale * 6, Vector(1,1), 12)
+		end
+		
+		local room = Game():GetRoom()
+		
+		local projectedPosition = ent.Position + ent.Velocity
+		if (room:IsPositionInRoom (projectedPosition, 1)) then
+			--BBBaddiesDebugString = "gridCollision:" .. room:GetGridCollision(room:GetGridIndex(ent.Position + ent.Velocity))
+			
+			local gridIndex = room:GetGridIndex(projectedPosition)
+			local gridCollision = room:GetGridCollision(gridIndex)
+			local gridPosition = room:GetGridPosition(gridIndex)
+			local gridOffset = gridPosition - ent.Position
+			
+			if (gridCollision == 3) then
+				if (math.abs(gridOffset.X) > math.abs(gridOffset.Y)) then
+					ent.Velocity = Vector(-ent.Velocity.X,ent.Velocity.Y)
+				else
+					ent.Velocity = Vector(ent.Velocity.X,-ent.Velocity.Y)
+				end
+				ent.Velocity = ent.Velocity:Rotated(math.random(-30,30))
+				ent.FallingAccel = ent.FallingAccel + 0.1
+			end
+			
+			-- local gridEntity = room:GetGridEntity(room:GetGridIndex(ent.Position + ent.Velocity))--room:GetGridEntityFromPos(npc.Position + (npc.TargetPosition * 12))
+			
+			-- BBBaddiesDebugString = "Type:" .. gridEntity:GetType() .. "." .. gridEntity:GetVariant()
+			-- if (gridEntity ~= nil) then
+				-- if (gridEntity:ToRock() ~= nil) then
+					-- gridEntity:Destroy(true)
+					-- ent:Kill()
+					-- Isaac.Explode(gridEntity.Position, nil, 100)
+				-- elseif (gridEntity:ToPoop() ~= nil) then
+					-- gridEntity:Destroy(true)
+					-- ent:Kill()
+					-- Isaac.Explode(gridEntity.Position, nil, 100)
+				-- elseif (gridEntity:ToTNT() ~= nil) then
+					-- gridEntity:Destroy(true)
+					-- ent:Kill()
+					-- Isaac.Explode(gridEntity.Position, nil, 100)	
+				-- elseif (gridEntity:ToTNT() ~= nil) then
+					-- gridEntity:Destroy(true)
+					-- Isaac.Explode(gridEntity.Position, nil, 100)
+					-- ent:Kill()
+				-- end
+			-- end
+		else
+			
+			local gridIndex = room:GetGridIndex(projectedPosition)
+			local gridCollision = room:GetGridCollision(gridIndex)
+			local gridPosition = room:GetGridPosition(gridIndex)
+			local gridOffset = gridPosition - ent.Position
+			
+			if (math.abs(gridOffset.X) > math.abs(gridOffset.Y)) then
+				ent.Velocity = Vector(-ent.Velocity.X,ent.Velocity.Y)
+			else
+				ent.Velocity = Vector(ent.Velocity.X,-ent.Velocity.Y)
+			end
+			ent.Velocity = ent.Velocity:Rotated(math.random(-30,30))
+			ent.FallingAccel = ent.FallingAccel + 0.1
+			
+			
+			--ent:Kill()
+			--Isaac.Explode(ent.Position, nil, 100)
+		end
+	end
+	
 	if (ent.SpawnerType == BBBaddiesEntityType.ENTITY_CUSTOM_CREEP and ent.SpawnerVariant == BBBaddiesEntityVariant.CREEP_STICKY) then
 		if (ent.FrameCount % 3 == 0) then				
 			local creep = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.CREEP_BLACK, 0, ent.Position, Vector(0,0), ent):ToEffect()
 			creep:Update()
 			creep:SetTimeout(90)
+		end
+	end
+	if (ent.SpawnerType == BBBaddiesEntityType.ENTITY_METEOR_MAW and ent.SpawnerVariant == 1) then	
+		if (ent.FrameCount <= 1) then		
+			local sprite = ent:GetSprite()
+			sprite.Scale = Vector(0.65,0.65)
+			ent.SplatColor = Color(0,0,0,0,0,0,0)
 		end
 	end
 	if ((ent.SpawnerType == EntityType.ENTITY_LEAPER and ent.SpawnerVariant == BBBaddiesEntityVariant.LEAPER_BOUNCER) or
@@ -521,6 +611,9 @@ function BBBaddiesMod:EffectInit(fx)
 		if ((fx.SpawnerType == EntityType.ENTITY_GURGLE and fx.SpawnerVariant == BBBaddiesEntityVariant.GURGLE_MURMUR)) then
 			fx:GetSprite ().Color = Color(1,1,1,1,0,0,0)
 		end
+		if (fx.Variant == 15) then--(fx.SpawnerType == BBBaddiesEntityType.ENTITY_METEOR_MAW and fx.SpawnerVariant == 1) then
+			-- fx:GetSprite ().Color = Color(0,0,0,0,0,0,0)
+		end
 		-- if ((fx.Parent.SpawnerType == EntityType.ENTITY_LEAPER and fx.Parent.SpawnerVariant == BBBaddiesEntityVariant.LEAPER_BOUNCER)) then
 			-- fx:GetSprite():ReplaceSpritesheet(0,"gfx/effects/inktearpoof.png")
 			-- fx:GetSprite():LoadGraphics()
@@ -533,4 +626,27 @@ function BBBaddiesMod:EffectInit(fx)
 		-- end
 	end
 end
+
+
+function BBBaddiesMod:EntityKill(ent)
+	if (ent.Type == 9) then
+		BBBaddiesMod:ProjectileKill(ent:ToProjectile())
+	end
+end
+function BBBaddiesMod:ProjectileKill(proj)
+	if (proj.Variant == 1100) then
+		local fx = Isaac.Spawn(EntityType.ENTITY_EFFECT, 15, 0, proj.Position, Vector(0,0), proj):ToEffect()
+		fx:GetSprite().Color = Color(1,1,1,1,49,47,42) --Color(0.95,0.72,0.25,1,49,47,42) --Color(0.99,0.94,0.84,1,49,47,42) --Color(0.99,0.94,0.84,1,126,119,106)
+		
+		if (proj.Child ~= nil) then proj.Child:Remove() end
+	elseif (proj.Variant == 1101) then
+		local soundfly = Isaac.Spawn(13, 0, 0, proj.Position, Vector(0,0),proj):ToNPC()
+		soundfly:PlaySound(258, 1.0, 0, false, 1.0)
+		soundfly:Remove()
+		local poof = Isaac.Spawn(1000, 12, 0, proj.Position, Vector(0,0),proj)
+		poof:GetSprite():ReplaceSpritesheet(0,"gfx/effects/inktearpoof.png")
+		poof:GetSprite():LoadGraphics()
+	end
+end
 BBBaddiesMod:AddCallback( ModCallbacks.MC_POST_EFFECT_UPDATE, BBBaddiesMod.EffectInit)
+BBBaddiesMod:AddCallback( ModCallbacks.MC_POST_ENTITY_REMOVE , BBBaddiesMod.EntityKill)

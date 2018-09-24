@@ -8,7 +8,8 @@ BBBaddiesEntityType = {
 	ENTITY_CUSTOM_GAPER = Isaac.GetEntityTypeByName("Murmur"),
 	ENTITY_FAT_GLOBIN = Isaac.GetEntityTypeByName("Fat Globin"),
 	ENTITY_CUSTOM_HIVE = Isaac.GetEntityTypeByName("Boilligan"),
-	ENTITY_CUSTOM_BABY = Isaac.GetEntityTypeByName("Greediest Hanger")
+	ENTITY_CUSTOM_BABY = Isaac.GetEntityTypeByName("Greediest Hanger"),
+	ENTITY_CUSTOM_MASK = Isaac.GetEntityTypeByName("Naked Mask")
 }
 
 BBBaddiesProjectileVariant = {
@@ -35,7 +36,9 @@ BBBaddiesEntityVariant = {
 	FAT_GLOBIN_STACK = Isaac.GetEntityVariantByName("Fat Globin Stack"),
 	HIVE_BOILLIGAN = Isaac.GetEntityVariantByName("Boilligan"),
 	KEEPER_GREEDIEST = Isaac.GetEntityVariantByName("Greediest Keeper"),
-	FLY_GREEDIEST = Isaac.GetEntityVariantByName("Greediest Orbital")
+	FLY_GREEDIEST = Isaac.GetEntityVariantByName("Greediest Orbital"),
+	HEART_BLUE = Isaac.GetEntityVariantByName("Blue Heart"),
+	MASK_NAKED = Isaac.GetEntityVariantByName("Naked Mask")
 }
 
 BBBaddiesEffectVariant = {
@@ -76,6 +79,72 @@ end
 
 function BBBaddiesMod:Lerp(a, b, weight)
 	return a * (1 - weight) + b * weight
+end
+function BBBaddiesMod:GridChooseDirection(position, startDirection)
+	if startDirection == nil then startDirection = 0 end
+	local room = Game():GetRoom()
+	local potentialDirections = { }
+	
+	if startDirection == 1 then
+		if room:GetGridCollisionAtPos(position + Vector(24,0)) == 0 then
+			table.insert(potentialDirections, 2 )
+		end
+		if room:GetGridCollisionAtPos(position + Vector(-24,0)) == 0 then
+			table.insert(potentialDirections, 4 )
+		end
+		if #potentialDirections == 0 then
+			return startDirection
+		end
+	elseif startDirection == 2 then
+		if room:GetGridCollisionAtPos(position + Vector(0,-24)) == 0 then
+			table.insert(potentialDirections, 1 )
+		end
+		if room:GetGridCollisionAtPos(position + Vector(0,24)) == 0 then
+			table.insert(potentialDirections, 3 )
+		end
+		if #potentialDirections == 0 then
+			return startDirection
+		end
+	elseif startDirection == 3 then
+		if room:GetGridCollisionAtPos(position + Vector(24,0)) == 0 then
+			table.insert(potentialDirections, 2 )
+		end
+		if room:GetGridCollisionAtPos(position + Vector(-24,0)) == 0 then
+			table.insert(potentialDirections, 4 )
+		end
+		if #potentialDirections == 0 then
+			return startDirection
+		end
+	elseif startDirection == 4 then
+		if room:GetGridCollisionAtPos(position + Vector(0,-24)) == 0 then
+			table.insert(potentialDirections, 1 )
+		end
+		if room:GetGridCollisionAtPos(position + Vector(0,24)) == 0 then
+			table.insert(potentialDirections, 3 )
+		end
+		if #potentialDirections == 0 then
+			return startDirection
+		end
+	else
+		if room:GetGridCollisionAtPos(position + Vector(0,-24)) == 0 then
+			table.insert(potentialDirections, 1 )
+		end
+		if room:GetGridCollisionAtPos(position + Vector(24,0)) == 0 then
+			table.insert(potentialDirections, 2 )
+		end
+		if room:GetGridCollisionAtPos(position + Vector(0,24)) == 0 then
+			table.insert(potentialDirections, 3 )
+		end
+		if room:GetGridCollisionAtPos(position + Vector(-24,0)) == 0 then
+			table.insert(potentialDirections, 4 )
+		end
+	end
+	
+	if #potentialDirections == 0 then
+		return 0
+	else
+		return potentialDirections[math.random(1,#potentialDirections)]
+	end
 end
 
 local function DistanceFromLine(point, lineStart, lineEnd)
@@ -201,6 +270,235 @@ function BBBaddiesMod:SplasherVariants(npc)
 		BBBaddiesMod:Splasher(npc)
 	end
 end
+function BBBaddiesMod:HeartVariants(npc)
+	if (npc.Variant == BBBaddiesEntityVariant.HEART_BLUE) then
+		if (npc:GetSprite():IsEventTriggered("Shoot")) then
+			
+			local projectileVelocity = Vector(7.5,7.5)
+			local schut = ProjectileParams()
+			for i=0,3,1 do
+				npc:FireProjectiles(npc.Position, projectileVelocity:Rotated(i*90), 0, schut)
+			end
+		end
+	end
+end
+function BBBaddiesMod:CustomMaskVariants(npc)
+	local init = false
+	local moveSpeed = 3
+	local turnChance = 10
+	local animUp = "Up"
+	local animDown = "Down"
+	local animLeft = "Hori"
+	local animRight = "Hori"
+		
+	if npc.State == 0 then
+		npc.State = 4
+		init = true
+		npc.TargetPosition = npc.Position
+		npc.I1 = BBBaddiesMod:GridChooseDirection(npc.Position)
+		
+	elseif npc.State == 4 then		
+		local room = Game():GetRoom()
+		npc.StateFrame = npc.StateFrame + 1		
+		
+		local newVelocityX = 0
+		local newVelocityY = 0
+		local moveHori = false
+		
+		--if (npc.I1 == 0) then npc.I1 = BBBaddiesMod:GridChooseDirection(npc.Position) end
+		
+		if (npc.I1 == 1) then
+			newVelocityY = -moveSpeed
+			newVelocityX = (npc.Position.X - (npc.Position.X % 24) + 12) - npc.Position.X
+			newVelocityX = newVelocityX / 16
+			
+			if (((npc.Position.Y + 12) % 24 < 3 or (npc.Position.Y + 12) % 24 > 21) and
+				(npc.StateFrame > 12 and math.random(0,turnChance) == 0)) then
+				npc.I1 = BBBaddiesMod:GridChooseDirection(npc.Position, npc.I1)
+				npc.StateFrame = 0
+			elseif (room:GetGridCollisionAtPos(npc.Position + Vector(0,-18)) ~= 0) then
+				npc.I1 = BBBaddiesMod:GridChooseDirection(npc.Position)
+				npc.StateFrame = 0
+			end
+		elseif (npc.I1 == 3) then
+			newVelocityY = moveSpeed
+			newVelocityX = (npc.Position.X - (npc.Position.X % 24) + 12) - npc.Position.X
+			newVelocityX = newVelocityX / 16
+			
+			if (((npc.Position.Y + 12) % 24 < 3 or (npc.Position.Y + 12) % 24 > 21) and
+				(npc.StateFrame > 12 and math.random(0,turnChance) == 0)) then
+				npc.I1 = BBBaddiesMod:GridChooseDirection(npc.Position, npc.I1)
+				npc.StateFrame = 0
+			elseif (room:GetGridCollisionAtPos(npc.Position + Vector(0,18)) ~= 0) then
+				npc.I1 = BBBaddiesMod:GridChooseDirection(npc.Position)
+				npc.StateFrame = 0
+			end
+			
+		elseif (npc.I1 == 2) then
+			moveHori = true
+			newVelocityX = moveSpeed
+			newVelocityY = (npc.Position.Y - (npc.Position.Y % 24) + 12) - npc.Position.Y
+			newVelocityY = newVelocityY / 16
+			
+			if (((npc.Position.X + 12) % 24 < 3 or (npc.Position.X + 12) % 24 > 21) and
+				(npc.StateFrame > 12 and math.random(0,turnChance) == 0)) then
+				npc.I1 = BBBaddiesMod:GridChooseDirection(npc.Position, npc.I1)
+				npc.StateFrame = 0
+			elseif (room:GetGridCollisionAtPos(npc.Position + Vector(18,0)) ~= 0) then
+				npc.I1 = BBBaddiesMod:GridChooseDirection(npc.Position)
+				npc.StateFrame = 0
+			end		
+		elseif (npc.I1 == 4) then
+			moveHori = true
+			newVelocityX = -moveSpeed
+			newVelocityY = (npc.Position.Y - (npc.Position.Y % 24) + 12) - npc.Position.Y
+			newVelocityY = newVelocityY / 16
+			
+			if (((npc.Position.X + 12) % 24 < 3 or (npc.Position.X + 12) % 24 > 21) and
+				(npc.StateFrame > 12 and math.random(0,turnChance) == 0)) then
+				npc.I1 = BBBaddiesMod:GridChooseDirection(npc.Position, npc.I1)
+				npc.StateFrame = 0
+			elseif (room:GetGridCollisionAtPos(npc.Position + Vector(-18,0)) ~= 0) then
+				npc.I1 = BBBaddiesMod:GridChooseDirection(npc.Position)
+				npc.StateFrame = 0
+			end		
+		end
+		
+		if moveHori then
+			npc.Velocity = Vector(BBBaddiesMod:Lerp(npc.Velocity.X, newVelocityX, 0.25), BBBaddiesMod:Lerp(npc.Velocity.Y, newVelocityY, 0.5))
+		else
+			npc.Velocity = Vector(BBBaddiesMod:Lerp(npc.Velocity.X, newVelocityX, 0.5), BBBaddiesMod:Lerp(npc.Velocity.Y, newVelocityY, 0.25))
+		end
+		
+		local sprite = npc:GetSprite()
+		if (npc.Velocity:Length() > 0.1) then			
+			if (math.abs(npc.Velocity.X) > math.abs(npc.Velocity.Y)) then				
+				if (npc.Velocity.X < 0) then
+					npc.FlipX = true
+					if sprite:IsPlaying(animLeft) == false then
+						sprite:Play(animLeft)
+					end
+				else 
+					npc.FlipX = false
+					if sprite:IsPlaying(animRight) == false then
+						sprite:Play(animRight)
+					end
+				end		
+			else
+				npc.FlipX = false
+				if (npc.Velocity.Y > 0) then
+					if sprite:IsPlaying(animDown) == false then
+						sprite:Play(animDown)
+					end
+				else
+					if sprite:IsPlaying(animUp) == false then
+						sprite:Play(animUp)
+					end
+				end
+			end
+		end
+	end
+	
+	if npc.Variant == BBBaddiesEntityVariant.MASK_NAKED then
+		if (npc.I2 == 0) then
+			local brain = Isaac.Spawn(EntityType.ENTITY_HEART, BBBaddiesEntityVariant.HEART_BLUE, 0, npc.Position, Vector(0,0), nil)--(playerDirection * 10), nil)--Game():Spawn(404, 1, npc.Position + (playerDirection * 26), (playerDirection * 10), npc, 0, 0)--Isaac.Spawn(404, 1, 0, npc.Position + (playerDirection * 26), (playerDirection * 10), npc)
+			brain:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
+			npc.Child = brain
+			npc.I2 = 1
+		elseif (npc.ChildNPC == nil) then
+			npc:Kill()
+		end
+	
+		if init == false and npc.State == 4 then			
+			local room = Game():GetRoom()
+			npc.Target = npc:GetPlayerTarget()
+			npc.TargetPosition = npc.Target.Position
+			local targetOffset = npc.TargetPosition - npc.Position
+			local targetDirection = targetOffset:Normalized()
+				
+			npc.Velocity = npc.Velocity + (targetDirection * 0.1)
+			if (npc.Velocity:Length() > 1.5) then npc.Velocity = npc.Velocity:Normalized() * 1.5 end
+			
+			if (math.abs(targetOffset.X) < 12 or math.abs(targetOffset.Y) < 12) then
+				npc.State = NpcState.STATE_ATTACK
+				npc.StateFrame = 0
+				npc.Mass = 20
+				npc:PlaySound(146, 1.0, 0, false, 1.0)
+				if (math.abs(targetOffset.X) < math.abs(targetOffset.Y)) then
+					if (targetOffset.Y < 0) then
+						npc.TargetPosition = Vector(0,-1)
+					else
+						npc.TargetPosition = Vector(0,1)					
+					end
+				else
+					if (targetOffset.X < 0) then
+						npc.TargetPosition = Vector(-1,0)
+					else
+						npc.TargetPosition = Vector(1,0)					
+					end
+				end
+				npc.Velocity = BBBaddiesMod:Lerp(npc.Velocity,npc.TargetPosition * 8,0.4)
+			end
+		elseif npc.State == NpcState.STATE_ATTACK then			
+			if (npc.FrameCount % 4 == 0) then
+				local creep = Isaac.Spawn(1000, 22, 0, npc.Position, Vector(0,0), npc):ToEffect()
+				creep:SetTimeout(65)
+			end
+			
+			local collided = false
+			
+			if (math.abs(npc.TargetPosition.X) > math.abs(npc.TargetPosition.Y)) then
+				if (npc.TargetPosition.X > 0) then
+					if (npc.Velocity.X <= 0) then collided = true end
+				else
+					if (npc.Velocity.X >= 0) then collided = true end					
+				end
+			else
+				if (npc.TargetPosition.Y > 0) then
+					if (npc.Velocity.Y <= 0) then collided = true end
+				else
+					if (npc.Velocity.Y >= 0) then collided = true end					
+				end
+			end			
+		
+			if (collided) then	
+				npc.Mass = 8
+				npc.State = 4
+			else
+				npc.Velocity = BBBaddiesMod:Lerp(npc.Velocity,npc.TargetPosition * 8,0.4)
+				local sprite = npc:GetSprite()
+				if (npc.Velocity:Length() > 0.1) then			
+					if (math.abs(npc.Velocity.X) > math.abs(npc.Velocity.Y)) then				
+						if (npc.Velocity.X < 0) then
+							npc.FlipX = true
+							if sprite:IsPlaying(animLeft) == false then
+								sprite:Play(animLeft)
+							end
+						else 
+							npc.FlipX = false
+							if sprite:IsPlaying(animRight) == false then
+								sprite:Play(animRight)
+							end
+						end		
+					else
+						npc.FlipX = false
+						if (npc.Velocity.Y > 0) then
+							if sprite:IsPlaying(animDown) == false then
+								sprite:Play(animDown)
+							end
+						else
+							if sprite:IsPlaying(animUp) == false then
+								sprite:Play(animUp)
+							end
+						end
+					end
+				end
+			end	
+		
+		end
+	end
+end
+
 
 function BBBaddiesMod:GlobinVariants(npc)
 	if (npc.SubType == 1100) then
@@ -513,7 +811,7 @@ function BBBaddiesMod:debug_text()
 	entinfo()
 end
 function entinfo()
-	local debugMode = 0 --Isaac.GetPlayer(0):GetHearts()
+	--local debugMode = 4 --Isaac.GetPlayer(0):GetHearts()
 	--debugMode 0 = Nothing
 	--debugMode 1 = local ints
 	--debugMode 2 = local vectors
@@ -634,6 +932,9 @@ BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.GurgleVariant
 BBBaddiesMod:AddCallback( ModCallbacks.MC_ENTITY_TAKE_DMG, BBBaddiesMod.GurgleVariantsTakeDamage, EntityType.ENTITY_GURGLE)
 BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.SplasherVariants, EntityType.ENTITY_SPLASHER)
 BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.GlobinVariants, EntityType.ENTITY_GLOBIN)
+
+BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.HeartVariants, EntityType.ENTITY_HEART)
+BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.CustomMaskVariants, BBBaddiesEntityType.ENTITY_CUSTOM_MASK)
 
 BBBaddiesMod:AddCallback( ModCallbacks.MC_NPC_UPDATE, BBBaddiesMod.KeeperVariants, EntityType.ENTITY_KEEPER)
 BBBaddiesMod:AddCallback( ModCallbacks.MC_ENTITY_TAKE_DMG, BBBaddiesMod.KeeperVariantsTakeDamage, EntityType.ENTITY_KEEPER)

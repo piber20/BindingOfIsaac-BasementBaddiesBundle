@@ -35,7 +35,13 @@
 	<entity anm2path="Bouncer.anm2" id="34" variant="1100" name="Bouncer" baseHP="20" boss="0" champion="1" collisionDamage="1" collisionMass="5" collisionRadius="13" friction="1" numGridCollisionPoints="12" shadowSize="14" stageHP="0" portrait="154" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="Hop">
 	<gibs amount="6" blood="1" bone="1" eye="1" gut="1" large="0" />
 	</entity>
-		
+	<entity anm2path="Blue_Heart.anm2" id="92" variant="1100" name="Blue Heart" reroll="true" baseHP="40" boss="0" champion="0" collisionDamage="0" collisionMass="30" collisionRadius="13" friction="1" numGridCollisionPoints="12" shadowSize="18" stageHP="0" portrait="59" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="HeartAttack">
+        <gibs amount="6" blood="1" bone="0" eye="0" gut="0" large="0" />
+    </entity>	
+	<entity anm2path="Naked_Mask.anm2" id="607" variant="0" name="Naked Mask" reroll="true" baseHP="30" boss="0" champion="1" collisionDamage="1" collisionMass="8" collisionRadius="11" friction="1" numGridCollisionPoints="12" shadowSize="13" stageHP="0" portrait="58" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="Hori">
+        <gibs amount="6" blood="0" bone="1" eye="0" gut="1" large="0" worm="1" />
+    </entity>
+	
     <entity anm2path="Glubin.anm2" id="24" variant="0" subtype="1100" name="Glubin" reroll="true" baseHP="33" boss="0" champion="1" collisionDamage="2" collisionMass="10" collisionRadius="13" friction="1" numGridCollisionPoints="12" shadowSize="14" stageHP="0" portrait="17" bestiary="true" bestiaryTransform="0,0,1" bestiaryAnim="WalkVert" bestiaryOverlay="HeadWalk">
         <gibs amount="6" blood="1" bone="1" eye="0" gut="1" large="0" worm="1" />
         <preload-snd id="165" /> <!-- SOUND_ZOMBIE_WALKER_KID -->
@@ -118,6 +124,12 @@
         <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
     </entity>
 	
+	<entity anm2path="Fire Projectile.anm2" id="9" variant="1100" name="Fire Projectile" baseHP="0" boss="0" champion="0" collisionDamage="0" collisionMass="0" collisionRadius="10" friction="1" numGridCollisionPoints="0" shadowSize="0" stageHP="0" >
+        <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+    </entity>
+	<entity anm2path="tears_tar.anm2" id="9" variant="1101" name="Tar Projectile" reroll="true" baseHP="1" boss="0" champion="1" collisionDamage="1" collisionMass="35" collisionRadius="0" friction="1" numGridCollisionPoints="12" shadowSize="15" stageHP="0" portrait="19" bestiary="false">
+        <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+    </entity>
 	
 	<entity anm2path="diarhea_explosion.anm2" id="1000" variant="1100" name="Diarhea Explosion" baseHP="0" boss="0" champion="0" collisionDamage="0" collisionMass="0" collisionRadius="0" friction="1" numGridCollisionPoints="1" shadowSize="0" stageHP="0">
         <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />

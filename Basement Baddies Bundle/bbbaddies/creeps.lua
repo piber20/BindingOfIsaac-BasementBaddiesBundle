@@ -212,21 +212,23 @@ function BBBaddiesMod:CreepVariants(npc)
 						projectileVelocity = Vector(-projectileSpeed,0)
 					end	
 					
-					-- local schut = ProjectileParams()
-					-- schut.Scale = 2
-					-- schut.Variant = 3
-					-- schut.Color = Color(0.2,0.2,0.25,1,0,0,0)
-					-- schut.FallingAccelModifier = -0.15
 					
-					-- npc:FireProjectiles(npc.Position + projectileVelocity, projectileVelocity, 0, schut)		
+					--projectileVelocity = projectileVelocity:Rotated(math.random(-10,10))
+					--tarBall = Isaac.Spawn(BBBaddiesEntityType.ENTITY_CUSTOM_TEAR, BBBaddiesProjectileVariant.PROJECTILE_TAR, 0, npc.Position + projectileVelocity, projectileVelocity,npc)
+					--tarBall:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
+					--tarBall:ToNPC().I1 = 5
+					--tarBall:ToNPC().V1 = Vector(projectileSpeed,1)
+					--tarBall:ToNPC().StateFrame = 150
+					--tarBall.Parent = npc
 					
-					projectileVelocity = projectileVelocity:Rotated(math.random(-10,10))
-					tarBall = Isaac.Spawn(BBBaddiesEntityType.ENTITY_CUSTOM_TEAR, BBBaddiesProjectileVariant.PROJECTILE_TAR, 0, npc.Position + projectileVelocity, projectileVelocity,npc)
-					tarBall:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
-					tarBall:ToNPC().I1 = 5
-					tarBall:ToNPC().V1 = Vector(projectileSpeed,1)
-					tarBall:ToNPC().StateFrame = 150
-					tarBall.Parent = npc
+					local schut = ProjectileParams()
+					schut.BulletFlags = (2 ^ 13) --+ (2 ^ 4)
+					schut.HeightModifier = 20
+					--schut.FallingSpeedModifier = 0.5
+					schut.FallingAccelModifier = -0.175
+					schut.Variant = 1101
+					schut.Scale = 1.3
+					npc:FireProjectiles(npc.Position + projectileVelocity, projectileVelocity, 0, schut)
 					
 					npc:PlaySound(317, 1.0, 0, false, 1.0)
 				end	
