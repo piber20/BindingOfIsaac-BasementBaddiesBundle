@@ -396,7 +396,7 @@ function BBBaddiesMod:GreediestTakeDamage(npc, dmg, dmgType, dmgSrc, dmgCountDow
 		for i=1,coinCount,1 do
 			Isaac.Spawn(5, 20, 0, npc.Position, coinVelocity:Rotated(math.random(0,360)), npc)
 		end
-		npc:PlaySound(141, 1.0, 0, false, 1.0)
+		npc:ToNPC():PlaySound(141, 1.0, 0, false, 1.0)
 	end
 	
 	-- local npc = ent:ToNPC()			
