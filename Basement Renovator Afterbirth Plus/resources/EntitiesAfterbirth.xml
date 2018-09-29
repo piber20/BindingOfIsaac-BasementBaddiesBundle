@@ -37,7 +37,13 @@
 	<entity BaseHP="10" Group="Gapers" ID="11" Image="resources/Entities/11.2.0 - Gripe.png" Kind="Enemies" Name="Gripe" Subtype="0" Variant="2" />
 	<entity BaseHP="33" Group="Gapers" ID="24" Image="resources/Entities/24.0.1100 - Glubin.png" Kind="Enemies" Name="Glubin" Subtype="1100" Variant="0" />
 	<entity BaseHP="33" Group="Gapers" ID="24" Image="resources/Entities/24.1.1100 - Gazing Glubin.png" Kind="Enemies" Name="Gazing Glubin" Subtype="1100" Variant="1" />
-
+	<entity BaseHP="1" Group="Other" ID="675" Image="resources/Entities/675.0.0 - Bubble Projectile.png" Kind="Enemies" Name="Bubble Projectile" Subtype="0" Variant="0" />
+    <entity BaseHP="1" Group="Other" ID="675" Image="resources/Entities/675.0.1 - BloodBubble Projectile.png" Kind="Enemies" Name="Blood Bubble Projectile" Subtype="1" Variant="0" />
+	<entity BaseHP="36" Group="Maws" ID="86" Image="resources/Entities/86.1100.0 - Greediest Keeper.png" Kind="Enemies" Name="Greediest Keeper" Subtype="0" Variant="1100" />
+	<entity BaseHP="40" Group="Maws" ID="606" Image="resources/Entities/606.0.0 - Greediest Hanger.png" Kind="Enemies" Name="Greediest Hanger" Subtype="0" Variant="0" />
+	<entity BaseHP="40" Group="Organs" ID="92" Image="resources/Entities/92.1100.0 - Blue Heart.png" Kind="Enemies" Name="Blue Heart" Subtype="0" Variant="1100" />
+	<entity BaseHP="30" Group="Organs" ID="607" Image="resources/Entities/607.0.0 - Naked Mask.png" Kind="Enemies" Name="Naked Mask" Subtype="0" Variant="0" />
+	
 	<entity Group="Broken" ID="1" Image="resources/Entities/1.0.0 - Player.png" Kind="Stage" Name="Player (crashes)" Subtype="0" Variant="0" />
 	<entity Group="Tears" ID="2" Image="resources/Entities/2.0.0 - Tear.png" Kind="Stage" Name="Tear" Subtype="0" Variant="0" />
 	<entity Group="Tears" ID="2" Image="resources/Entities/2.0.1 - Blood Tear.png" Kind="Stage" Name="Blood Tear" Subtype="0" Variant="1" />
